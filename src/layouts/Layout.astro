@@ -1,0 +1,105 @@
+---
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description = 'kouno.log - 技術メモとアウトプットの記録' } = Astro.props;
+---
+
+<!doctype html>
+<html lang="ja">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content={description} />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+  </head>
+  <body>
+    <header>
+      <nav>
+        <a href="/" class="site-title">kouno.log</a>
+        <a href="/memos">Memos</a>
+        <a href="/external">External</a>
+      </nav>
+    </header>
+    <main>
+      <slot />
+    </main>
+    <footer>
+      <p>&copy; {new Date().getFullYear()} kouno.log</p>
+    </footer>
+  </body>
+</html>
+
+<style is:global>
+  * {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+  }
+
+  body {
+    font-family: system-ui, sans-serif;
+    line-height: 1.6;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 1rem;
+  }
+
+  header {
+    margin-bottom: 2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #eee;
+  }
+
+  nav {
+    display: flex;
+    align-items: baseline;
+    gap: 1.5rem;
+  }
+
+  nav a {
+    color: #333;
+    text-decoration: none;
+  }
+
+  nav a.site-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
+    letter-spacing: -0.5px;
+    margin-right: 1rem;
+  }
+
+  nav a.site-title:hover {
+    text-decoration: none;
+    opacity: 0.8;
+  }
+
+  nav a:hover {
+    text-decoration: underline;
+  }
+
+  main {
+    min-height: 60vh;
+  }
+
+  footer {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+    color: #666;
+    font-size: 0.875rem;
+  }
+
+  h1 {
+    margin-bottom: 1rem;
+  }
+
+  a {
+    color: #0066cc;
+  }
+</style>

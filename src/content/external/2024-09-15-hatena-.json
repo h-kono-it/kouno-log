@@ -1,0 +1,8 @@
+{
+  "title": "「かいぶん」しょを作った話",
+  "url": "https://hk-it.hatenablog.com/entry/2024/09/16/002220",
+  "pubDate": "2024-09-15T15:22:20.000Z",
+  "source": "hatena",
+  "description": "noteに『回文になる単語リスト』を公開しました。\nnote.com\n作ったきっかけ\nコード類\nなぜDenoで書いたか\n豚辞書ってなに？\nまとめ\n作ったきっかけ\n謎解きや、謎作成が好きな妻がほしいって言ったので。\nコード類\n gist.github.com\nDenoで書いています。\n処理は割と普通のことしか書いてないので、解説はしません。（見返したらObject.keysでeachすればSetいら",
+  "thumbnail": "/thumbnails/2024-09-15-hatena-.png"
+}

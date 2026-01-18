@@ -1,0 +1,324 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const external = await getCollection('external');
+const sortedExternal = external.sort(
+  (a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
+);
+
+const sources = ['note', 'hatena', 'docswell'] as const;
+const PER_PAGE = 20;
+---
+
+<Layout title="External | My Portal">
+  <h1>External</h1>
+  <p>note, はてなブログ, ドクセルの記事</p>
+
+  <div class="filter-buttons">
+    <button class="filter-btn active" data-filter="all">All</button>
+    {sources.map((source) => (
+      <button class="filter-btn" data-filter={source} data-source={source}>
+        {source}
+      </button>
+    ))}
+  </div>
+
+  <ul class="external-list">
+    {sortedExternal.map((item) => (
+      <li data-source={item.data.source}>
+        <a href={item.data.url} target="_blank" rel="noopener">
+          <div class="card-content">
+            {item.data.thumbnail && (
+              <img src={item.data.thumbnail} alt="" class="thumbnail" loading="lazy" />
+            )}
+            <div class="card-body">
+              <div class="card-header">
+                <span class="badge" data-source={item.data.source}>
+                  {item.data.source}
+                </span>
+                <time datetime={new Date(item.data.pubDate).toISOString()}>
+                  {new Date(item.data.pubDate).toLocaleDateString('ja-JP')}
+                </time>
+              </div>
+              <h3>{item.data.title}</h3>
+              {item.data.description && <p>{item.data.description}</p>}
+            </div>
+          </div>
+        </a>
+      </li>
+    ))}
+  </ul>
+
+  <div class="pagination">
+    <button class="page-btn" id="prev-btn" disabled>&larr; Prev</button>
+    <span class="page-info" id="page-info">1 / 1</span>
+    <button class="page-btn" id="next-btn">Next &rarr;</button>
+  </div>
+
+  {
+    sortedExternal.length === 0 && (
+      <p class="empty">
+        外部コンテンツはまだありません。
+        <br />
+        <code>scripts/fetch-rss.js</code> にRSSフィードを設定してください。
+      </p>
+    )
+  }
+</Layout>
+
+<style>
+  .filter-buttons {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+  }
+
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover {
+    border-color: #999;
+  }
+
+  .filter-btn.active {
+    background: #333;
+    color: white;
+    border-color: #333;
+  }
+
+  .filter-btn[data-source='note'].active {
+    background: #41c9b4;
+    border-color: #41c9b4;
+  }
+
+  .filter-btn[data-source='hatena'].active {
+    background: #00a4de;
+    border-color: #00a4de;
+  }
+
+  .filter-btn[data-source='docswell'].active {
+    background: #ff6b35;
+    border-color: #ff6b35;
+  }
+
+  .external-list {
+    list-style: none;
+  }
+
+  .external-list li {
+    margin-bottom: 1rem;
+  }
+
+  .external-list li.hidden {
+    display: none;
+  }
+
+  .external-list a {
+    display: block;
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s;
+  }
+
+  .external-list a:hover {
+    border-color: #ccc;
+  }
+
+  .card-content {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+  }
+
+  .thumbnail {
+    max-width: 120px;
+    max-height: 80px;
+    width: auto;
+    height: auto;
+    object-fit: contain;
+    border-radius: 4px;
+    flex-shrink: 0;
+  }
+
+  .card-body {
+    flex: 1;
+    min-width: 0;
+  }
+
+  .card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 0.5rem;
+  }
+
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    color: white;
+  }
+
+  .badge[data-source='note'] {
+    background: #41c9b4;
+  }
+
+  .badge[data-source='hatena'] {
+    background: #00a4de;
+  }
+
+  .badge[data-source='docswell'] {
+    background: #ff6b35;
+  }
+
+  .external-list h3 {
+    font-size: 1rem;
+    margin-bottom: 0.5rem;
+    color: #0066cc;
+  }
+
+  .external-list p {
+    color: #666;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+  }
+
+  time {
+    color: #999;
+    font-size: 0.75rem;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+  }
+
+  .page-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+
+  .page-btn:hover:not(:disabled) {
+    border-color: #999;
+    background: #f5f5f5;
+  }
+
+  .page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .page-info {
+    color: #666;
+    font-size: 0.875rem;
+  }
+
+  .empty {
+    margin-top: 2rem;
+    padding: 2rem;
+    background: #f9f9f9;
+    border-radius: 8px;
+    text-align: center;
+    color: #666;
+  }
+
+  .empty code {
+    background: #eee;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+  }
+</style>
+
+<script define:vars={{ PER_PAGE }}>
+  const filterButtons = document.querySelectorAll('.filter-btn');
+  const allItems = Array.from(document.querySelectorAll('.external-list li'));
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const pageInfo = document.getElementById('page-info');
+
+  let currentFilter = 'all';
+  let currentPage = 1;
+
+  function getFilteredItems() {
+    if (currentFilter === 'all') return allItems;
+    return allItems.filter((item) => item.getAttribute('data-source') === currentFilter);
+  }
+
+  function updateDisplay() {
+    const filtered = getFilteredItems();
+    const totalPages = Math.ceil(filtered.length / PER_PAGE) || 1;
+
+    if (currentPage > totalPages) currentPage = totalPages;
+
+    const start = (currentPage - 1) * PER_PAGE;
+    const end = start + PER_PAGE;
+
+    // 全アイテムを一旦非表示
+    allItems.forEach((item) => item.classList.add('hidden'));
+
+    // フィルタ＆ページに該当するものだけ表示
+    filtered.slice(start, end).forEach((item) => item.classList.remove('hidden'));
+
+    // ページ情報更新
+    pageInfo.textContent = `${currentPage} / ${totalPages}`;
+    prevBtn.disabled = currentPage <= 1;
+    nextBtn.disabled = currentPage >= totalPages;
+  }
+
+  // フィルターボタン
+  filterButtons.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      currentFilter = btn.getAttribute('data-filter');
+      currentPage = 1;
+
+      filterButtons.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+
+      updateDisplay();
+    });
+  });
+
+  // ページネーションボタン
+  prevBtn.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      updateDisplay();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    const filtered = getFilteredItems();
+    const totalPages = Math.ceil(filtered.length / PER_PAGE);
+    if (currentPage < totalPages) {
+      currentPage++;
+      updateDisplay();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  // 初期表示
+  updateDisplay();
+</script>

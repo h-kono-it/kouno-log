@@ -1,0 +1,183 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const memos = await getCollection('memos', ({ data }) => !data.draft);
+const external = await getCollection('external');
+
+// 全てのコンテンツを日付順にソート
+const allContent = [
+  ...memos.map((m) => ({
+    type: 'memo' as const,
+    title: m.data.title,
+    url: `/memos/${m.id}`,
+    pubDate: m.data.pubDate,
+    source: 'memo' as const,
+  })),
+  ...external.map((e) => ({
+    type: 'external' as const,
+    title: e.data.title,
+    url: e.data.url,
+    pubDate: e.data.pubDate,
+    source: e.data.source,
+  })),
+].sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+
+const recentContent = allContent.slice(0, 10);
+
+// 外部リンク（追加する場合はここに追加）
+const links = [
+  {
+    name: 'GitHub',
+    url: 'https://github.com/h-kono-it',
+    description: 'コード',
+  },
+  {
+    name: 'Twitter',
+    url: 'https://x.com/hk_it7',
+    description: 'つぶやき',
+  },
+  {
+    name: 'Cosense',
+    url: 'https://scrapbox.io/kouno-sense/',
+    description: 'メモ・ナレッジベース',
+  },
+];
+---
+
+<Layout title="kouno.log">
+  <h1>kouno.log</h1>
+  <p>note、はてなブログ、ドクセルの記事とメモをまとめています。</p>
+
+  <section>
+    <h2>Recent</h2>
+    <ul class="content-list">
+      {
+        recentContent.map((item) => (
+          <li>
+            <span class="badge" data-source={item.source}>
+              {item.source}
+            </span>
+            <a href={item.url} target={item.type === 'external' ? '_blank' : undefined}>
+              {item.title}
+            </a>
+            <time datetime={item.pubDate.toISOString()}>
+              {item.pubDate.toLocaleDateString('ja-JP')}
+            </time>
+          </li>
+        ))
+      }
+    </ul>
+  </section>
+
+  <section class="links-section">
+    <h2>Links</h2>
+    <div class="links-grid">
+      {links.map((link) => (
+        <a class="link-card" href={link.url} target="_blank" rel="noopener noreferrer">
+          <span class="link-name">{link.name}</span>
+          <span class="link-desc">{link.description}</span>
+        </a>
+      ))}
+    </div>
+  </section>
+</Layout>
+
+<style>
+  section {
+    margin-top: 2rem;
+  }
+
+  h2 {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+  }
+
+  .content-list {
+    list-style: none;
+  }
+
+  .content-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    background: #eee;
+    min-width: 60px;
+    text-align: center;
+  }
+
+  .badge[data-source='memo'] {
+    background: #6b7280;
+    color: white;
+  }
+
+  .badge[data-source='note'] {
+    background: #41c9b4;
+    color: white;
+  }
+
+  .badge[data-source='hatena'] {
+    background: #00a4de;
+    color: white;
+  }
+
+  .badge[data-source='docswell'] {
+    background: #ff6b35;
+    color: white;
+  }
+
+  .content-list a {
+    flex: 1;
+  }
+
+  time {
+    color: #666;
+    font-size: 0.875rem;
+  }
+
+  .links-section {
+    margin-top: 3rem;
+  }
+
+  .links-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .link-card {
+    display: flex;
+    flex-direction: column;
+    padding: 1rem 1.25rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .link-card:hover {
+    border-color: #ccc;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  }
+
+  .link-name {
+    font-weight: 600;
+    font-size: 1rem;
+    color: #333;
+  }
+
+  .link-desc {
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #666;
+  }
+</style>

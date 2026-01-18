@@ -1,0 +1,8 @@
+{
+  "title": "Googleスプレッドシートで予定表示用のカレンダー作った",
+  "url": "https://hk-it.hatenablog.com/entry/2024/08/23/080459",
+  "pubDate": "2024-08-22T23:04:59.000Z",
+  "source": "hatena",
+  "description": "結論\ndocs.google.com\n\n使い方\nGoogleにログインした状態で「ファイル>コピーの作成」で自分のドライブにコピーしてください。\nカレンダーシート\nA1、C1セルで年月を指定できます。\n他にいじるところはほぼないです。\n予定一覧\n日付と見出しを入力できます。入力するとカレンダー側に反映されます。\n同日に複数の予定がある場合、カレンダー上では\"/\"区切りで表示されます。\nQ&A\nQ.",
+  "thumbnail": "/thumbnails/2024-08-22-hatena-google.png"
+}

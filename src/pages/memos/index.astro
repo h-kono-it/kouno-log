@@ -1,0 +1,270 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const memos = await getCollection('memos', ({ data }) => !data.draft);
+const sortedMemos = memos.sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+
+// 全タグを取得（重複除去してソート）
+const allTags = [...new Set(memos.flatMap((m) => m.data.tags))].sort();
+
+const PER_PAGE = 20;
+---
+
+<Layout title="Memos | kouno.log">
+  <h1>Memos</h1>
+  <p>メモ書き・記事一覧</p>
+
+  {allTags.length > 0 && (
+    <div class="tag-filter">
+      <button class="filter-tag active" data-tag="">All</button>
+      {allTags.map((tag) => (
+        <button class="filter-tag" data-tag={tag}>{tag}</button>
+      ))}
+    </div>
+  )}
+
+  <ul class="memos-list">
+    {
+      sortedMemos.map((memo) => (
+        <li data-tags={memo.data.tags.join(',')}>
+          <a href={`/memos/${memo.id}`}>
+            <h2>{memo.data.title}</h2>
+            {memo.data.description && <p>{memo.data.description}</p>}
+            <time datetime={memo.data.pubDate.toISOString()}>
+              {memo.data.pubDate.toLocaleDateString('ja-JP')}
+            </time>
+            {memo.data.tags.length > 0 && (
+              <div class="tags">
+                {memo.data.tags.map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            )}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+
+  <div class="pagination">
+    <button class="page-btn" id="prev-btn" disabled>&larr; Prev</button>
+    <span class="page-info" id="page-info">1 / 1</span>
+    <button class="page-btn" id="next-btn">Next &rarr;</button>
+  </div>
+</Layout>
+
+<style>
+  .tag-filter {
+    display: flex;
+    gap: 0.5rem;
+    margin: 1.5rem 0;
+    flex-wrap: wrap;
+  }
+
+  .filter-tag {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+
+  .filter-tag:hover {
+    border-color: #999;
+  }
+
+  .filter-tag.active {
+    background: #333;
+    color: white;
+    border-color: #333;
+  }
+
+  .memos-list {
+    list-style: none;
+    margin-top: 2rem;
+  }
+
+  .memos-list li {
+    margin-bottom: 1.5rem;
+  }
+
+  .memos-list li.hidden {
+    display: none;
+  }
+
+  .memos-list a {
+    display: block;
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s;
+  }
+
+  .memos-list a:hover {
+    border-color: #ccc;
+  }
+
+  .memos-list h2 {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+    color: #0066cc;
+  }
+
+  .memos-list p {
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+
+  time {
+    color: #999;
+    font-size: 0.875rem;
+  }
+
+  .tags {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    background: #f0f0f0;
+    border-radius: 4px;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
+  }
+
+  .page-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+
+  .page-btn:hover:not(:disabled) {
+    border-color: #999;
+    background: #f5f5f5;
+  }
+
+  .page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .page-info {
+    color: #666;
+    font-size: 0.875rem;
+  }
+</style>
+
+<script define:vars={{ PER_PAGE }}>
+  const allItems = Array.from(document.querySelectorAll('.memos-list li'));
+  const filterTags = document.querySelectorAll('.filter-tag');
+  const prevBtn = document.getElementById('prev-btn');
+  const nextBtn = document.getElementById('next-btn');
+  const pageInfo = document.getElementById('page-info');
+
+  // URLからタグを取得
+  const urlParams = new URLSearchParams(window.location.search);
+  const initialTag = urlParams.get('tag') || '';
+
+  let currentPage = 1;
+  let currentTag = initialTag;
+  let filteredItems = allItems;
+
+  // 初期タグがあればボタンのactiveを更新
+  if (initialTag) {
+    filterTags.forEach((btn) => {
+      btn.classList.toggle('active', btn.dataset.tag === initialTag);
+    });
+  }
+
+  function getFilteredItems() {
+    if (!currentTag) return allItems;
+    return allItems.filter((item) => {
+      const tags = item.dataset.tags?.split(',') || [];
+      return tags.includes(currentTag);
+    });
+  }
+
+  function updateDisplay() {
+    filteredItems = getFilteredItems();
+    const totalPages = Math.ceil(filteredItems.length / PER_PAGE) || 1;
+
+    // ページ番号が範囲外なら1に戻す
+    if (currentPage > totalPages) currentPage = 1;
+
+    const start = (currentPage - 1) * PER_PAGE;
+    const end = start + PER_PAGE;
+
+    // 全て非表示にしてからフィルタ済みのものだけ表示
+    allItems.forEach((item) => item.classList.add('hidden'));
+    filteredItems.forEach((item, index) => {
+      if (index >= start && index < end) {
+        item.classList.remove('hidden');
+      }
+    });
+
+    pageInfo.textContent = `${currentPage} / ${totalPages}`;
+    prevBtn.disabled = currentPage <= 1;
+    nextBtn.disabled = currentPage >= totalPages;
+  }
+
+  // タグフィルタのクリックイベント
+  filterTags.forEach((btn) => {
+    btn.addEventListener('click', () => {
+      filterTags.forEach((b) => b.classList.remove('active'));
+      btn.classList.add('active');
+      currentTag = btn.dataset.tag || '';
+      currentPage = 1;
+      updateDisplay();
+
+      // URLを更新（履歴に残す）
+      const url = new URL(window.location.href);
+      if (currentTag) {
+        url.searchParams.set('tag', currentTag);
+      } else {
+        url.searchParams.delete('tag');
+      }
+      history.pushState({}, '', url);
+    });
+  });
+
+  prevBtn.addEventListener('click', () => {
+    if (currentPage > 1) {
+      currentPage--;
+      updateDisplay();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  nextBtn.addEventListener('click', () => {
+    const totalPages = Math.ceil(filteredItems.length / PER_PAGE) || 1;
+    if (currentPage < totalPages) {
+      currentPage++;
+      updateDisplay();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  });
+
+  updateDisplay();
+</script>
