@@ -36,15 +36,21 @@ function slugify(text) {
 }
 
 function extractThumbnailFromRss(item) {
-  // media:thumbnailの形式は様々なので安全にアクセス
+  // 1. media:thumbnail
   if (item.thumbnail) {
     if (typeof item.thumbnail === 'string') return item.thumbnail;
     if (item.thumbnail.$?.url) return item.thumbnail.$.url;
-    if (item.thumbnail.url) return item.thumbnail.url;
   }
+  
+  // 2. media:content (Docswell用)
+  if (item.mediaContent && item.mediaContent.$?.url) {
+    return item.mediaContent.$.url;
+  }
+
+  // 3. enclosure
   if (item.enclosure?.url) return item.enclosure.url;
 
-  // コンテンツ内の最初の画像を探す
+  // 4. コンテンツ内の最初の画像
   const content = item['content:encoded'] || item.content || '';
   const imgMatch = content.match(/<img[^>]+src="([^"]+)"/);
   if (imgMatch) return imgMatch[1];
