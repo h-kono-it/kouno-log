@@ -3,6 +3,7 @@ import Layout from '../layouts/Layout.astro';
 import { getCollection } from 'astro:content';
 
 const memos = await getCollection('memos', ({ data }) => !data.draft);
+const news = await getCollection('news', ({ data }) => !data.draft);
 const external = await getCollection('external');
 
 // 全てのコンテンツを日付順にソート
@@ -13,6 +14,13 @@ const allContent = [
     url: `/memos/${m.id}`,
     pubDate: m.data.pubDate,
     source: 'memo' as const,
+  })),
+  ...news.map((n) => ({
+    type: 'news' as const,
+    title: n.data.title,
+    url: `/news/${n.id}`,
+    pubDate: n.data.pubDate,
+    source: 'news' as const,
   })),
   ...external.map((e) => ({
     type: 'external' as const,
@@ -131,6 +139,11 @@ const links = [
 
   .badge[data-source='docswell'] {
     background: #ff6b35;
+    color: white;
+  }
+
+  .badge[data-source='news'] {
+    background: #8b5cf6;
     color: white;
   }
 

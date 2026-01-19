@@ -1,0 +1,71 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const news = await getCollection('news', ({ data }) => !data.draft);
+const sortedNews = news.sort(
+  (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
+);
+---
+
+<Layout title="News | kouno.log">
+  <h1>News</h1>
+  <p>お知らせ一覧</p>
+
+  <ul class="news-list">
+    {
+      sortedNews.map((item) => (
+        <li>
+          <a href={`/news/${item.id}`}>
+            <h2>{item.data.title}</h2>
+            {item.data.description && <p>{item.data.description}</p>}
+            <time datetime={item.data.pubDate.toISOString()}>
+              {item.data.pubDate.toLocaleDateString('ja-JP')}
+            </time>
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</Layout>
+
+<style>
+  .news-list {
+    list-style: none;
+    margin-top: 2rem;
+  }
+
+  .news-list li {
+    margin-bottom: 1.5rem;
+  }
+
+  .news-list a {
+    display: block;
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s;
+  }
+
+  .news-list a:hover {
+    border-color: #ccc;
+  }
+
+  .news-list h2 {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+    color: #0066cc;
+  }
+
+  .news-list p {
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+
+  time {
+    color: #999;
+    font-size: 0.875rem;
+  }
+</style>

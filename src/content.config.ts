@@ -13,6 +13,17 @@ const memos = defineCollection({
   }),
 });
 
+// お知らせ・ニュース
+const news = defineCollection({
+  loader: glob({ pattern: '**/*.md', base: './src/content/news' }),
+  schema: z.object({
+    title: z.string(),
+    description: z.string().optional(),
+    pubDate: z.coerce.date(),
+    draft: z.boolean().default(false),
+  }),
+});
+
 // 外部記事（note, はてなブログ, ドクセル）
 const external = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/external' }),
@@ -26,4 +37,4 @@ const external = defineCollection({
   }),
 });
 
-export const collections = { memos, external };
+export const collections = { memos, news, external };
