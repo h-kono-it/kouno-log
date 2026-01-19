@@ -1,6 +1,9 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ShareButtons from '../components/ShareButtons.astro';
 import { getCollection } from 'astro:content';
+
+const pageUrl = Astro.url.href;
 
 const memos = await getCollection('memos', ({ data }) => !data.draft);
 const news = await getCollection('news', ({ data }) => !data.draft);
@@ -88,6 +91,10 @@ const links = [
         </a>
       ))}
     </div>
+  </section>
+
+  <section class="share-section">
+    <ShareButtons title="kouno.log" url={pageUrl} />
   </section>
 </Layout>
 
@@ -192,5 +199,11 @@ const links = [
     margin-top: 0.25rem;
     font-size: 0.875rem;
     color: #666;
+  }
+
+  .share-section {
+    margin-top: 3rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
   }
 </style>

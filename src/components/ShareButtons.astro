@@ -1,0 +1,51 @@
+---
+interface Props {
+  title: string;
+  url: string;
+}
+
+const { title, url } = Astro.props;
+
+const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+const hatenaUrl = `https://b.hatena.ne.jp/entry/s/${url.replace(/^https?:\/\//, '')}`;
+---
+
+<div class="share-buttons">
+  <a href={twitterUrl} target="_blank" rel="noopener noreferrer" class="share-btn twitter">
+    Twitter
+  </a>
+  <a href={hatenaUrl} target="_blank" rel="noopener noreferrer" class="share-btn hatena">
+    はてブ
+  </a>
+</div>
+
+<style>
+  .share-buttons {
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .share-btn {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.375rem 0.75rem;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    text-decoration: none;
+    color: white;
+    transition: opacity 0.2s;
+  }
+
+  .share-btn:hover {
+    opacity: 0.8;
+    color: white;
+  }
+
+  .twitter {
+    background: #1da1f2;
+  }
+
+  .hatena {
+    background: #00a4de;
+  }
+</style>
