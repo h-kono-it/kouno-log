@@ -1,7 +1,7 @@
 ---
 title: kouno.logのシステム構成
 description: このサイトの技術スタックと構成について
-pubDate: 2026-01-18
+pubDate: 2026-01-19
 tags: [astro, cloudflare]
 ---
 
@@ -49,6 +49,28 @@ src/content/external/
 ├── 2026-01-10-note-xxx.json
 └── ...
 ```
+
+## OG画像の動的生成
+
+memos と news の記事ページでは、OG画像を動的に生成しています。
+
+### 使用ライブラリ
+
+- **[Satori](https://github.com/vercel/satori)**: HTML/CSS から SVG を生成
+- **[BudouX](https://github.com/nickmessing/budoux)**: 日本語の改行位置を最適化
+- **[@resvg/resvg-wasm](https://github.com/nickmessing/resvg-js)**: SVG から PNG に変換
+
+### 仕組み
+
+1. ビルド時に `/og/memos/[id].png` と `/og/news/[id].png` が静的に生成される
+2. 各記事ページの `<meta property="og:image">` でこの画像を参照
+3. タイトルは BudouX で日本語の改行位置を自動調整
+
+### デザイン
+
+- 1200x630 サイズ（OGP 推奨サイズ）
+- オフホワイト背景にタイトルを中央配置
+- 左下にアイコン、右下にサイト名
 
 ## 自動デプロイ
 
