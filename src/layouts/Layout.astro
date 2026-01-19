@@ -2,9 +2,12 @@
 interface Props {
   title: string;
   description?: string;
+  ogImage?: string;
 }
 
-const { title, description = 'kouno.log - 技術メモとアウトプットの記録' } = Astro.props;
+const { title, description = 'kouno.log - 技術メモとアウトプットの記録', ogImage } = Astro.props;
+const siteUrl = Astro.url.origin;
+const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/ogp_kouno_log.png`;
 ---
 
 <!doctype html>
@@ -15,6 +18,14 @@ const { title, description = 'kouno.log - 技術メモとアウトプットの�
     <meta name="viewport" content="width=device-width" />
     <meta name="description" content={description} />
     <meta name="generator" content={Astro.generator} />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:type" content="article" />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
     <title>{title}</title>
   </head>
   <body>

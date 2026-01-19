@@ -16,7 +16,7 @@ const { Content } = await render(memo);
 const pageUrl = Astro.url.href;
 ---
 
-<Layout title={`${memo.data.title} | kouno.log`} description={memo.data.description}>
+<Layout title={`${memo.data.title} | kouno.log`} description={memo.data.description} ogImage={`/og/memos/${memo.id}.png`}>
   <article>
     <header>
       <h1>{memo.data.title}</h1>

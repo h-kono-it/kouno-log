@@ -14,7 +14,7 @@ const { item } = Astro.props;
 const { Content } = await render(item);
 ---
 
-<Layout title={`${item.data.title} | kouno.log`} description={item.data.description}>
+<Layout title={`${item.data.title} | kouno.log`} description={item.data.description} ogImage={`/og/news/${item.id}.png`}>
   <article>
     <header>
       <h1>{item.data.title}</h1>

@@ -7,6 +7,7 @@ import cloudflare from '@astrojs/cloudflare';
 
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://kouno-log.pages.dev',
   adapter: cloudflare(),
   markdown: {
     // rehypePlugins: [
