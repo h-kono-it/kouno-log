@@ -71,12 +71,14 @@ const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/ogp_kouno_log.
   nav {
     display: flex;
     align-items: baseline;
-    gap: 1.5rem;
+    gap: 1rem;
+    flex-wrap: wrap;
   }
 
   nav a {
     color: #333;
     text-decoration: none;
+    white-space: nowrap;
   }
 
   nav a.site-title {
@@ -84,7 +86,8 @@ const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/ogp_kouno_log.
     font-weight: 700;
     font-family: 'SF Mono', 'Fira Code', 'Cascadia Code', Consolas, monospace;
     letter-spacing: -0.5px;
-    margin-right: 1rem;
+    margin-right: auto;
+    width: 100%;
   }
 
   nav a.site-title:hover {
@@ -94,6 +97,13 @@ const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/ogp_kouno_log.
 
   nav a:hover {
     text-decoration: underline;
+  }
+
+  @media (min-width: 480px) {
+    nav a.site-title {
+      width: auto;
+      margin-right: 1rem;
+    }
   }
 
   main {
