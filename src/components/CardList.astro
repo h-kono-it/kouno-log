@@ -1,0 +1,109 @@
+---
+export interface CardItem {
+  id: string;
+  title: string;
+  description?: string;
+  pubDate: Date;
+  tags?: string[];
+  href: string;
+}
+
+interface Props {
+  items: CardItem[];
+  showTags?: boolean;
+  class?: string;
+}
+
+const { items, showTags = false, class: className } = Astro.props;
+---
+
+<ul class:list={["card-list", className]}>
+  {
+    items.map((item) => (
+      <li data-tags={item.tags?.join(',')}>
+        <a href={item.href}>
+          <h2>{item.title}</h2>
+          {item.description && <p>{item.description}</p>}
+          <time datetime={item.pubDate.toISOString()}>
+            {item.pubDate.toLocaleDateString('ja-JP')}
+          </time>
+          {showTags && item.tags && item.tags.length > 0 && (
+            <div class="tags">
+              {item.tags.map((tag) => (
+                <span class="tag">{tag}</span>
+              ))}
+            </div>
+          )}
+        </a>
+      </li>
+    ))
+  }
+</ul>
+
+<style>
+  .card-list {
+    list-style: none;
+    margin-top: 2rem;
+  }
+
+  .card-list li {
+    margin-bottom: 1.5rem;
+  }
+
+  .card-list li.hidden {
+    display: none;
+  }
+
+  .card-list a {
+    display: block;
+    padding: 1rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    text-decoration: none;
+    color: inherit;
+    transition: border-color 0.2s;
+  }
+
+  .card-list a:hover {
+    border-color: #ccc;
+  }
+
+  .card-list h2 {
+    font-size: 1.125rem;
+    margin-bottom: 0.5rem;
+    color: #0066cc;
+  }
+
+  .card-list p {
+    color: #666;
+    margin-bottom: 0.5rem;
+  }
+
+  time {
+    color: #999;
+    font-size: 0.875rem;
+  }
+
+  .tags {
+    margin-top: 0.5rem;
+    display: flex;
+    gap: 0.5rem;
+  }
+
+  .tag {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    background: #f0f0f0;
+    border-radius: 4px;
+  }
+
+  @media (max-width: 480px) {
+    .card-list h2 {
+      font-size: 1rem;
+    }
+
+    .card-list a {
+      padding: 0.75rem;
+    }
+  }
+</style>
