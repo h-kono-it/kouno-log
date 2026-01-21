@@ -4,11 +4,13 @@ import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 
 import cloudflare from '@astrojs/cloudflare';
+import sitemap from '@astrojs/sitemap';
 
 // https://astro.build/config
 export default defineConfig({
   site: 'https://kouno-log.pages.dev',
   adapter: cloudflare(),
+  integrations: [sitemap()],
   markdown: {
     // rehypePlugins: [
     //   rehypeSlug, // 見出しにidを付与
