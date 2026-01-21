@@ -27,6 +27,7 @@ const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/ogp_kouno_log.
     <meta name="twitter:description" content={description} />
     <meta name="twitter:image" content={ogImageUrl} />
     <title>{title}</title>
+    <link rel="alternate" type="application/rss+xml" title="kouno.log RSS Feed" href="/feed.xml" />
   </head>
   <body>
     <header>
@@ -43,6 +44,12 @@ const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/ogp_kouno_log.
     </main>
     <footer>
       <p>&copy; {new Date().getFullYear()} kouno.log</p>
+      <a href="/feed.xml" class="rss-link" title="RSS Feed">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+          <circle cx="6.18" cy="17.82" r="2.18"/>
+          <path d="M4 4.44v2.83c7.03 0 12.73 5.7 12.73 12.73h2.83c0-8.59-6.97-15.56-15.56-15.56zm0 5.66v2.83c3.9 0 7.07 3.17 7.07 7.07h2.83c0-5.47-4.43-9.9-9.9-9.9z"/>
+        </svg>
+      </a>
     </footer>
   </body>
 </html>
@@ -116,6 +123,18 @@ const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/ogp_kouno_log.
     border-top: 1px solid #eee;
     color: #666;
     font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .rss-link {
+    color: #666;
+    transition: color 0.2s;
+  }
+
+  .rss-link:hover {
+    color: #f26522;
   }
 
   h1 {
