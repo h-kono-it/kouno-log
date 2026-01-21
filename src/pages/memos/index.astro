@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import CardList from '../../components/CardList.astro';
 import { getCollection } from 'astro:content';
 
 const memos = await getCollection('memos', ({ data }) => !data.draft);
@@ -9,6 +10,16 @@ const sortedMemos = memos.sort(
 
 // 全タグを取得（重複除去してソート）
 const allTags = [...new Set(memos.flatMap((m) => m.data.tags))].sort();
+
+// CardList用にデータを変換
+const items = sortedMemos.map((memo) => ({
+  id: memo.id,
+  title: memo.data.title,
+  description: memo.data.description,
+  pubDate: memo.data.pubDate,
+  tags: memo.data.tags,
+  href: `/memos/${memo.id}`,
+}));
 
 const PER_PAGE = 20;
 ---
@@ -26,28 +37,7 @@ const PER_PAGE = 20;
     </div>
   )}
 
-  <ul class="memos-list">
-    {
-      sortedMemos.map((memo) => (
-        <li data-tags={memo.data.tags.join(',')}>
-          <a href={`/memos/${memo.id}`}>
-            <h2>{memo.data.title}</h2>
-            {memo.data.description && <p>{memo.data.description}</p>}
-            <time datetime={memo.data.pubDate.toISOString()}>
-              {memo.data.pubDate.toLocaleDateString('ja-JP')}
-            </time>
-            {memo.data.tags.length > 0 && (
-              <div class="tags">
-                {memo.data.tags.map((tag) => (
-                  <span class="tag">{tag}</span>
-                ))}
-              </div>
-            )}
-          </a>
-        </li>
-      ))
-    }
-  </ul>
+  <CardList items={items} showTags={true} />
 
   <div class="pagination">
     <button class="page-btn" id="prev-btn" disabled>&larr; Prev</button>
@@ -82,62 +72,6 @@ const PER_PAGE = 20;
     background: #333;
     color: white;
     border-color: #333;
-  }
-
-  .memos-list {
-    list-style: none;
-    margin-top: 2rem;
-  }
-
-  .memos-list li {
-    margin-bottom: 1.5rem;
-  }
-
-  .memos-list li.hidden {
-    display: none;
-  }
-
-  .memos-list a {
-    display: block;
-    padding: 1rem;
-    border: 1px solid #eee;
-    border-radius: 8px;
-    text-decoration: none;
-    color: inherit;
-    transition: border-color 0.2s;
-  }
-
-  .memos-list a:hover {
-    border-color: #ccc;
-  }
-
-  .memos-list h2 {
-    font-size: 1.125rem;
-    margin-bottom: 0.5rem;
-    color: #0066cc;
-  }
-
-  .memos-list p {
-    color: #666;
-    margin-bottom: 0.5rem;
-  }
-
-  time {
-    color: #999;
-    font-size: 0.875rem;
-  }
-
-  .tags {
-    margin-top: 0.5rem;
-    display: flex;
-    gap: 0.5rem;
-  }
-
-  .tag {
-    font-size: 0.75rem;
-    padding: 0.125rem 0.5rem;
-    background: #f0f0f0;
-    border-radius: 4px;
   }
 
   .pagination {
@@ -177,7 +111,7 @@ const PER_PAGE = 20;
 </style>
 
 <script define:vars={{ PER_PAGE }}>
-  const allItems = Array.from(document.querySelectorAll('.memos-list li'));
+  const allItems = Array.from(document.querySelectorAll('.card-list li'));
   const filterTags = document.querySelectorAll('.filter-tag');
   const prevBtn = document.getElementById('prev-btn');
   const nextBtn = document.getElementById('next-btn');
