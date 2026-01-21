@@ -9,7 +9,9 @@ import sitemap from '@astrojs/sitemap';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://kouno-log.pages.dev',
-  adapter: cloudflare(),
+  adapter: cloudflare({
+    imageService: 'compile',
+  }),
   integrations: [sitemap()],
   markdown: {
     // rehypePlugins: [
