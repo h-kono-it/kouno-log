@@ -59,6 +59,7 @@ src/
 | `pnpm dev` | 開発サーバー起動（localhost:4321） |
 | `pnpm build` | 本番ビルド |
 | `node scripts/fetch-rss.js` | 外部記事の取得 |
+| `pnpm tags` | Memosのタグ一覧表示 |
 
 ## 外部記事の自動取得
 

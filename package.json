@@ -9,7 +9,8 @@
     "astro": "astro",
     "fetch-rss": "node sctipts/fetch-rss.js",
     "lint": "oxlint src",
-    "lint:fix": "oxlint src --fix"
+    "lint:fix": "oxlint src --fix",
+    "tags": "node scripts/list-tags.js"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.12",
