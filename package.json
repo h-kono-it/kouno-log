@@ -7,7 +7,9 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "fetch-rss": "node sctipts/fetch-rss.js"
+    "fetch-rss": "node sctipts/fetch-rss.js",
+    "lint": "oxlint src",
+    "lint:fix": "oxlint src --fix"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^12.6.12",
@@ -20,5 +22,8 @@
     "rehype-slug": "^6.0.0",
     "rss-parser": "^3.13.0",
     "satori": "^0.19.1"
+  },
+  "devDependencies": {
+    "oxlint": "^1.42.0"
   }
 }
