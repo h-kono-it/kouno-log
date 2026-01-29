@@ -70,3 +70,7 @@ GitHub Actionsで毎日自動取得してコミット。Cloudflare Pagesで自�
 Cloudflare Pages
 - Build command: `pnpm build`
 - Build output: `dist`
+
+## ライセンス
+
+[MIT](LICENSE)
