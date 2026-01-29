@@ -1,0 +1,13 @@
+version: 2
+updates:
+  # npm依存関係の自動更新
+  - package-ecosystem: "npm"
+    directory: "/"
+    schedule:
+      interval: "weekly"
+
+  # GitHub Actionsの自動更新
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "weekly"
