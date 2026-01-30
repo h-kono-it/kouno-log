@@ -12,6 +12,11 @@ const links = [
   { name: 'Cosense', url: 'https://scrapbox.io/kouno-sense/' },
 ];
 
+const communities = [
+  { name: '東葛.dev', description: '東葛地域のエンジニアコミュニティ。運営しています。', url: 'https://toukatsu.dev/' },
+  { name: 'きのこカンファレンス', description: 'テックカンファレンス。コアスタッフとして参加しています。', url: 'https://kinoko-conf.dev/' },
+];
+
 const talks: { title: string; event: string; date: string; url: string }[] = [
   { title: 'Enum、お前は一体何者だ？', event: 'BuriKaigi 2026', date: '2026-01-10', url: 'https://www.docswell.com/s/hk_it7/KLVM77-enum-burikaigi' },
   { title: 'ActiveRecord使いが知るべきORMの世界', event: 'Kaigi on Rails 2025', date: '2025-09-27', url: 'https://www.docswell.com/s/hk_it7/ZWMNJR-orm-kaigi-on-rails' },
@@ -34,12 +39,31 @@ const talks: { title: string; event: string; date: string; url: string }[] = [
   </section>
 
   <section>
+    <h3>About</h3>
+    <p>Webエンジニア。Java / Kotlin / Ruby / TypeScript などを使った開発に携わっています。技術コミュニティの運営やカンファレンス登壇も行っています。</p>
+  </section>
+
+  <section>
     <h3>Skills</h3>
     <div class="skills">
       {skills.map((skill) => (
         <span class="skill-tag">{skill}</span>
       ))}
     </div>
+  </section>
+
+  <section>
+    <h3>Communities</h3>
+    <ul class="communities-list">
+      {communities.map((community) => (
+        <li>
+          <a href={community.url} target="_blank" rel="noopener noreferrer">
+            {community.name}
+          </a>
+          <span class="community-desc">{community.description}</span>
+        </li>
+      ))}
+    </ul>
   </section>
 
   {talks.length > 0 && (
@@ -59,6 +83,11 @@ const talks: { title: string; event: string; date: string; url: string }[] = [
       </ul>
     </section>
   )}
+
+  <section>
+    <h3>Contact</h3>
+    <p>ご連絡や登壇依頼等は <a href="https://x.com/hk_it7" target="_blank" rel="noopener noreferrer">Twitter（@hk_it7）</a>のDMまでお気軽にどうぞ。</p>
+  </section>
 
   <section>
     <h3>Links</h3>
@@ -160,6 +189,31 @@ const talks: { title: string; event: string; date: string; url: string }[] = [
   }
 
   .talk-meta {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: #666;
+  }
+
+  .communities-list {
+    list-style: none;
+  }
+
+  .communities-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .communities-list a {
+    font-weight: 500;
+    text-decoration: none;
+  }
+
+  .communities-list a:hover {
+    text-decoration: underline;
+  }
+
+  .community-desc {
     display: block;
     margin-top: 0.25rem;
     font-size: 0.875rem;
