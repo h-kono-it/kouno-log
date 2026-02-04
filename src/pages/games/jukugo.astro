@@ -1,0 +1,276 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { kanjiData } from '../../data/kanji-list';
+
+const kanjiList = Object.values(kanjiData).map((k) => k.joyo_kanji);
+---
+
+<Layout title="熟語ゲーム | kouno.log" description="ランダムな2つの漢字から創作熟語を作ろう">
+  <a class="back-link" href="/games">&larr; ゲーム一覧に戻る</a>
+  <h1>熟語ゲーム</h1>
+  <p>ランダムに選ばれた2つの漢字から創作熟語を作ろう！</p>
+
+  <div class="kanji-display" id="kanji-display">
+    <div class="kanji-card">
+      <span class="yomi-hint" id="on-1"></span>
+      <span class="kanji-char" id="kanji-1">？</span>
+      <span class="yomi-hint" id="kun-1"></span>
+    </div>
+    <div class="kanji-card">
+      <span class="yomi-hint" id="on-2"></span>
+      <span class="kanji-char" id="kanji-2">？</span>
+      <span class="yomi-hint" id="kun-2"></span>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button class="btn" id="random-btn">ランダム</button>
+    <button class="btn" id="daily-btn">今日のお題</button>
+  </div>
+
+  <div class="input-area">
+    <label>
+      読み方（10文字以内）
+      <input type="text" id="yomi-input" maxlength="10" placeholder="よみがな" />
+    </label>
+    <label>
+      意味（40文字以内）
+      <input type="text" id="imi-input" maxlength="40" placeholder="この熟語の意味は…" />
+    </label>
+  </div>
+
+  <button class="btn tweet-btn" id="tweet-btn">Twitterに投稿</button>
+</Layout>
+
+<script is:inline define:vars={{ kanjiList, kanjiData }}>
+  const kanji1El = document.getElementById('kanji-1');
+  const kanji2El = document.getElementById('kanji-2');
+  const on1El = document.getElementById('on-1');
+  const on2El = document.getElementById('on-2');
+  const kun1El = document.getElementById('kun-1');
+  const kun2El = document.getElementById('kun-2');
+  const randomBtn = document.getElementById('random-btn');
+  const dailyBtn = document.getElementById('daily-btn');
+  const yomiInput = document.getElementById('yomi-input');
+  const imiInput = document.getElementById('imi-input');
+  const tweetBtn = document.getElementById('tweet-btn');
+
+  // シード付き疑似乱数（mulberry32）
+  function mulberry32(seed) {
+    return function () {
+      seed |= 0;
+      seed = (seed + 0x6d2b79f5) | 0;
+      let t = Math.imul(seed ^ (seed >>> 15), 1 | seed);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  // JST の当日 00:00 の Unix timestamp（秒）を取得
+  function getJstMidnightTimestamp() {
+    const now = new Date();
+    const jstOffset = 9 * 60 * 60 * 1000;
+    const jstNow = new Date(now.getTime() + jstOffset);
+    const jstMidnight = new Date(
+      Date.UTC(jstNow.getUTCFullYear(), jstNow.getUTCMonth(), jstNow.getUTCDate())
+    );
+    return Math.floor((jstMidnight.getTime() - jstOffset) / 1000);
+  }
+
+  function pickTwo(rng) {
+    if (kanjiList.length < 2) return null;
+    const i = Math.floor(rng() * kanjiList.length);
+    let j = Math.floor(rng() * (kanjiList.length - 1));
+    if (j >= i) j++;
+    return [kanjiList[i], kanjiList[j]];
+  }
+
+  function findEntry(char) {
+    return Object.values(kanjiData).find((e) => e.joyo_kanji === char);
+  }
+
+  function display(pair) {
+    on1El.textContent = '';
+    on2El.textContent = '';
+    kun1El.textContent = '';
+    kun2El.textContent = '';
+
+    if (!pair) {
+      kanji1El.textContent = '？';
+      kanji2El.textContent = '？';
+      return;
+    }
+    kanji1El.textContent = pair[0];
+    kanji2El.textContent = pair[1];
+
+    const e1 = findEntry(pair[0]);
+    const e2 = findEntry(pair[1]);
+    on1El.textContent = e1?.yomi?.on_yomi?.[0] || '';
+    on2El.textContent = e2?.yomi?.on_yomi?.[0] || '';
+    kun1El.textContent = e1?.yomi?.kun_yomi?.[0] || '';
+    kun2El.textContent = e2?.yomi?.kun_yomi?.[0] || '';
+  }
+
+  randomBtn.addEventListener('click', () => {
+    if (kanjiList.length < 2) {
+      alert('漢字リストに2つ以上の漢字を追加してください');
+      return;
+    }
+    const rng = mulberry32(Date.now());
+    display(pickTwo(rng));
+  });
+
+  dailyBtn.addEventListener('click', () => {
+    if (kanjiList.length < 2) {
+      alert('漢字リストに2つ以上の漢字を追加してください');
+      return;
+    }
+    const seed = getJstMidnightTimestamp();
+    const rng = mulberry32(seed);
+    display(pickTwo(rng));
+  });
+
+  tweetBtn.addEventListener('click', () => {
+    const k1 = kanji1El.textContent;
+    const k2 = kanji2El.textContent;
+    const yomi = yomiInput.value.trim();
+    const imi = imiInput.value.trim();
+
+    if (k1 === '？' || k2 === '？') {
+      alert('まずお題を選んでね');
+      return;
+    }
+    if (!yomi) {
+      alert('読み方を入力してね');
+      return;
+    }
+    if (!imi) {
+      alert('意味を入力してね');
+      return;
+    }
+
+    const kanji = k1 + k2;
+    const url = window.location.href;
+    const text = `【${kanji}】（${yomi}）：${imi} #創作熟語 みんなも考えてみてね！ ${url}`;
+    const tweetUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(text)}`;
+    window.open(tweetUrl, '_blank');
+  });
+</script>
+
+<style>
+  .back-link {
+    display: inline-block;
+    margin-bottom: 1rem;
+    font-size: 0.9rem;
+    text-decoration: none;
+  }
+
+  .back-link:hover {
+    text-decoration: underline;
+  }
+
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: #666;
+    margin-bottom: 2rem;
+  }
+
+  .kanji-display {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .kanji-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.3rem;
+  }
+
+  .kanji-char {
+    font-size: 4rem;
+    font-weight: bold;
+    width: 5rem;
+    height: 5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 2px solid #333;
+    border-radius: 8px;
+    background: #fafafa;
+  }
+
+  .yomi-hint {
+    font-size: 0.8rem;
+    color: #888;
+    height: 1.2em;
+    line-height: 1.2em;
+  }
+
+  .buttons {
+    display: flex;
+    justify-content: center;
+    gap: 1rem;
+    margin-bottom: 2rem;
+  }
+
+  .btn {
+    padding: 0.6rem 1.5rem;
+    border: 1px solid #333;
+    border-radius: 6px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.95rem;
+    transition: all 0.2s;
+  }
+
+  .btn:hover {
+    background: #333;
+    color: white;
+  }
+
+  .input-area {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .input-area label {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    font-size: 0.9rem;
+    color: #555;
+  }
+
+  .input-area input {
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    font-size: 1rem;
+    transition: border-color 0.2s;
+  }
+
+  .input-area input:focus {
+    outline: none;
+    border-color: #333;
+  }
+
+  .tweet-btn {
+    width: 100%;
+    background: #333;
+    color: white;
+    border-color: #333;
+    font-weight: bold;
+  }
+
+  .tweet-btn:hover {
+    background: #555;
+  }
+</style>

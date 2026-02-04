@@ -1,0 +1,33 @@
+---
+import Layout from '../../layouts/Layout.astro';
+---
+
+<Layout title="Games | kouno.log" description="ミニゲーム一覧">
+  <h1>Games</h1>
+  <p>ミニゲーム一覧</p>
+
+  <ul class="game-list">
+    <li><a href="/games/jukugo">熟語ゲーム</a></li>
+  </ul>
+</Layout>
+
+<style>
+  .game-list {
+    list-style: none;
+    margin-top: 1.5rem;
+  }
+
+  .game-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #eee;
+  }
+
+  .game-list a {
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .game-list a:hover {
+    text-decoration: underline;
+  }
+</style>
