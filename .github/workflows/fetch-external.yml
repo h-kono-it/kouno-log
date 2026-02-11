@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v6
@@ -32,10 +33,17 @@ jobs:
       - name: Fetch RSS feeds
         run: node scripts/fetch-rss.js
 
-      - name: Commit and push if changed
+      - name: Create PR if changed
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add src/content/external/ public/thumbnails/
-          git diff --staged --quiet || git commit -m "chore: update external content"
-          git push
+          if git diff --staged --quiet; then
+            echo "No changes to commit"
+            exit 0
+          fi
+          BRANCH="chore/update-external-content-$(date +%Y%m%d)"
+          git checkout -b "$BRANCH"
+          git commit -m "chore: update external content"
+          git push -u origin "$BRANCH"
+          gh pr create --title "chore: update external content" --body "RSS フィードから外部記事を自動取得しました。" --base main
