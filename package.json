@@ -25,6 +25,6 @@
     "satori": "^0.19.2"
   },
   "devDependencies": {
-    "oxlint": "^1.43.0"
+    "oxlint": "^1.47.0"
   }
 }
