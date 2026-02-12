@@ -22,7 +22,7 @@
     "rehype-autolink-headings": "^7.1.0",
     "rehype-slug": "^6.0.0",
     "rss-parser": "^3.13.0",
-    "satori": "^0.19.1"
+    "satori": "^0.19.2"
   },
   "devDependencies": {
     "oxlint": "^1.43.0"
