@@ -35,7 +35,13 @@ After:  GitHub push to main → GitHub Actions → Deno Deploy（productionの�
 
 ### 試行錯誤
 
-`denoland/deployctl` GitHub Action (v1.13.1) はOIDC専用の設計で、`token` を `with:` で渡せない。OIDC認証を試みたがトークン取得自体が失敗した。
+Deno Deployの設定を見るとGitHub連携を使う場合、auto deploy設定ありでpreviewの切り替えもできないように思える。そのためunlinkしてGitHub Actionsに切り替える対応しか出来なさそう。
+
+そして、GitHub連携を解除すると当然ながらOIDCは使えない。
+
+最初はGitHub Actionのラッパーの`denoland/deployctl`を利用しようとした。
+
+しかし、`denoland/deployctl` GitHub Action (v1.13.1) はOIDC専用の設計で、`token` を `with:` で渡せない。
 
 ```
 Error: Failed to get the GitHub OIDC token.
