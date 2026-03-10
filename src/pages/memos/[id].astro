@@ -35,9 +35,14 @@ const pageUrl = Astro.url.href;
       <div class="share-buttons-top">
         <ShareButtons title={memo.data.title} url={pageUrl} />
       </div>
+      <button id="raw-toggle" class="raw-toggle" aria-pressed="false">Raw</button>
     </header>
-    <div class="content">
+    <div class="content" id="rendered-content">
       <Content />
+    </div>
+    <div id="raw-wrapper" hidden>
+      <button id="copy-btn" class="copy-btn">Copy</button>
+      <pre class="raw-content" id="raw-content">{memo.body}</pre>
     </div>
     <div class="share-buttons-bottom">
       <ShareButtons title={memo.data.title} url={pageUrl} />
@@ -50,6 +55,7 @@ const pageUrl = Astro.url.href;
 
 <style>
   article header {
+    position: relative;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid #eee;
@@ -191,9 +197,108 @@ const pageUrl = Astro.url.href;
     margin-top: 1rem;
   }
 
+  .raw-toggle {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #555;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .raw-toggle:hover {
+    background: #e0e0e0;
+  }
+
+  .raw-toggle[aria-pressed='true'] {
+    background: #333;
+    color: #fff;
+    border-color: #333;
+  }
+
+  #raw-wrapper {
+    position: relative;
+  }
+
+  .copy-btn {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    padding: 0.2rem 0.5rem;
+    font-size: 0.75rem;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+    background: #fff;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    cursor: pointer;
+    color: #555;
+    transition: background 0.2s, color 0.2s;
+  }
+
+  .copy-btn:hover {
+    background: #e0e0e0;
+  }
+
+  .copy-btn.copied {
+    background: #333;
+    color: #fff;
+    border-color: #333;
+  }
+
+  .raw-content {
+    background: #f5f5f5;
+    border-radius: 8px;
+    padding: 1rem;
+    overflow-x: auto;
+    white-space: pre-wrap;
+    word-break: break-word;
+    font-size: 0.875rem;
+    line-height: 1.7;
+    font-family: 'SF Mono', 'Fira Code', monospace;
+  }
+
   .share-buttons-bottom {
     margin-top: 2rem;
     padding-top: 1rem;
     border-top: 1px solid #eee;
   }
 </style>
+
+<script>
+  const toggleBtn = document.getElementById('raw-toggle') as HTMLButtonElement;
+  const rendered = document.getElementById('rendered-content') as HTMLElement;
+  const rawWrapper = document.getElementById('raw-wrapper') as HTMLElement;
+  const copyBtn = document.getElementById('copy-btn') as HTMLButtonElement;
+  const rawContent = document.getElementById('raw-content') as HTMLElement;
+
+  toggleBtn.addEventListener('click', () => {
+    const isRaw = toggleBtn.getAttribute('aria-pressed') === 'true';
+    if (isRaw) {
+      rendered.hidden = false;
+      rawWrapper.hidden = true;
+      toggleBtn.setAttribute('aria-pressed', 'false');
+      toggleBtn.textContent = 'Raw';
+    } else {
+      rendered.hidden = true;
+      rawWrapper.hidden = false;
+      toggleBtn.setAttribute('aria-pressed', 'true');
+      toggleBtn.textContent = 'Rendered';
+    }
+  });
+
+  copyBtn.addEventListener('click', async () => {
+    await navigator.clipboard.writeText(rawContent.textContent ?? '');
+    copyBtn.textContent = 'Copied!';
+    copyBtn.classList.add('copied');
+    setTimeout(() => {
+      copyBtn.textContent = 'Copy';
+      copyBtn.classList.remove('copied');
+    }, 2000);
+  });
+</script>
