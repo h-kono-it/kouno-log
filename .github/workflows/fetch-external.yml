@@ -11,6 +11,7 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+      pull-requests: write
 
     steps:
       - uses: actions/checkout@v6
@@ -33,6 +34,8 @@ jobs:
         run: node scripts/fetch-rss.js
 
       - name: Commit and push if changed
+        env:
+          GH_TOKEN: ${{ github.token }}
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
@@ -41,5 +44,12 @@ jobs:
             echo "No changes to commit"
             exit 0
           fi
+          BRANCH="chore/update-external-content-$(date +%Y%m%d)"
+          git checkout -b "$BRANCH"
           git commit -m "chore: update external content"
-          git push origin main
+          git push origin "$BRANCH"
+          gh pr create --title "chore: update external content" \
+            --body "RSS取得による外部コンテンツの自動更新" \
+            --base main \
+            --head "$BRANCH"
+          gh pr merge --auto --squash
