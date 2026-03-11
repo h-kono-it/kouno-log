@@ -2,11 +2,12 @@
 interface Props {
   title: string;
   url: string;
+  showHatena?: boolean;
 }
 
-const { title, url } = Astro.props;
+const { title, url, showHatena = true } = Astro.props;
 
-const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(title)}&url=${encodeURIComponent(url)}`;
+const twitterUrl = `https://twitter.com/intent/tweet?text=${encodeURIComponent(`${title} | kouno.log`)}&url=${encodeURIComponent(url)}`;
 const hatenaUrl = `https://b.hatena.ne.jp/entry/s/${url.replace(/^https?:\/\//, '')}`;
 ---
 
@@ -14,9 +15,11 @@ const hatenaUrl = `https://b.hatena.ne.jp/entry/s/${url.replace(/^https?:\/\//, 
   <a href={twitterUrl} target="_blank" rel="noopener noreferrer" class="share-btn twitter">
     Twitter
   </a>
-  <a href={hatenaUrl} target="_blank" rel="noopener noreferrer" class="share-btn hatena">
-    はてブ
-  </a>
+  {showHatena && (
+    <a href={hatenaUrl} target="_blank" rel="noopener noreferrer" class="share-btn hatena">
+      はてブ
+    </a>
+  )}
 </div>
 
 <style>

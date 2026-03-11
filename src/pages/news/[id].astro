@@ -1,5 +1,6 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import ShareButtons from '../../components/ShareButtons.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -12,6 +13,7 @@ export async function getStaticPaths() {
 
 const { item } = Astro.props;
 const { Content } = await render(item);
+const pageUrl = Astro.url.href;
 ---
 
 <Layout title={`${item.data.title} | kouno.log`} description={item.data.description} ogImage={`/og/news/${item.id}.png`}>
@@ -24,6 +26,9 @@ const { Content } = await render(item);
     </header>
     <div class="content">
       <Content />
+    </div>
+    <div class="share-buttons-bottom">
+      <ShareButtons title={item.data.title} url={pageUrl} showHatena={false} />
     </div>
   </article>
   <p class="back-link">
@@ -144,6 +149,12 @@ const { Content } = await render(item);
     font-size: 0.8rem;
     color: #888;
     text-align: center;
+  }
+
+  .share-buttons-bottom {
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid #eee;
   }
 
   .back-link {
