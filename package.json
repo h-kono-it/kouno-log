@@ -13,7 +13,7 @@
     "tags": "node scripts/list-tags.js"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^12.6.12",
+    "@astrojs/cloudflare": "^12.6.13",
     "@astrojs/rss": "^4.0.17",
     "@astrojs/sitemap": "^3.7.1",
     "@resvg/resvg-wasm": "^2.6.2",
