@@ -1,7 +1,8 @@
 {
   "title": "【Java】2026/3/18発表！Oracleの野心的プロジェクト「Project Detroit」のコードを読んでわかったこと - 虎の穴ラボ技術ブログ",
   "url": "https://toranoana-lab.hatenablog.com/entry/2026/03/19/120000",
-  "pubDate": "2026-03-19T03:00:00.000Z",
+  "pubDate": "2026-03-19T14:20:49.000Z",
   "source": "toralab",
+  "description": "こんにちは、虎の穴ラボのH.Kです。 JavaOne 2026にてOracleから超野心的な新プロジェクト「Project Detroit」が発表されました！ openjdk.org このプロジェクト、なんとJavaの中にJavaScriptエンジン「V8」やPythonランタイム「CPython」を直接組み込んでしまうという代物です。AIやデータ領域が盛り上がる中、他言語エンジンたちをJavaか",
   "thumbnail": "/thumbnails/2026-03-19-company-java2026318oracleproject-detroit---.png"
 }

@@ -4,6 +4,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import { createWriteStream } from 'fs';
 import { pipeline } from 'stream/promises';
+import { createHash } from 'crypto';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = path.join(__dirname, '../src/content/external');
@@ -16,7 +17,7 @@ const FEEDS = [
   { url: 'https://note.com/hk_it7/rss', source: 'note' },
   { url: 'https://hk-it.hatenablog.com/rss', source: 'hatena' },
   { url: 'https://www.docswell.com/user/hk_it7/feed', source: 'docswell' },
-  { url: 'https://b.hatena.ne.jp/hk_it/bookmark.rss?tag=myposts', source: 'company' },
+  { url: 'https://b.hatena.ne.jp/hk_it/bookmark.rss?tag=myposts', source: 'toralab' },
 ];
 
 const parser = new Parser({
@@ -35,6 +36,10 @@ function slugify(text) {
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-')
     .slice(0, 50);
+}
+
+function urlHash(url) {
+  return createHash('sha256').update(url).digest('hex').slice(0, 8);
 }
 
 function extractThumbnailFromRss(item) {
@@ -65,33 +70,34 @@ function extractThumbnailFromRss(item) {
   return undefined;
 }
 
-async function fetchOgImage(url) {
+async function fetchOgData(url) {
   try {
     const response = await fetch(url, {
       headers: {
         'User-Agent': 'Mozilla/5.0 (compatible; MyPortalBot/1.0)',
       },
     });
-    if (!response.ok) return undefined;
+    if (!response.ok) return {};
 
     const html = await response.text();
 
-    // og:imageを探す
-    const ogMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)
+    // og:image / twitter:image
+    const ogImageMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)
       || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
-
-    if (ogMatch) return ogMatch[1];
-
-    // twitter:imageも試す
-    const twitterMatch = html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i)
+    const twitterImageMatch = html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i)
       || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i);
 
-    if (twitterMatch) return twitterMatch[1];
+    // og:description
+    const ogDescMatch = html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i)
+      || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:description["']/i);
 
-    return undefined;
+    return {
+      image: ogImageMatch?.[1] || twitterImageMatch?.[1],
+      description: ogDescMatch?.[1],
+    };
   } catch (error) {
     console.warn(`    Failed to fetch OGP from ${url}: ${error.message}`);
-    return undefined;
+    return {};
   }
 }
 
@@ -200,15 +206,19 @@ async function main() {
 
     const date = item.pubDate.slice(0, 10);
     const slug = slugify(item.title);
-    const baseFilename = `${date}-${item.source}-${slug}`;
+    const baseFilename = `${date}-${item.source}-${slug}-${urlHash(item.url)}`;
 
     console.log(`  Processing: ${item.title.slice(0, 40)}...`);
 
     // サムネイル取得: RSS → OGP → なし
+    // toralabはog:descriptionも取得するため常にOGPフェッチ
     let thumbnailUrl = item.thumbnailUrl;
-    if (!thumbnailUrl) {
+    let ogDescription;
+    if (!thumbnailUrl || item.source === 'toralab') {
       console.log(`    Fetching OGP from page...`);
-      thumbnailUrl = await fetchOgImage(item.url);
+      const ogData = await fetchOgData(item.url);
+      if (!thumbnailUrl) thumbnailUrl = ogData.image;
+      ogDescription = ogData.description;
     }
 
     // 画像をダウンロードして保存
@@ -219,13 +229,16 @@ async function main() {
     }
 
     // JSONデータ作成
+    const description = item.source === 'toralab'
+      ? ogDescription?.slice(0, 200)
+      : item.description;
     const jsonData = {
       title: item.title,
       url: item.url,
       pubDate: item.pubDate,
       source: item.source,
     };
-    if (item.description) jsonData.description = item.description;
+    if (description) jsonData.description = description;
     if (localThumbnail) jsonData.thumbnail = localThumbnail;
 
     await fs.writeFile(
