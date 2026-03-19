@@ -31,7 +31,7 @@ const external = defineCollection({
     title: z.string(),
     url: z.string().url(),
     pubDate: z.coerce.date(),
-    source: z.enum(['note', 'hatena', 'docswell']),
+    source: z.enum(['note', 'hatena', 'docswell', 'toralab']),
     description: z.string().optional(),
     thumbnail: z.string().optional(),
   }),

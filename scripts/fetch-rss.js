@@ -16,6 +16,7 @@ const FEEDS = [
   { url: 'https://note.com/hk_it7/rss', source: 'note' },
   { url: 'https://hk-it.hatenablog.com/rss', source: 'hatena' },
   { url: 'https://www.docswell.com/user/hk_it7/feed', source: 'docswell' },
+  { url: 'https://b.hatena.ne.jp/hk_it/bookmark.rss?tag=myposts', source: 'company' },
 ];
 
 const parser = new Parser({
@@ -23,6 +24,7 @@ const parser = new Parser({
     item: [
       ['media:thumbnail', 'thumbnail'],
       ['enclosure', 'enclosure'],
+      ['dc:date', 'dcDate'],
     ],
   },
 });
@@ -50,10 +52,15 @@ function extractThumbnailFromRss(item) {
   // 3. enclosure
   if (item.enclosure?.url) return item.enclosure.url;
 
-  // 4. コンテンツ内の最初の画像
+  // 4. コンテンツ内の最初の画像（faviconは除外）
   const content = item['content:encoded'] || item.content || '';
-  const imgMatch = content.match(/<img[^>]+src="([^"]+)"/);
-  if (imgMatch) return imgMatch[1];
+  const imgMatch = content.match(/<img[^>]+src="([^"]+)"/g);
+  if (imgMatch) {
+    for (const img of imgMatch) {
+      const src = img.match(/src="([^"]+)"/)[1];
+      if (!src.includes('favicon')) return src;
+    }
+  }
 
   return undefined;
 }
@@ -124,7 +131,8 @@ async function fetchFeed(feedConfig) {
     const items = [];
 
     for (const item of feed.items) {
-      if (!item.title || !item.link || !item.pubDate) {
+      const pubDate = item.pubDate || item.dcDate;
+      if (!item.title || !item.link || !pubDate) {
         console.warn(`  Skipping invalid item: ${item.title || 'no title'}`);
         continue;
       }
@@ -132,7 +140,7 @@ async function fetchFeed(feedConfig) {
       const data = {
         title: item.title,
         url: item.link,
-        pubDate: new Date(item.pubDate).toISOString(),
+        pubDate: new Date(pubDate).toISOString(),
         source,
         description: item.contentSnippet?.slice(0, 200) || undefined,
         thumbnailUrl: extractThumbnailFromRss(item),

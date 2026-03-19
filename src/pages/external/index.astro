@@ -7,13 +7,13 @@ const sortedExternal = external.sort(
   (a, b) => new Date(b.data.pubDate).getTime() - new Date(a.data.pubDate).getTime()
 );
 
-const sources = ['note', 'hatena', 'docswell'] as const;
+const sources = ['note', 'hatena', 'docswell', 'toralab'] as const;
 const PER_PAGE = 20;
 ---
 
 <Layout title="External | My Portal">
   <h1>External</h1>
-  <p>note, はてなブログ, ドクセルの記事</p>
+  <p>note, はてなブログ, ドクセル, 会社ブログの記事</p>
 
   <div class="filter-buttons">
     <button class="filter-btn active" data-filter="all">All</button>
@@ -110,6 +110,11 @@ const PER_PAGE = 20;
     border-color: #ff6b35;
   }
 
+  .filter-btn[data-source='toralab'].active {
+    background: #7c3aed;
+    border-color: #7c3aed;
+  }
+
   .external-list {
     list-style: none;
   }
@@ -181,6 +186,10 @@ const PER_PAGE = 20;
 
   .badge[data-source='docswell'] {
     background: #ff6b35;
+  }
+
+  .badge[data-source='toralab'] {
+    background: #7c3aed;
   }
 
   .external-list h3 {
