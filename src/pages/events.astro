@@ -1,0 +1,257 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { events } from '../data/events';
+
+const today = new Date();
+today.setHours(0, 0, 0, 0);
+
+const sorted = [...events].sort((a, b) => b.date.localeCompare(a.date));
+
+const upcoming = sorted.filter((e) => new Date(e.date) >= today);
+const past = sorted.filter((e) => new Date(e.date) < today);
+
+const currentYear = String(today.getFullYear());
+
+// 年 → 月 → イベント のネスト構造に変換
+function groupByYearMonth(list: typeof events) {
+  const groups = new Map<string, Map<string, typeof events>>();
+  for (const event of list) {
+    const year = event.date.slice(0, 4);
+    const month = event.date.slice(0, 7); // "YYYY-MM"
+    if (!groups.has(year)) groups.set(year, new Map());
+    const monthMap = groups.get(year)!;
+    if (!monthMap.has(month)) monthMap.set(month, []);
+    monthMap.get(month)!.push(event);
+  }
+  return groups;
+}
+
+function formatMonthLabel(key: string) {
+  const month = key.split('-')[1];
+  return `${parseInt(month)}月`;
+}
+
+const pastByYearMonth = groupByYearMonth(past);
+---
+
+<Layout title="Events - kouno.log" description="kounoのイベント参加スケジュール">
+  <h1>Events</h1>
+  <p>イベントへの参加・登壇・スタッフ活動の記録です。</p>
+
+  <section>
+    <h2>今後の予定</h2>
+    {upcoming.length === 0 ? (
+      <p class="empty">現在予定されているイベントはありません。</p>
+    ) : (
+      <ul class="event-list">
+        {upcoming.map((event) => (
+          <li>
+            <time datetime={event.date}>{event.date.replace(/-/g, '/')}</time>
+            <span class="role-badge" data-role={event.role}>{event.role}</span>
+            {event.url
+              ? <a href={event.url} target="_blank" rel="noopener noreferrer">{event.name}</a>
+              : <span class="event-name">{event.name}</span>
+            }
+            {event.slideUrl && (
+              <a href={event.slideUrl} class="slide-link" target="_blank" rel="noopener noreferrer">資料</a>
+            )}
+          </li>
+        ))}
+      </ul>
+    )}
+  </section>
+
+  <section>
+    <h2>参加履歴</h2>
+    {pastByYearMonth.size === 0 ? (
+      <p class="empty">記録がありません。</p>
+    ) : (
+      Array.from(pastByYearMonth.entries()).map(([year, monthMap]) => (
+        <details open={year === currentYear} class="year-group">
+          <summary>{year}年</summary>
+          <div class="year-content">
+            {Array.from(monthMap.entries()).map(([month, monthEvents]) => (
+              <div class="month-group">
+                <h3>{formatMonthLabel(month)}</h3>
+                <ul class="event-list">
+                  {monthEvents.map((event) => (
+                    <li>
+                      <time datetime={event.date}>{event.date.replace(/-/g, '/')}</time>
+                      <span class="role-badge" data-role={event.role}>{event.role}</span>
+                      {event.url
+                        ? <a href={event.url} target="_blank" rel="noopener noreferrer">{event.name}</a>
+                        : <span class="event-name">{event.name}</span>
+                      }
+                      {event.slideUrl && (
+                        <a href={event.slideUrl} class="slide-link" target="_blank" rel="noopener noreferrer">資料</a>
+                      )}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            ))}
+          </div>
+        </details>
+      ))
+    )}
+  </section>
+</Layout>
+
+<style>
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  p {
+    color: #666;
+    margin-bottom: 0;
+  }
+
+  section {
+    margin-top: 2rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    margin-bottom: 1rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    margin-top: 1.5rem;
+  }
+
+  .year-group {
+    margin-top: 1rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+
+  .year-group + .year-group {
+    margin-top: 0.75rem;
+  }
+
+  .year-group summary {
+    padding: 0.75rem 1rem;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    user-select: none;
+    background: #f8fafc;
+    list-style: none;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .year-group summary::-webkit-details-marker {
+    display: none;
+  }
+
+  .year-group summary::before {
+    content: '▶';
+    font-size: 0.625rem;
+    color: #94a3b8;
+    transition: transform 0.15s;
+  }
+
+  .year-group[open] summary::before {
+    transform: rotate(90deg);
+  }
+
+  .year-content {
+    padding: 0.5rem 1rem 1rem;
+  }
+
+  .month-group:first-child h3 {
+    margin-top: 0.5rem;
+  }
+
+  .event-list {
+    list-style: none;
+  }
+
+  .event-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #eee;
+    flex-wrap: wrap;
+  }
+
+  time {
+    color: #666;
+    font-size: 0.875rem;
+    white-space: nowrap;
+  }
+
+  .role-badge {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    white-space: nowrap;
+  }
+
+  .role-badge[data-role='参加'] {
+    background: #4ade80;
+    color: #14532d;
+  }
+
+  .role-badge[data-role='登壇'] {
+    background: #f472b6;
+    color: #831843;
+  }
+
+  .role-badge[data-role='スタッフ'] {
+    background: #38bdf8;
+    color: #0c4a6e;
+  }
+
+  .role-badge[data-role='コアスタッフ'] {
+    background: #fb923c;
+    color: #7c2d12;
+  }
+
+  .event-list a {
+    text-decoration: none;
+  }
+
+  .event-list a:hover {
+    text-decoration: underline;
+  }
+
+  .slide-link {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    background: #f1f5f9;
+    color: #475569;
+    border: 1px solid #cbd5e1;
+    white-space: nowrap;
+  }
+
+  .slide-link:hover {
+    background: #e2e8f0;
+  }
+
+  .event-name {
+    color: #333;
+  }
+
+  .empty {
+    color: #999;
+    font-size: 0.875rem;
+  }
+
+  @media (max-width: 480px) {
+    .event-list li {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+  }
+</style>

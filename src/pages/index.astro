@@ -81,6 +81,8 @@ const links = [
     </ul>
   </section>
 
+  <a class="events-banner" href="/events">イベント参加スケジュール →</a>
+
   <section class="links-section">
     <h2>Links</h2>
     <div class="links-grid">
@@ -218,6 +220,25 @@ const links = [
     margin-top: 0.25rem;
     font-size: 0.875rem;
     color: #666;
+  }
+
+  .events-banner {
+    display: block;
+    margin-top: 2rem;
+    padding: 0.875rem 1.25rem;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    background: #f8fafc;
+    text-decoration: none;
+    font-weight: 500;
+    color: #334155;
+    transition: border-color 0.2s, box-shadow 0.2s, background 0.2s;
+  }
+
+  .events-banner:hover {
+    border-color: #94a3b8;
+    background: #f1f5f9;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
   }
 
   .games-link {
