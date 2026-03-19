@@ -16,3 +16,10 @@ pubDate: 2026-03-19
 - 登壇の場合は発表資料へのリンク
 
 今後の予定と過去の参加履歴（年ごとにまとめ）を掲載しています。
+
+---
+
+<figure>
+  <img src="/news/events-page.png" alt="Eventsページの画像">
+  <figcaption>Eventsページの画像</figcaption>
+</figure>
