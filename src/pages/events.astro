@@ -47,11 +47,11 @@ const pastByYearMonth = groupByYearMonth(past);
         {upcoming.map((event) => (
           <li>
             <time datetime={event.date}>{event.date.replace(/-/g, '/')}</time>
-            <span class="role-badge" data-role={event.role}>{event.role}</span>
             {event.url
               ? <a href={event.url} target="_blank" rel="noopener noreferrer">{event.name}</a>
               : <span class="event-name">{event.name}</span>
             }
+            <span class="role-badge" data-role={event.role}>{event.role}</span>
             {event.slideUrl && (
               <a href={event.slideUrl} class="slide-link" target="_blank" rel="noopener noreferrer">資料</a>
             )}
@@ -77,11 +77,11 @@ const pastByYearMonth = groupByYearMonth(past);
                   {monthEvents.map((event) => (
                     <li>
                       <time datetime={event.date}>{event.date.replace(/-/g, '/')}</time>
-                      <span class="role-badge" data-role={event.role}>{event.role}</span>
                       {event.url
                         ? <a href={event.url} target="_blank" rel="noopener noreferrer">{event.name}</a>
                         : <span class="event-name">{event.name}</span>
                       }
+                      <span class="role-badge" data-role={event.role}>{event.role}</span>
                       {event.slideUrl && (
                         <a href={event.slideUrl} class="slide-link" target="_blank" rel="noopener noreferrer">資料</a>
                       )}
@@ -194,6 +194,8 @@ const pastByYearMonth = groupByYearMonth(past);
     padding: 0.125rem 0.5rem;
     border-radius: 4px;
     white-space: nowrap;
+    min-width: 5.5em;
+    text-align: center;
   }
 
   .role-badge[data-role='参加'] {
