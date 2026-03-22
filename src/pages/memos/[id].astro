@@ -1,11 +1,11 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 import ShareButtons from '../../components/ShareButtons.astro';
-import { getCollection, render } from 'astro:content';
+import { getCollection, render, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
   const memos = await getCollection('memos');
-  return memos.map((memo) => ({
+  return memos.map((memo: CollectionEntry<'memos'>) => ({
     params: { id: memo.id },
     props: { memo },
   }));
@@ -26,7 +26,7 @@ const pageUrl = Astro.url.href;
       {
         memo.data.tags.length > 0 && (
           <div class="tags">
-            {memo.data.tags.map((tag) => (
+            {memo.data.tags.map((tag: string) => (
               <a class="tag" href={`/memos?tag=${encodeURIComponent(tag)}`}>{tag}</a>
             ))}
           </div>
