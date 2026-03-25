@@ -1,0 +1,8 @@
+{
+  "title": "JavaにPythonを組み込む「Project Detroit (Python版)」コード解読 - 虎の穴ラボ技術ブログ",
+  "url": "https://toranoana-lab.hatenablog.com/entry/2026/03/24/173000",
+  "pubDate": "2026-03-24T09:02:43.000Z",
+  "source": "toralab",
+  "description": "こんにちは。虎の穴ラボのH.Kです。 先日発表され界隈を騒がせている、Javaに他言語エンジンを直接組み込むOracleの野心的プロジェクト「Project Detroit」。 前回の記事では、JavaScriptエンジン「V8」をJNI経由で組み込む仕組み（detroit-js）を解説しましたが、実はこのプロジェクトにはもう一つ、別の言語をサポートすると発表されています。それが、Javaに「CP",
+  "thumbnail": "/thumbnails/2026-03-24-toralab-javapythonproject-detroit-python----8c85d5b7.png"
+}
