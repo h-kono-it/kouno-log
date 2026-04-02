@@ -24,8 +24,8 @@ importers:
         specifier: ^5.18.1
         version: 5.18.1(@types/node@24.12.0)(rollup@4.59.0)(typescript@5.9.3)
       budoux:
-        specifier: ^0.8.0
-        version: 0.8.0
+        specifier: ^0.8.1
+        version: 0.8.1
       rehype-autolink-headings:
         specifier: ^7.1.0
         version: 7.1.0
@@ -1172,8 +1172,8 @@ packages:
     resolution: {integrity: sha512-F3PH5k5juxom4xktynS7MoFY+NUWH5LC4CnH11YB8NPew+HLpmBLCybSAEyb2F+4pRXhuhWqFesoQd6DAyc2hw==}
     engines: {node: '>=18'}
 
-  budoux@0.8.0:
-    resolution: {integrity: sha512-ankGVGCtUl3LHv4Bdd+f39qYt168hM15Y26r1x1zeDiNiNadmdyo8FmyzGEFxFB+ttwtGLG7XBMFC0STkFDrVQ==}
+  budoux@0.8.1:
+    resolution: {integrity: sha512-UM2Gsqlcr3DRV7cbuYEN3UBDvmqSPaN/wTz4rI93v0UiCqAZDd5vjjFHUpz3+SAEHYcR2QkovMyCZ++q8UWAcQ==}
     hasBin: true
 
   buffer-equal-constant-time@1.0.1:
@@ -3274,7 +3274,7 @@ snapshots:
       widest-line: 5.0.0
       wrap-ansi: 9.0.2
 
-  budoux@0.8.0:
+  budoux@0.8.1:
     dependencies:
       commander: 14.0.3
       google-artifactregistry-auth: 3.5.0
