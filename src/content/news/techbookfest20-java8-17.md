@@ -15,12 +15,11 @@ pubDate: 2026-04-03
 | オンライン | 2026年4月11日〜26日 |
 | オフライン | 2026年4月12日 |
 
-オフライン参加には**入場チケット（無料）**が必要です。
+オフライン参加には**入場チケット**(無料)が必要です。
 
 ## 頒布する本
 
-<!-- 書影：差し替え用プレースホルダー -->
-<img src="/news/hyoushi.png" alt="Java 10+a年振り返り（上巻）書影" />
+<img src="/news/hyoushi.png" alt="Java 10+a年振り返り（上巻）書影、タイトルと妻が描いたシマエナガのイラスト" height="300" />
 
 **[Java 10+a年振り返り（上巻）](https://techbookfest.org/product/fiphWJLZvYRKCvCZ7Hzc1h)**
 
