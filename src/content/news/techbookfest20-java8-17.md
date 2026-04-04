@@ -19,7 +19,7 @@ pubDate: 2026-04-03
 
 ## 頒布する本
 
-<img src="/news/hyoushi.png" alt="Java 10+a年振り返り（上巻）書影、タイトルと妻が描いたシマエナガのイラスト" height="300" />
+<img src="/news/hyoushi.webp" alt="Java 10+a年振り返り（上巻）書影、タイトルと妻が描いたシマエナガのイラスト" height="300" />
 
 **[Java 10+a年振り返り（上巻）](https://techbookfest.org/product/fiphWJLZvYRKCvCZ7Hzc1h)**
 
@@ -36,6 +36,10 @@ Java 8から17にかけて追加・強化された開発者向けの機能をま
 - Java 8で止まっていて、その後の変化をキャッチアップしたい人
 - Javaの今後を予想したい人
 - 最新のJavaを使いこなせていないと悩んでいる人
+
+詳細ははてなブログのほうに書いてます。
+
+[はてなブログの紹介記事](https://hk-it.hatenablog.com/entry/2026/04/04/142839)
 
 ---
 
