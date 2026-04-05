@@ -16,7 +16,7 @@ export const events: Event[] = [
   { name: '技術書典20 オフライン', date: '2026-04-12', role: 'サークル参加', url: 'https://techbookfest.org/event/tbf20' },
   { name: '劇場版エンジニアニメ 2026', date: '2026-04-11', role: 'コアスタッフ', url: 'https://engineers-anime.connpass.com/event/375981/' },
   { name: 'toranoana.deno #24', date: '2026-03-11', role: '登壇', url: 'https://yumenosora.connpass.com/event/383916/', slideUrl: 'https://www.docswell.com/s/hk_it7/5WREYJ-deno-deploy-error' },
-  { name: 'アウトプットカンファレンス', date: '2026-04-04', role: '登壇', url: 'https://onestop-output.dev/' },
+  { name: 'アウトプットカンファレンス', date: '2026-04-04', role: '登壇', url: 'https://onestop-output.dev/', slideUrl: 'https://www.docswell.com/s/hk_it7/ZE1XX8-2026-04-04-113336' },
   { name: 'EMConf JP 2026', date: '2026-03-04', role: '参加', url: 'https://2026.emconf.jp/' },
   { name: 'Warm-up Party by EM Oasis', date: '2026-02-10', role: '登壇', url: 'https://emoasis.connpass.com/event/380833/', slideUrl: 'https://www.docswell.com/s/hk_it7/5WM9D1-2026-02-10-emoasis' },
   { name: 'BuriKaigi 2026', date: '2026-01-10', role: '登壇', url: 'https://burikaigi.dev/', slideUrl: 'https://www.docswell.com/s/hk_it7/KLVM77-enum-burikaigi' },
