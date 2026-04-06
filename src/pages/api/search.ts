@@ -1,5 +1,6 @@
 import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
+import { jsonResponse } from '../../lib/api-response';
 
 export async function GET(context: APIContext) {
   const url = new URL(context.request.url);
@@ -8,10 +9,7 @@ export async function GET(context: APIContext) {
   const limit = Math.min(parseInt(url.searchParams.get('limit') ?? '20', 10), 100);
 
   if (!q) {
-    return new Response(JSON.stringify({ error: 'q パラメータが必要です' }), {
-      status: 400,
-      headers: { 'Content-Type': 'application/json' },
-    });
+    return jsonResponse({ error: 'q パラメータが必要です' }, 400);
   }
 
   const results: object[] = [];
@@ -78,8 +76,5 @@ export async function GET(context: APIContext) {
 
   results.sort((a: any, b: any) => new Date(b.pubDate).getTime() - new Date(a.pubDate).getTime());
 
-  return new Response(
-    JSON.stringify({ q, total: results.length, results: results.slice(0, limit) }, null, 2),
-    { headers: { 'Content-Type': 'application/json' } },
-  );
+  return jsonResponse({ q, total: results.length, results: results.slice(0, limit) });
 }

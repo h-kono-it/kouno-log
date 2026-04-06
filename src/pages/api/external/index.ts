@@ -1,5 +1,6 @@
 import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
+import { jsonResponse } from '../../../lib/api-response';
 
 const VALID_SOURCES = ['note', 'hatena', 'docswell', 'toralab'] as const;
 type Source = (typeof VALID_SOURCES)[number];
@@ -10,10 +11,7 @@ export async function GET(context: APIContext) {
   const limit = Math.min(parseInt(url.searchParams.get('limit') ?? '20', 10), 100);
 
   if (source && !VALID_SOURCES.includes(source)) {
-    return new Response(
-      JSON.stringify({ error: `source は ${VALID_SOURCES.join(' | ')} のいずれかです` }),
-      { status: 400, headers: { 'Content-Type': 'application/json' } },
-    );
+    return jsonResponse({ error: `source は ${VALID_SOURCES.join(' | ')} のいずれかです` }, 400);
   }
 
   let external = await getCollection('external');
@@ -34,7 +32,5 @@ export async function GET(context: APIContext) {
     thumbnail: e.data.thumbnail ?? null,
   }));
 
-  return new Response(JSON.stringify({ total: external.length, items }, null, 2), {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return jsonResponse({ total: external.length, items });
 }

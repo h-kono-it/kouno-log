@@ -1,4 +1,5 @@
 import type { APIContext } from 'astro';
+import { jsonResponse } from '../../lib/api-response';
 
 const profile = {
   name: 'kouno',
@@ -53,7 +54,5 @@ const profile = {
 };
 
 export async function GET(_context: APIContext) {
-  return new Response(JSON.stringify(profile, null, 2), {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return jsonResponse(profile);
 }

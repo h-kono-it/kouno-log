@@ -1,4 +1,5 @@
 import type { APIContext } from 'astro';
+import { jsonResponse } from '../../lib/api-response';
 
 export async function GET(_context: APIContext) {
   const endpoints = [
@@ -70,7 +71,5 @@ export async function GET(_context: APIContext) {
     },
   ];
 
-  return new Response(JSON.stringify({ endpoints }, null, 2), {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return jsonResponse({ endpoints });
 }

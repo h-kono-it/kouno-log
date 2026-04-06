@@ -1,5 +1,6 @@
 import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
+import { jsonResponse } from '../../../lib/api-response';
 
 export async function GET(context: APIContext) {
   const url = new URL(context.request.url);
@@ -16,7 +17,5 @@ export async function GET(context: APIContext) {
     url: `/news/${n.id}`,
   }));
 
-  return new Response(JSON.stringify({ total: news.length, items }, null, 2), {
-    headers: { 'Content-Type': 'application/json' },
-  });
+  return jsonResponse({ total: news.length, items });
 }
