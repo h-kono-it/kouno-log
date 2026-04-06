@@ -17,6 +17,10 @@
 - `scripts/fetch-rss.js` - RSS取得スクリプト（FEEDS配列で設定）
 - `.github/workflows/fetch-external.yml` - 毎日自動取得
 
+## 注意事項
+
+- `src/pages/api/profile.ts` のプロフィール情報は `src/pages/profile.astro` と別管理。どちらかを更新したらもう一方も手動で合わせること。
+
 ## デプロイ
 
 Cloudflare Pages（mainブランチpushで自動デプロイ）
