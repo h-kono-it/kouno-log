@@ -1,6 +1,8 @@
 import type { APIContext } from 'astro';
 import { jsonResponse } from '../../lib/api-response';
 
+export const prerender = false;
+
 export async function GET(_context: APIContext) {
   const endpoints = [
     {

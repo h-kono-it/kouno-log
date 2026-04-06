@@ -2,6 +2,8 @@ import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
 import { jsonResponse } from '../../../lib/api-response';
 
+export const prerender = false;
+
 export async function GET(context: APIContext) {
   const url = new URL(context.request.url);
   const tag = url.searchParams.get('tag')?.toLowerCase();

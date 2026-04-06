@@ -2,6 +2,8 @@ import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
 import { jsonResponse } from '../../../lib/api-response';
 
+export const prerender = false;
+
 export async function GET(context: APIContext) {
   const url = new URL(context.request.url);
   const limit = Math.min(parseInt(url.searchParams.get('limit') ?? '20', 10), 100);

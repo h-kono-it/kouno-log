@@ -2,6 +2,8 @@ import type { APIContext } from 'astro';
 import { getCollection } from 'astro:content';
 import { jsonResponse } from '../../../lib/api-response';
 
+export const prerender = false;
+
 const VALID_SOURCES = ['note', 'hatena', 'docswell', 'toralab'] as const;
 type Source = (typeof VALID_SOURCES)[number];
 

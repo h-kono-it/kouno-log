@@ -1,6 +1,8 @@
 import type { APIContext } from 'astro';
 import { jsonResponse } from '../../lib/api-response';
 
+export const prerender = false;
+
 const profile = {
   name: 'kouno',
   bio: 'Webエンジニア。Java / Kotlin / Ruby / TypeScript などを使った開発に携わっています。技術コミュニティの運営やカンファレンス登壇も行っています。技術同人誌サークル「世迷言ラボ」代表。',
