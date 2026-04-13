@@ -1,0 +1,136 @@
+---
+import Layout from '../layouts/Layout.astro';
+
+const products = [
+  {
+    name: 'chira-ura.net',
+    url: 'https://chira-ura.pages.dev/',
+    description: '「綺麗すぎるインターネット」へのアンチテーゼとして作った個人サイトプラットフォーム。オタクが好きなことを好きなだけ書き殴れる、牧歌的な空間を目指している。',
+    tags: ['Nuxt', 'Hono', 'Supabase', 'Cloudflare Pages'],
+    repo: 'https://github.com/h-kono-it/chira-ura',
+    relatedMemo: '/memos/chira-ura-tech-stack',
+  },
+  {
+    name: 'unagi-tasks',
+    url: 'https://unagi-tasks.h-kono-it.deno.net/',
+    description: '判断コストの最小化に特化したTODOアプリ。タスクを自動スコアリングして今やるべき1件だけを表示する。うなぎが川をするすると泳ぐように、迷いなく次のタスクへ進み続けることを目指して。',
+    tags: ['Fresh 2', 'Deno', 'Preact', 'Tailwind CSS', 'Deno KV'],
+    repo: 'https://github.com/h-kono-it/unagi-tasks',
+    relatedMemo: null,
+  },
+  {
+    name: 'rough-table',
+    url: 'https://www.npmjs.com/package/rough-table',
+    description: 'HTMLテーブルのボーダーを手書き風に描画するvanilla JSライブラリ。Rough.jsを使ってSVGオーバーレイとして描画するため、元の<table>要素のセマンティクスやテキスト選択を壊さない。クラスを1つ追加するだけで動く。',
+    tags: ['JavaScript', 'npm', 'OSS'],
+    repo: 'https://github.com/h-kono-it/rough-table',
+    relatedMemo: '/memos/rough-table',
+  },
+];
+---
+
+<Layout title="Products - kouno.log" description="kounoが作ったプロダクト">
+  <h1>Products</h1>
+  <p class="lead">個人で作ったプロダクトをまとめています。</p>
+
+  <ul class="products-list">
+    {products.map((product) => (
+      <li class="product-card">
+        <div class="product-header">
+          {product.url ? (
+            <a class="product-name" href={product.url} target="_blank" rel="noopener noreferrer">
+              {product.name} ↗
+            </a>
+          ) : (
+            <span class="product-name">{product.name}</span>
+          )}
+        </div>
+        <p class="product-desc">{product.description}</p>
+        {product.tags.length > 0 && (
+          <div class="tags">
+            {product.tags.map((tag) => (
+              <span class="tag">{tag}</span>
+            ))}
+          </div>
+        )}
+        <div class="links">
+          <a class="repo-link" href={product.repo} target="_blank" rel="noopener noreferrer">GitHub →</a>
+          {product.relatedMemo && (
+            <a class="related-memo" href={product.relatedMemo}>詳細を読む →</a>
+          )}
+        </div>
+      </li>
+    ))}
+  </ul>
+</Layout>
+
+<style>
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .lead {
+    color: #666;
+    margin-bottom: 2rem;
+  }
+
+  .products-list {
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .product-card {
+    padding: 1.25rem 1.5rem;
+    border: 1px solid #eee;
+    border-radius: 8px;
+  }
+
+  .product-header {
+    margin-bottom: 0.75rem;
+  }
+
+  .product-name {
+    font-size: 1.25rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: #333;
+  }
+
+  .product-name:hover {
+    text-decoration: underline;
+  }
+
+  .product-desc {
+    color: #444;
+    line-height: 1.7;
+    margin-bottom: 0.75rem;
+  }
+
+  .tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .tag {
+    background: #f0f0f0;
+    padding: 0.2rem 0.6rem;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    color: #555;
+  }
+
+  .links {
+    display: flex;
+    gap: 1rem;
+  }
+
+  .repo-link,
+  .related-memo {
+    font-size: 0.875rem;
+    color: #0066cc;
+  }
+</style>
