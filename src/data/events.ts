@@ -1,4 +1,4 @@
-export type EventRole = '参加' | '登壇' | 'スタッフ' | 'コアスタッフ' | 'サークル参加';
+export type EventRole = '参加' | '登壇' | 'スタッフ' | 'コアスタッフ' | 'サークル参加' | '主催';
 
 export interface Event {
   name: string;
@@ -11,8 +11,10 @@ export interface Event {
 export const events: Event[] = [
   { name: 'きのこカンファレンス 2026', date: '2026-06-28', role: 'コアスタッフ', url: 'https://kinoko-conf.dev/index.html' },
   { name: 'JJUG CCC 2026 Spring', date: '2026-05-30', role: '登壇', url: 'https://ccc2026spring.java-users.jp/' },
+  { name: '東葛.dev in 野田 交流会【第11回】', date: '2026-05-16', role: '主催', url: 'https://toukatsu.connpass.com/event/388936/' },
   { name: '第十三回技術書同人誌博覧会', date: '2026-05-10', role: 'サークル参加', url: 'https://gishohaku.connpass.com/event/372013/' },
   { name: 'コミュニティ・勉強会の作り方', date: '2026-04-27', role: '登壇', url: 'https://kaitou.connpass.com/event/383669/' },
+  { name: 'おすすめの技術同人誌を紹介LT会', date: '2026-04-15', role: '登壇', url: 'https://yumenosora.connpass.com/event/388043/' },
   { name: '技術書典20 オフライン', date: '2026-04-12', role: 'サークル参加', url: 'https://techbookfest.org/event/tbf20' },
   { name: '劇場版エンジニアニメ 2026', date: '2026-04-11', role: 'コアスタッフ', url: 'https://engineers-anime.connpass.com/event/375981/' },
   { name: 'toranoana.deno #24', date: '2026-03-11', role: '登壇', url: 'https://yumenosora.connpass.com/event/383916/', slideUrl: 'https://www.docswell.com/s/hk_it7/5WREYJ-deno-deploy-error' },
