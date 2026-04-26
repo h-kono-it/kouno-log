@@ -1,0 +1,144 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { getCollection } from 'astro:content';
+
+const memos = await getCollection('memos', ({ data }) => !data.draft);
+const news = await getCollection('news', ({ data }) => !data.draft);
+
+const allItems = [
+  ...memos.map((m) => ({ url: `/memos/${m.id}`, title: m.data.title, pubDate: m.data.pubDate, source: 'memo' as const })),
+  ...news.map((n) => ({ url: `/news/${n.id}`, title: n.data.title, pubDate: n.data.pubDate, source: 'news' as const })),
+].sort((a, b) => b.pubDate.getTime() - a.pubDate.getTime());
+
+type Item = (typeof allItems)[number];
+type MonthMap = Record<number, Item[]>;
+type YearMap = Record<number, MonthMap>;
+
+const byYear = allItems.reduce<YearMap>((acc, item) => {
+  const year = item.pubDate.getFullYear();
+  const month = item.pubDate.getMonth() + 1;
+  if (!acc[year]) acc[year] = {};
+  if (!acc[year][month]) acc[year][month] = [];
+  acc[year][month].push(item);
+  return acc;
+}, {});
+
+const years = Object.keys(byYear).map(Number).sort((a, b) => b - a);
+---
+
+<Layout title="Archive | kouno.log">
+  <h1>Archive</h1>
+  <p class="description">memos と news の記事一覧です。</p>
+
+  {years.map((year) => {
+    const months = Object.keys(byYear[year]).map(Number).sort((a, b) => b - a);
+    return (
+      <section class="year-section">
+        <h2 id={String(year)}>{year}年</h2>
+        {months.map((month) => {
+          const monthId = `${year}-${String(month).padStart(2, '0')}`;
+          const items = byYear[year][month];
+          return (
+            <div class="month-group">
+              <h3 id={monthId}>{month}月</h3>
+              <ul class="item-list">
+                {items.map((item) => (
+                  <li>
+                    <span class="badge" data-source={item.source}>{item.source}</span>
+                    <a href={item.url}>{item.title}</a>
+                    <time datetime={item.pubDate.toISOString()}>
+                      {item.pubDate.toLocaleDateString('ja-JP')}
+                    </time>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          );
+        })}
+      </section>
+    );
+  })}
+
+  <p class="back-link"><a href="/">&larr; トップに戻る</a></p>
+</Layout>
+
+<style>
+  h1 {
+    margin-bottom: 0.5rem;
+  }
+
+  .description {
+    color: #666;
+    font-size: 0.875rem;
+    margin-bottom: 2rem;
+  }
+
+  .year-section {
+    margin-bottom: 2.5rem;
+  }
+
+  h2 {
+    font-size: 1.25rem;
+    border-bottom: 2px solid #eee;
+    padding-bottom: 0.25rem;
+    margin-bottom: 1rem;
+  }
+
+  .month-group {
+    margin-bottom: 1.5rem;
+  }
+
+  h3 {
+    font-size: 1rem;
+    color: #666;
+    margin-bottom: 0.5rem;
+    font-weight: 600;
+  }
+
+  .item-list {
+    list-style: none;
+  }
+
+  .item-list li {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid #f0f0f0;
+    flex-wrap: wrap;
+  }
+
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    background: #eee;
+    min-width: 48px;
+    text-align: center;
+  }
+
+  .badge[data-source='memo'] {
+    background: #6b7280;
+    color: white;
+  }
+
+  .badge[data-source='news'] {
+    background: #8b5cf6;
+    color: white;
+  }
+
+  .item-list a {
+    flex: 1;
+    font-size: 0.9375rem;
+  }
+
+  time {
+    color: #999;
+    font-size: 0.8125rem;
+  }
+
+  .back-link {
+    margin-top: 2rem;
+    font-size: 0.875rem;
+  }
+</style>
