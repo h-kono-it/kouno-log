@@ -13,7 +13,7 @@ export const events: Event[] = [
   { name: 'JJUG CCC 2026 Spring', date: '2026-05-30', role: '登壇', url: 'https://ccc2026spring.java-users.jp/' },
   { name: '東葛.dev in 野田 交流会【第11回】', date: '2026-05-16', role: '主催', url: 'https://toukatsu.connpass.com/event/388936/' },
   { name: '第十三回技術書同人誌博覧会', date: '2026-05-10', role: 'サークル参加', url: 'https://gishohaku.connpass.com/event/372013/' },
-  { name: 'コミュニティ・勉強会の作り方', date: '2026-04-27', role: '登壇', url: 'https://kaitou.connpass.com/event/383669/' },
+  { name: 'コミュニティ・勉強会の作り方', date: '2026-04-27', role: '登壇', url: 'https://kaitou.connpass.com/event/383669/', slideUrl: 'https://www.docswell.com/s/hk_it7/5WRX7X-2026-04-27-community-ganbaranai' },
   { name: 'おすすめの技術同人誌を紹介LT会', date: '2026-04-15', role: '登壇', url: 'https://yumenosora.connpass.com/event/388043/' },
   { name: '技術書典20 オフライン', date: '2026-04-12', role: 'サークル参加', url: 'https://techbookfest.org/event/tbf20' },
   { name: '劇場版エンジニアニメ 2026', date: '2026-04-11', role: 'コアスタッフ', url: 'https://engineers-anime.connpass.com/event/375981/' },
