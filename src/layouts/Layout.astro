@@ -8,6 +8,7 @@ interface Props {
 const { title, description = 'kouno.log - 技術メモとアウトプットの記録', ogImage } = Astro.props;
 const siteUrl = Astro.url.origin;
 const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/ogp_kouno_log.png`;
+const currentPath = Astro.url.pathname;
 ---
 
 <!doctype html>
@@ -30,23 +31,24 @@ const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/ogp_kouno_log.
     <link rel="alternate" type="application/rss+xml" title="kouno.log RSS Feed" href="/feed.xml" />
   </head>
   <body>
+    <a href="#main-content" class="skip-link">メインコンテンツにスキップ</a>
     <header>
       <nav>
-        <a href="/" class="site-title">kouno.log</a>
-        <a href="/profile">Profile</a>
-        <a href="/products">Products</a>
-        <a href="/news">News</a>
-        <a href="/memos">Memos</a>
-        <a href="/external">External</a>
+        <a href="/" class="site-title" aria-current={currentPath === '/' ? 'page' : undefined}>kouno.log</a>
+        <a href="/profile" aria-current={currentPath.startsWith('/profile') ? 'page' : undefined}>Profile</a>
+        <a href="/products" aria-current={currentPath.startsWith('/products') ? 'page' : undefined}>Products</a>
+        <a href="/news" aria-current={currentPath.startsWith('/news') ? 'page' : undefined}>News</a>
+        <a href="/memos" aria-current={currentPath.startsWith('/memos') ? 'page' : undefined}>Memos</a>
+        <a href="/external" aria-current={currentPath.startsWith('/external') ? 'page' : undefined}>External</a>
       </nav>
     </header>
-    <main>
+    <main id="main-content">
       <slot />
     </main>
     <footer>
       <p>&copy; {new Date().getFullYear()} kouno.log</p>
-      <a href="/feed.xml" class="rss-link" title="RSS Feed">
-        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor">
+      <a href="/feed.xml" class="rss-link" aria-label="RSS Feed">
+        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
           <circle cx="6.18" cy="17.82" r="2.18"/>
           <path d="M4 4.44v2.83c7.03 0 12.73 5.7 12.73 12.73h2.83c0-8.59-6.97-15.56-15.56-15.56zm0 5.66v2.83c3.9 0 7.07 3.17 7.07 7.07h2.83c0-5.47-4.43-9.9-9.9-9.9z"/>
         </svg>
@@ -60,6 +62,28 @@ const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/ogp_kouno_log.
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+  }
+
+  .skip-link {
+    position: absolute;
+    top: -100%;
+    left: 0;
+    z-index: 100;
+    padding: 0.5rem 1rem;
+    background: #0066cc;
+    color: #fff;
+    text-decoration: none;
+    border-radius: 0 0 4px 0;
+  }
+
+  .skip-link:focus {
+    top: 0;
+  }
+
+  :focus-visible {
+    outline: 2px solid #0066cc;
+    outline-offset: 2px;
+    border-radius: 2px;
   }
 
   body {
@@ -104,6 +128,11 @@ const ogImageUrl = ogImage ? `${siteUrl}${ogImage}` : `${siteUrl}/ogp_kouno_log.
   }
 
   nav a:hover {
+    text-decoration: underline;
+  }
+
+  nav a[aria-current="page"] {
+    font-weight: 700;
     text-decoration: underline;
   }
 
