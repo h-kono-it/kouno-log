@@ -1,6 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ShareButtons from '../components/ShareButtons.astro';
+import CliTerminal from '../components/CliTerminal.astro';
 import { getCollection } from 'astro:content';
 
 const pageUrl = Astro.url.href;
@@ -122,6 +123,8 @@ const links = [
       </details>
     ))}
   </section>
+
+  <CliTerminal />
 
   <section class="links-section">
     <h2>Links</h2>

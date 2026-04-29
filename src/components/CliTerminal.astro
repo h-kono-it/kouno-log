@@ -1,0 +1,374 @@
+---
+import { getCollection } from 'astro:content';
+
+const memos = await getCollection('memos', ({ data }) => !data.draft);
+const news = await getCollection('news', ({ data }) => !data.draft);
+
+const fs = {
+  '/': {
+    dirs: ['memos', 'news'],
+    files: [
+      { name: 'profile',  url: '/profile',  title: 'プロフィール' },
+      { name: 'products', url: '/products', title: 'プロダクト一覧' },
+      { name: 'events',   url: '/events',   title: 'イベントスケジュール' },
+      { name: 'archive',  url: '/archive',  title: 'アーカイブ' },
+      { name: 'external', url: '/external', title: '外部記事一覧' },
+    ],
+  },
+  '/memos': {
+    dirs: [],
+    files: memos.map(m => ({ name: m.id, url: `/memos/${m.id}`, title: m.data.title })),
+  },
+  '/news': {
+    dirs: [],
+    files: news.map(n => ({ name: n.id, url: `/news/${n.id}`, title: n.data.title })),
+  },
+};
+---
+
+<section class="terminal-section">
+  <h2>Terminal</h2>
+  <div class="terminal" id="terminal" role="region" aria-label="擬似CLIターミナル">
+    <div
+      class="terminal-output"
+      id="terminal-output"
+      aria-live="polite"
+      aria-relevant="additions"
+    ></div>
+    <div class="terminal-input-row">
+      <span class="terminal-prompt" id="terminal-prompt" aria-hidden="true">kouno@log:~$</span>
+      <input
+        id="terminal-input"
+        type="text"
+        class="terminal-input"
+        autocomplete="off"
+        autocorrect="off"
+        autocapitalize="off"
+        spellcheck="false"
+        aria-label="コマンド入力（Tabキーで補完、↑↓で履歴）"
+      />
+    </div>
+  </div>
+</section>
+
+<style>
+  .terminal-section {
+    margin-top: 2rem;
+  }
+
+  .terminal-section h2 {
+    margin-bottom: 1rem;
+    font-size: 1.25rem;
+  }
+
+  .terminal {
+    background: #111;
+    border-radius: 8px;
+    border: 1px solid #2a2a2a;
+    padding: 1rem;
+    font-size: 0.875rem;
+    line-height: 1.65;
+    height: 300px;
+    display: flex;
+    flex-direction: column;
+    cursor: text;
+  }
+
+  @media (max-width: 480px) {
+    .terminal {
+      height: 240px;
+      font-size: 0.75rem;
+    }
+  }
+
+  .terminal-output {
+    flex: 1;
+    overflow-y: auto;
+    white-space: pre-wrap;
+    word-break: break-all;
+    scrollbar-width: thin;
+    scrollbar-color: #444 transparent;
+  }
+
+  .terminal-output::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  .terminal-output::-webkit-scrollbar-thumb {
+    background: #444;
+    border-radius: 2px;
+  }
+
+  .terminal-input-row {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding-top: 0.375rem;
+    border-top: 1px solid #222;
+    margin-top: 0.25rem;
+    flex-shrink: 0;
+  }
+
+  .terminal-prompt {
+    color: #7dff7d;
+    white-space: nowrap;
+    user-select: none;
+  }
+
+  .terminal-input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    outline: none;
+    color: #e0e0e0;
+    font: inherit;
+    caret-color: #e0e0e0;
+  }
+</style>
+
+<script define:vars={{ fs }}>
+  // Inject output-line styles (bypasses Astro CSS scoping for JS-created elements)
+  const styleEl = document.createElement('style');
+  styleEl.textContent = `
+    .ol-dir   { color: #6eb3ff; }
+    .ol-file  { color: #c8d0e0; }
+    .ol-err   { color: #ff6b6b; }
+    .ol-muted { color: #888888; }
+  `;
+  document.head.appendChild(styleEl);
+
+  const outputEl = document.getElementById('terminal-output');
+  const inputEl  = document.getElementById('terminal-input');
+  const promptEl = document.getElementById('terminal-prompt');
+  const termEl   = document.getElementById('terminal');
+
+  const COMMANDS = ['cd', 'clear', 'find', 'grep', 'help', 'ls', 'open'];
+
+  let cwd = '/';
+  const cmdHistory = [];
+  let historyIdx = -1;
+
+  function promptText() {
+    return `kouno@log:${cwd === '/' ? '~' : '~' + cwd}$`;
+  }
+
+  function esc(s) {
+    return String(s)
+      .replace(/&/g, '&amp;')
+      .replace(/</g, '&lt;')
+      .replace(/>/g, '&gt;');
+  }
+
+  function appendLine(text, cls) {
+    const el = document.createElement('div');
+    if (cls) el.className = cls;
+    el.textContent = text;
+    outputEl.appendChild(el);
+    outputEl.scrollTop = outputEl.scrollHeight;
+  }
+
+  function appendHtml(html, cls) {
+    const el = document.createElement('div');
+    if (cls) el.className = cls;
+    el.innerHTML = html;
+    outputEl.appendChild(el);
+    outputEl.scrollTop = outputEl.scrollHeight;
+  }
+
+  function echoInput(val) {
+    appendHtml(`<span style="color:#7dff7d">${esc(promptText())}</span> ${esc(val)}`);
+  }
+
+  function node() {
+    return fs[cwd];
+  }
+
+  // ---- commands ----
+
+  function cmdHelp() {
+    const rows = [
+      ['help',              'コマンド一覧を表示'],
+      ['ls',                '現在の階層の一覧を表示'],
+      ['cd <dir>',          'ディレクトリを移動'],
+      ['cd ..',             '親ディレクトリに移動'],
+      ['open <name>',       'ページ・記事を新しいタブで開く'],
+      ['grep <keyword>',    'タイトルをキーワード検索'],
+      ['find -name <glob>', 'パターンで記事を検索（例: *java*）'],
+      ['clear',             '画面をクリア'],
+    ];
+    rows.forEach(([c, d]) => {
+      appendHtml(`  <span class="ol-file">${esc(c)}</span> <span class="ol-muted">— ${esc(d)}</span>`);
+    });
+  }
+
+  function cmdLs() {
+    const n = node();
+    n.dirs.forEach(d => appendLine(`  ${d}/`, 'ol-dir'));
+    n.files.forEach(f => {
+      appendHtml(`  <span class="ol-file">${esc(f.name)}</span> <span class="ol-muted">— ${esc(f.title)}</span>`);
+    });
+    if (!n.dirs.length && !n.files.length) appendLine('  (empty)', 'ol-muted');
+  }
+
+  function cmdCd(target) {
+    if (!target || target === '~') {
+      cwd = '/';
+    } else if (target === '..') {
+      const segs = cwd.split('/').filter(Boolean);
+      segs.pop();
+      cwd = segs.length ? '/' + segs.join('/') : '/';
+    } else {
+      const clean = target.replace(/\/$/, '');
+      if (node().dirs.includes(clean)) {
+        cwd = cwd === '/' ? `/${clean}` : `${cwd}/${clean}`;
+      } else {
+        appendLine(`cd: no such directory: ${target}`, 'ol-err');
+        return;
+      }
+    }
+    promptEl.textContent = promptText();
+  }
+
+  function cmdOpen(name) {
+    if (!name) { appendLine('open: missing argument', 'ol-err'); return; }
+    const file = node().files.find(f => f.name === name);
+    if (file) {
+      appendLine(`  → ${file.url}`, 'ol-muted');
+      window.open(file.url, '_blank', 'noopener,noreferrer');
+    } else {
+      appendLine(`open: ${name}: not found`, 'ol-err');
+    }
+  }
+
+  function cmdGrep(args) {
+    const kw = args.join(' ').toLowerCase();
+    if (!kw) { appendLine('grep: missing keyword', 'ol-err'); return; }
+    let found = 0;
+    Object.entries(fs).forEach(([path, n]) => {
+      n.files.forEach(f => {
+        if (f.title.toLowerCase().includes(kw) || f.name.toLowerCase().includes(kw)) {
+          const p = path === '/' ? f.name : `${path.slice(1)}/${f.name}`;
+          appendHtml(`  <span class="ol-file">${esc(p)}</span> <span class="ol-muted">— ${esc(f.title)}</span>`);
+          found++;
+        }
+      });
+    });
+    if (!found) appendLine(`  (no matches for "${args.join(' ')}")`, 'ol-muted');
+  }
+
+  function cmdFind(args) {
+    const ni = args.indexOf('-name');
+    if (ni === -1 || !args[ni + 1]) {
+      appendLine('find: usage: find -name <pattern>', 'ol-err');
+      return;
+    }
+    const pat = args[ni + 1].replace(/^['"]|['"]$/g, '');
+    const reStr = pat.replace(/[.+^${}()|[\]\\]/g, '\\$&').replace(/\*/g, '.*').replace(/\?/g, '.');
+    const re = new RegExp(`^${reStr}$`, 'i');
+    let found = 0;
+    const base = cwd;
+    Object.entries(fs).forEach(([path, n]) => {
+      if (path !== base && !path.startsWith(base === '/' ? '/' : base + '/')) return;
+      n.files.forEach(f => {
+        if (re.test(f.name)) {
+          const rel = '.' + (path === '/' ? '' : path) + '/' + f.name;
+          appendLine(`  ${rel}`, 'ol-file');
+          found++;
+        }
+      });
+
+    });
+    if (!found) appendLine(`  (no matches for "${pat}")`, 'ol-muted');
+  }
+
+  function execute(raw) {
+    const input = raw.trim();
+    if (!input) return;
+    cmdHistory.unshift(input);
+    historyIdx = -1;
+    echoInput(input);
+
+    const [cmd, ...args] = input.split(/\s+/);
+    switch (cmd) {
+      case 'help':  cmdHelp(); break;
+      case 'ls':    cmdLs(); break;
+      case 'cd':    cmdCd(args[0]); break;
+      case 'open':  cmdOpen(args[0]); break;
+      case 'grep':  cmdGrep(args); break;
+      case 'find':  cmdFind(args); break;
+      case 'clear': outputEl.innerHTML = ''; break;
+      default:
+        appendLine(`${cmd}: command not found  (type 'help' for commands)`, 'ol-err');
+    }
+  }
+
+  // ---- tab completion ----
+
+  function tabComplete(val) {
+    const parts = val.trimStart().split(/\s+/);
+    const cmd = parts[0];
+    const arg = parts[1] ?? '';
+
+    // complete command name
+    if (parts.length === 1) {
+      const ms = COMMANDS.filter(c => c.startsWith(cmd));
+      if (ms.length === 1) return ms[0] + ' ';
+      if (ms.length > 1) { echoInput(val); appendLine('  ' + ms.join('  '), 'ol-muted'); }
+      return val;
+    }
+
+    const n = node();
+
+    if (cmd === 'cd') {
+      if (arg === '..') return val;
+      const ms = n.dirs.filter(d => d.startsWith(arg));
+      if (ms.length === 1) return `cd ${ms[0]}/`;
+      if (ms.length > 1) { echoInput(val); appendLine('  ' + ms.join('  '), 'ol-muted'); }
+      return val;
+    }
+
+    if (cmd === 'open') {
+      const ms = n.files.map(f => f.name).filter(name => name.startsWith(arg));
+      if (ms.length === 1) return `open ${ms[0]}`;
+      if (ms.length > 1) { echoInput(val); appendLine('  ' + ms.join('  '), 'ol-muted'); }
+      return val;
+    }
+
+    return val;
+  }
+
+  // ---- init ----
+
+  appendLine('Welcome to kouno.log terminal.', 'ol-muted');
+  appendLine("Type 'help' for available commands.", 'ol-muted');
+  appendLine('', '');
+  promptEl.textContent = promptText();
+
+  inputEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter') {
+      const val = inputEl.value;
+      inputEl.value = '';
+      execute(val);
+    } else if (e.key === 'Tab') {
+      e.preventDefault();
+      inputEl.value = tabComplete(inputEl.value);
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (historyIdx < cmdHistory.length - 1) {
+        historyIdx++;
+        inputEl.value = cmdHistory[historyIdx];
+      }
+    } else if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (historyIdx > 0) {
+        historyIdx--;
+        inputEl.value = cmdHistory[historyIdx];
+      } else {
+        historyIdx = -1;
+        inputEl.value = '';
+      }
+    }
+  });
+
+  termEl.addEventListener('click', () => inputEl.focus());
+</script>
