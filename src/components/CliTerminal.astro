@@ -201,13 +201,21 @@ const fs = {
     });
   }
 
-  function cmdLs() {
-    const n = node();
-    n.dirs.forEach(d => appendLine(`  ${d}/`, 'ol-dir'));
-    n.files.forEach(f => {
+  function cmdLs(arg) {
+    let target;
+    if (arg) {
+      const clean = arg.replace(/\/$/, '');
+      const dir = cwd === '/' ? `/${clean}` : `${cwd}/${clean}`;
+      target = fs[dir];
+      if (!target) { appendLine(`ls: ${arg}: no such directory`, 'ol-err'); return; }
+    } else {
+      target = node();
+    }
+    target.dirs.forEach(d => appendLine(`  ${d}/`, 'ol-dir'));
+    target.files.forEach(f => {
       appendHtml(`  <span class="ol-file">${esc(f.name)}</span> <span class="ol-muted">— ${esc(f.title)}</span>`);
     });
-    if (!n.dirs.length && !n.files.length) appendLine('  (empty)', 'ol-muted');
+    if (!target.dirs.length && !target.files.length) appendLine('  (empty)', 'ol-muted');
   }
 
   function cmdCd(target) {
@@ -229,12 +237,33 @@ const fs = {
     promptEl.textContent = promptText();
   }
 
+  function resolveArg(arg) {
+    // "memos/rough-table" → { dir: '/memos', file: 'rough-table' }
+    // "rough-table"       → { dir: cwd,      file: 'rough-table' }
+    const slash = arg.lastIndexOf('/');
+    if (slash === -1) return { dir: cwd, file: arg };
+    const dirPart = arg.slice(0, slash);
+    const filePart = arg.slice(slash + 1);
+    let dir;
+    if (!dirPart) {
+      dir = '/';
+    } else if (dirPart.startsWith('/')) {
+      dir = dirPart;
+    } else {
+      dir = cwd === '/' ? `/${dirPart}` : `${cwd}/${dirPart}`;
+    }
+    return { dir, file: filePart };
+  }
+
   function cmdOpen(name) {
     if (!name) { appendLine('open: missing argument', 'ol-err'); return; }
-    const file = node().files.find(f => f.name === name);
-    if (file) {
-      appendLine(`  → ${file.url}`, 'ol-muted');
-      window.open(file.url, '_blank', 'noopener,noreferrer');
+    const { dir, file } = resolveArg(name);
+    const target = fs[dir];
+    if (!target) { appendLine(`open: ${name}: no such directory`, 'ol-err'); return; }
+    const found = target.files.find(f => f.name === file);
+    if (found) {
+      appendLine(`  → ${found.url}`, 'ol-muted');
+      window.open(found.url, '_blank', 'noopener,noreferrer');
     } else {
       appendLine(`open: ${name}: not found`, 'ol-err');
     }
@@ -291,7 +320,7 @@ const fs = {
     const [cmd, ...args] = input.split(/\s+/);
     switch (cmd) {
       case 'help':  cmdHelp(); break;
-      case 'ls':    cmdLs(); break;
+      case 'ls':    cmdLs(args[0]); break;
       case 'cd':    cmdCd(args[0]); break;
       case 'open':  cmdOpen(args[0]); break;
       case 'grep':  cmdGrep(args); break;
@@ -327,10 +356,24 @@ const fs = {
       return val;
     }
 
-    if (cmd === 'open') {
-      const ms = n.files.map(f => f.name).filter(name => name.startsWith(arg));
-      if (ms.length === 1) return `open ${ms[0]}`;
+    if (cmd === 'ls') {
+      const ms = n.dirs.filter(d => d.startsWith(arg));
+      if (ms.length === 1) return `ls ${ms[0]}/`;
       if (ms.length > 1) { echoInput(val); appendLine('  ' + ms.join('  '), 'ol-muted'); }
+      return val;
+    }
+
+    if (cmd === 'open') {
+      const { dir, file: prefix } = resolveArg(arg);
+      const targetNode = fs[dir];
+      if (!targetNode) return val;
+      const pathPrefix = arg.includes('/') ? arg.slice(0, arg.lastIndexOf('/') + 1) : '';
+      const fileMs = targetNode.files.map(f => f.name).filter(n => n.startsWith(prefix));
+      const dirMs  = targetNode.dirs.filter(d => d.startsWith(prefix));
+      if (fileMs.length === 1 && dirMs.length === 0) return `open ${pathPrefix}${fileMs[0]}`;
+      if (dirMs.length === 1  && fileMs.length === 0) return `open ${pathPrefix}${dirMs[0]}/`;
+      const all = [...dirMs.map(d => d + '/'), ...fileMs];
+      if (all.length > 1) { echoInput(val); appendLine('  ' + all.join('  '), 'ol-muted'); }
       return val;
     }
 
