@@ -17,11 +17,11 @@ const fs = {
   },
   '/memos': {
     dirs: [],
-    files: memos.map(m => ({ name: m.id, url: `/memos/${m.id}`, title: m.data.title })),
+    files: memos.map(m => ({ name: m.id, url: `/memos/${m.id}`, title: m.data.title, pubDate: m.data.pubDate })),
   },
   '/news': {
     dirs: [],
-    files: news.map(n => ({ name: n.id, url: `/news/${n.id}`, title: n.data.title })),
+    files: news.map(n => ({ name: n.id, url: `/news/${n.id}`, title: n.data.title, pubDate: n.data.pubDate })),
   },
 };
 ---
@@ -52,6 +52,8 @@ const fs = {
 </section>
 
 <style>
+  @import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;700&display=swap');
+
   .terminal-section {
     margin-top: 2rem;
   }
@@ -63,9 +65,11 @@ const fs = {
 
   .terminal {
     background: #111;
+    color: #e0e0e0;
     border-radius: 8px;
     border: 1px solid #2a2a2a;
     padding: 1rem;
+    font-family: 'JetBrains Mono', monospace;
     font-size: 0.875rem;
     line-height: 1.65;
     height: 300px;
@@ -142,7 +146,7 @@ const fs = {
   const promptEl = document.getElementById('terminal-prompt');
   const termEl   = document.getElementById('terminal');
 
-  const COMMANDS = ['cd', 'clear', 'find', 'grep', 'help', 'ls', 'open'];
+  const COMMANDS = ['cd', 'clear', 'find', 'grep', 'help', 'ls', 'open', 'pwd', 'sl'];
 
   let cwd = '/';
   const cmdHistory = [];
@@ -183,12 +187,25 @@ const fs = {
     return fs[cwd];
   }
 
+  function resolvePath(base, rel) {
+    if (!rel || rel === '~') return '/';
+    if (rel.startsWith('/')) return rel.replace(/\/$/, '') || '/';
+    const segs = base === '/' ? [] : base.split('/').filter(Boolean);
+    for (const part of rel.replace(/\/$/, '').split('/')) {
+      if (part === '' || part === '.') continue;
+      if (part === '..') segs.pop();
+      else segs.push(part);
+    }
+    return segs.length ? '/' + segs.join('/') : '/';
+  }
+
   // ---- commands ----
 
   function cmdHelp() {
     const rows = [
       ['help',              'コマンド一覧を表示'],
       ['ls',                '現在の階層の一覧を表示'],
+      ['ls -l',             '種別・公開日付きで表示'],
       ['cd <dir>',          'ディレクトリを移動'],
       ['cd ..',             '親ディレクトリに移動'],
       ['open <name>',       'ページ・記事を新しいタブで開く'],
@@ -201,58 +218,51 @@ const fs = {
     });
   }
 
-  function cmdLs(arg) {
-    let target;
-    if (arg) {
-      const clean = arg.replace(/\/$/, '');
-      const dir = cwd === '/' ? `/${clean}` : `${cwd}/${clean}`;
-      target = fs[dir];
-      if (!target) { appendLine(`ls: ${arg}: no such directory`, 'ol-err'); return; }
+  function fmtDate(d) {
+    if (!d) return null;
+    const date = d instanceof Date ? d : new Date(d);
+    return date.toISOString().slice(0, 10);
+  }
+
+  function cmdLs(args) {
+    const long = args.some(a => /^-l/.test(a));
+    const dirArg = args.find(a => !a.startsWith('-'));
+    const dir = dirArg ? resolvePath(cwd, dirArg) : cwd;
+    const target = fs[dir];
+    if (!target) { appendLine(`ls: ${dirArg}: no such directory`, 'ol-err'); return; }
+
+    if (long) {
+      target.dirs.forEach(d => {
+        appendHtml(`  <span class="ol-muted">d</span>  <span class="ol-muted">          </span>  <span class="ol-dir">${esc(d)}/</span>`);
+      });
+      target.files.forEach(f => {
+        const date = fmtDate(f.pubDate) ?? '          ';
+        appendHtml(`  <span class="ol-muted">f</span>  <span class="ol-muted">${date}</span>  <span class="ol-file">${esc(f.name)}</span> <span class="ol-muted">— ${esc(f.title)}</span>`);
+      });
     } else {
-      target = node();
+      target.dirs.forEach(d => appendLine(`  ${d}/`, 'ol-dir'));
+      target.files.forEach(f => {
+        appendHtml(`  <span class="ol-file">${esc(f.name)}</span> <span class="ol-muted">— ${esc(f.title)}</span>`);
+      });
     }
-    target.dirs.forEach(d => appendLine(`  ${d}/`, 'ol-dir'));
-    target.files.forEach(f => {
-      appendHtml(`  <span class="ol-file">${esc(f.name)}</span> <span class="ol-muted">— ${esc(f.title)}</span>`);
-    });
     if (!target.dirs.length && !target.files.length) appendLine('  (empty)', 'ol-muted');
   }
 
   function cmdCd(target) {
-    if (!target || target === '~') {
-      cwd = '/';
-    } else if (target === '..') {
-      const segs = cwd.split('/').filter(Boolean);
-      segs.pop();
-      cwd = segs.length ? '/' + segs.join('/') : '/';
-    } else {
-      const clean = target.replace(/\/$/, '');
-      if (node().dirs.includes(clean)) {
-        cwd = cwd === '/' ? `/${clean}` : `${cwd}/${clean}`;
-      } else {
-        appendLine(`cd: no such directory: ${target}`, 'ol-err');
-        return;
-      }
+    const next = resolvePath(cwd, target);
+    if (!fs[next]) {
+      appendLine(`cd: no such directory: ${target}`, 'ol-err');
+      return;
     }
+    cwd = next;
     promptEl.textContent = promptText();
   }
 
   function resolveArg(arg) {
-    // "memos/rough-table" → { dir: '/memos', file: 'rough-table' }
-    // "rough-table"       → { dir: cwd,      file: 'rough-table' }
     const slash = arg.lastIndexOf('/');
     if (slash === -1) return { dir: cwd, file: arg };
-    const dirPart = arg.slice(0, slash);
-    const filePart = arg.slice(slash + 1);
-    let dir;
-    if (!dirPart) {
-      dir = '/';
-    } else if (dirPart.startsWith('/')) {
-      dir = dirPart;
-    } else {
-      dir = cwd === '/' ? `/${dirPart}` : `${cwd}/${dirPart}`;
-    }
-    return { dir, file: filePart };
+    const dir = resolvePath(cwd, arg.slice(0, slash) || '/');
+    return { dir, file: arg.slice(slash + 1) };
   }
 
   function cmdOpen(name) {
@@ -310,6 +320,40 @@ const fs = {
     if (!found) appendLine(`  (no matches for "${pat}")`, 'ol-muted');
   }
 
+  function cmdSl() {
+    const art = [
+      '      ====        ________                ___________',
+      '  _D _|  |_______/        \\__I_I_____===__|_________|',
+      '   |(_)---  |   H\\________/ |   |        =|___ ___|      _________________',
+      '   /     |  |   H  |  |     |   |         ||_| |_||     _|                \\_____A',
+      '  |      |  |   H  |__--------------------| [___] |   =|                        |',
+      '  | ________|___H__/__|_____/[][]~\\_______|       |   -|                        |',
+      '  |/ |   |-----------I_____I [][] []  D   |=======|____|________________________|_',
+      '__/ =| o |=-~~\\  /~~\\  /~~\\  /~~\\ ____Y___________|__|__________________________|_',
+      ' |/-=|___|=    ||    ||    ||    |_____/~\\___/          |_D__D__D_|  |_D__D__D_|',
+      '  \\_/      \\O=====O=====O=====O_/      \\_/               \\_/   \\_/    \\_/   \\_/',
+    ].join('\n');
+
+    const wrapper = document.createElement('div');
+    wrapper.style.cssText = 'position:relative;overflow:hidden;height:16.5em;width:100%;';
+
+    const pre = document.createElement('pre');
+    pre.style.cssText = 'position:absolute;white-space:pre;color:#c8d0e0;margin:0;left:100%;animation:sl-train 8s linear forwards;';
+    pre.textContent = art;
+    wrapper.appendChild(pre);
+
+    if (!document.getElementById('sl-anim-style')) {
+      const s = document.createElement('style');
+      s.id = 'sl-anim-style';
+      s.textContent = '@keyframes sl-train{from{left:100%}to{left:-500%}}';
+      document.head.appendChild(s);
+    }
+
+    outputEl.appendChild(wrapper);
+    outputEl.scrollTop = outputEl.scrollHeight;
+    pre.addEventListener('animationend', () => wrapper.remove(), { once: true });
+  }
+
   function execute(raw) {
     const input = raw.trim();
     if (!input) return;
@@ -320,11 +364,13 @@ const fs = {
     const [cmd, ...args] = input.split(/\s+/);
     switch (cmd) {
       case 'help':  cmdHelp(); break;
-      case 'ls':    cmdLs(args[0]); break;
+      case 'ls':    cmdLs(args); break;
       case 'cd':    cmdCd(args[0]); break;
       case 'open':  cmdOpen(args[0]); break;
       case 'grep':  cmdGrep(args); break;
       case 'find':  cmdFind(args); break;
+      case 'pwd':   appendLine(cwd === '/' ? '/home/kouno' : '/home/kouno' + cwd); break;
+      case 'sl':    cmdSl(); break;
       case 'clear': outputEl.innerHTML = ''; break;
       default:
         appendLine(`${cmd}: command not found  (type 'help' for commands)`, 'ol-err');
@@ -346,19 +392,18 @@ const fs = {
       return val;
     }
 
-    const n = node();
-
-    if (cmd === 'cd') {
-      if (arg === '..') return val;
-      const ms = n.dirs.filter(d => d.startsWith(arg));
-      if (ms.length === 1) return `cd ${ms[0]}/`;
-      if (ms.length > 1) { echoInput(val); appendLine('  ' + ms.join('  '), 'ol-muted'); }
-      return val;
-    }
-
-    if (cmd === 'ls') {
-      const ms = n.dirs.filter(d => d.startsWith(arg));
-      if (ms.length === 1) return `ls ${ms[0]}/`;
+    if (cmd === 'cd' || cmd === 'ls') {
+      const dirArg = parts.slice(1).find(p => !p.startsWith('-')) ?? '';
+      const slash = dirArg.lastIndexOf('/');
+      const dirPart = slash === -1 ? cwd : resolvePath(cwd, dirArg.slice(0, slash) || '/');
+      const prefix  = slash === -1 ? dirArg : dirArg.slice(slash + 1);
+      const pathPrefix = slash === -1 ? '' : dirArg.slice(0, slash + 1);
+      const targetNode = fs[dirPart];
+      if (!targetNode) return val;
+      const ms = targetNode.dirs.filter(d => d.startsWith(prefix));
+      const flags = parts.slice(1).filter(p => p.startsWith('-')).join(' ');
+      const flagStr = flags ? flags + ' ' : '';
+      if (ms.length === 1) return `${cmd} ${flagStr}${pathPrefix}${ms[0]}/`;
       if (ms.length > 1) { echoInput(val); appendLine('  ' + ms.join('  '), 'ol-muted'); }
       return val;
     }
