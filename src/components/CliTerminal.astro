@@ -17,11 +17,11 @@ const fs = {
   },
   '/memos': {
     dirs: [],
-    files: memos.map(m => ({ name: m.id, url: `/memos/${m.id}`, title: m.data.title, pubDate: m.data.pubDate })),
+    files: memos.map(m => ({ name: m.id, url: `/memos/${m.id}`, title: m.data.title, pubDate: m.data.pubDate, body: m.body })),
   },
   '/news': {
     dirs: [],
-    files: news.map(n => ({ name: n.id, url: `/news/${n.id}`, title: n.data.title, pubDate: n.data.pubDate })),
+    files: news.map(n => ({ name: n.id, url: `/news/${n.id}`, title: n.data.title, pubDate: n.data.pubDate, body: n.body })),
   },
 };
 ---
@@ -146,7 +146,7 @@ const fs = {
   const promptEl = document.getElementById('terminal-prompt');
   const termEl   = document.getElementById('terminal');
 
-  const COMMANDS = ['cd', 'clear', 'find', 'grep', 'help', 'ls', 'open', 'pwd', 'sl'];
+  const COMMANDS = ['cat', 'cd', 'clear', 'find', 'grep', 'help', 'ls', 'open', 'pwd', 'sl', 'view'];
 
   let cwd = '/';
   const cmdHistory = [];
@@ -208,6 +208,7 @@ const fs = {
       ['ls -l',             '種別・公開日付きで表示'],
       ['cd <dir>',          'ディレクトリを移動'],
       ['cd ..',             '親ディレクトリに移動'],
+      ['cat/view <name>',   '記事の内容を表示'],
       ['open <name>',       'ページ・記事を新しいタブで開く'],
       ['grep <keyword>',    'タイトルをキーワード検索'],
       ['find -name <glob>', 'パターンで記事を検索（例: *java*）'],
@@ -354,6 +355,21 @@ const fs = {
     pre.addEventListener('animationend', () => wrapper.remove(), { once: true });
   }
 
+  function cmdCat(name) {
+    if (!name) { appendLine('cat: missing argument', 'ol-err'); return; }
+    const { dir, file } = resolveArg(name);
+    const target = fs[dir];
+    if (!target) { appendLine(`cat: ${name}: no such file or directory`, 'ol-err'); return; }
+    const found = target.files.find(f => f.name === file);
+    if (!found) { appendLine(`cat: ${name}: no such file`, 'ol-err'); return; }
+    if (!found.body) {
+      appendLine(`  (no content — try 'open ${name}')`, 'ol-muted');
+      return;
+    }
+    appendLine(`  ── ${found.title} ──`, 'ol-muted');
+    found.body.split('\n').forEach(line => appendLine(line));
+  }
+
   function execute(raw) {
     const input = raw.trim();
     if (!input) return;
@@ -364,6 +380,8 @@ const fs = {
     const [cmd, ...args] = input.split(/\s+/);
     switch (cmd) {
       case 'help':  cmdHelp(); break;
+      case 'cat':
+      case 'view':  cmdCat(args[0]); break;
       case 'ls':    cmdLs(args); break;
       case 'cd':    cmdCd(args[0]); break;
       case 'open':  cmdOpen(args[0]); break;
@@ -408,15 +426,15 @@ const fs = {
       return val;
     }
 
-    if (cmd === 'open') {
+    if (cmd === 'cat' || cmd === 'view' || cmd === 'open') {
       const { dir, file: prefix } = resolveArg(arg);
       const targetNode = fs[dir];
       if (!targetNode) return val;
       const pathPrefix = arg.includes('/') ? arg.slice(0, arg.lastIndexOf('/') + 1) : '';
       const fileMs = targetNode.files.map(f => f.name).filter(n => n.startsWith(prefix));
       const dirMs  = targetNode.dirs.filter(d => d.startsWith(prefix));
-      if (fileMs.length === 1 && dirMs.length === 0) return `open ${pathPrefix}${fileMs[0]}`;
-      if (dirMs.length === 1  && fileMs.length === 0) return `open ${pathPrefix}${dirMs[0]}/`;
+      if (fileMs.length === 1 && dirMs.length === 0) return `${cmd} ${pathPrefix}${fileMs[0]}`;
+      if (dirMs.length === 1  && fileMs.length === 0) return `${cmd} ${pathPrefix}${dirMs[0]}/`;
       const all = [...dirMs.map(d => d + '/'), ...fileMs];
       if (all.length > 1) { echoInput(val); appendLine('  ' + all.join('  '), 'ol-muted'); }
       return val;
