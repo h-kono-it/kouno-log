@@ -17,7 +17,7 @@ const fs = {
   },
   '/memos': {
     dirs: [],
-    files: memos.map(m => ({ name: m.id, url: `/memos/${m.id}`, title: m.data.title, pubDate: m.data.pubDate, body: m.body })),
+    files: memos.map(m => ({ name: m.id, url: `/memos/${m.id}`, title: m.data.title, pubDate: m.data.pubDate, body: m.body, tags: m.data.tags ?? [] })),
   },
   '/news': {
     dirs: [],
@@ -286,7 +286,8 @@ const fs = {
     let found = 0;
     Object.entries(fs).forEach(([path, n]) => {
       n.files.forEach(f => {
-        if (f.title.toLowerCase().includes(kw) || f.name.toLowerCase().includes(kw)) {
+        const haystack = [f.title, f.name, ...(f.tags ?? []), f.body ?? ''].join('\n').toLowerCase();
+      if (haystack.includes(kw)) {
           const p = path === '/' ? f.name : `${path.slice(1)}/${f.name}`;
           appendHtml(`  <span class="ol-file">${esc(p)}</span> <span class="ol-muted">— ${esc(f.title)}</span>`);
           found++;
