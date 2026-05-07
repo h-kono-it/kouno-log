@@ -1,7 +1,7 @@
 ---
 import Layout from '../layouts/Layout.astro';
 import ShareButtons from '../components/ShareButtons.astro';
-import CliTerminal from '../components/CliTerminal.astro';
+import { CliTerminal } from 'astro-site-shell';
 import { getCollection } from 'astro:content';
 
 const pageUrl = Astro.url.href;
@@ -124,7 +124,39 @@ const links = [
     ))}
   </section>
 
-  <CliTerminal />
+  <CliTerminal
+    prompt="kouno@log"
+    pages={[
+      { name: 'profile',  url: '/profile',  title: 'プロフィール' },
+      { name: 'products', url: '/products', title: 'プロダクト一覧' },
+      { name: 'events',   url: '/events',   title: 'イベントスケジュール' },
+      { name: 'archive',  url: '/archive',  title: 'アーカイブ' },
+      { name: 'external', url: '/external', title: '外部記事一覧' },
+    ]}
+    collections={[
+      {
+        name: 'memos',
+        entries: memos.map(m => ({
+          name: m.id,
+          url: `/memos/${m.id}`,
+          title: m.data.title,
+          pubDate: m.data.pubDate,
+          body: m.body,
+          tags: m.data.tags ?? [],
+        })),
+      },
+      {
+        name: 'news',
+        entries: news.map(n => ({
+          name: n.id,
+          url: `/news/${n.id}`,
+          title: n.data.title,
+          pubDate: n.data.pubDate,
+          body: n.body,
+        })),
+      },
+    ]}
+  />
 
   <section class="links-section">
     <h2>Links</h2>
