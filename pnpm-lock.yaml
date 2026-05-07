@@ -27,8 +27,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0(astro@5.18.1(@types/node@24.12.0)(rollup@4.59.0)(typescript@5.9.3))
       budoux:
-        specifier: ^0.8.1
-        version: 0.8.1
+        specifier: ^0.8.2
+        version: 0.8.2
       rehype-autolink-headings:
         specifier: ^7.1.0
         version: 7.1.0
@@ -1094,6 +1094,7 @@ packages:
 
   '@ungap/structured-clone@1.3.0':
     resolution: {integrity: sha512-WmoN8qaIAo7WTYWbAZuG8PYEhn5fkz7dZrqTBZ7dtt//lL2Gwms1IcnQ5yHqjDfX8Ft5j4YzDM23f87zBfDe9g==}
+    deprecated: Potential CWE-502 - Update to 1.3.1 or higher
 
   acorn@8.16.0:
     resolution: {integrity: sha512-UVJyE9MttOsBQIDKw1skb9nAwQuR5wuGD3+82K6JgJlm/Y+KI92oNsMNGZCYdDsVtRHSak0pcV5Dno5+4jh9sw==}
@@ -1180,8 +1181,8 @@ packages:
     resolution: {integrity: sha512-F3PH5k5juxom4xktynS7MoFY+NUWH5LC4CnH11YB8NPew+HLpmBLCybSAEyb2F+4pRXhuhWqFesoQd6DAyc2hw==}
     engines: {node: '>=18'}
 
-  budoux@0.8.1:
-    resolution: {integrity: sha512-UM2Gsqlcr3DRV7cbuYEN3UBDvmqSPaN/wTz4rI93v0UiCqAZDd5vjjFHUpz3+SAEHYcR2QkovMyCZ++q8UWAcQ==}
+  budoux@0.8.2:
+    resolution: {integrity: sha512-ytZ94uJFYaiZx8m9ABVrdZrVIj4W+2/+OsrdPrarh2AfMAg7o7Jhe6f/luxVZkp7BqnvoF4sZ1AKD8ZMJQTSaw==}
     hasBin: true
 
   buffer-equal-constant-time@1.0.1:
@@ -3287,7 +3288,7 @@ snapshots:
       widest-line: 5.0.0
       wrap-ansi: 9.0.2
 
-  budoux@0.8.1:
+  budoux@0.8.2:
     dependencies:
       commander: 14.0.3
       google-artifactregistry-auth: 3.5.0
