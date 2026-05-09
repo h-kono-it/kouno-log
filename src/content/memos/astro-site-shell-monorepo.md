@@ -9,6 +9,9 @@ tags: [astro, npm, typescript, monorepo]
 
 このサイトで使っているターミナルウィジェット [astro-site-shell](https://github.com/h-kono-it/astro-site-shell) をモノレポ化し、コアロジックを `site-shell-core` として切り出した。
 
+ターミナルウィジェットの概要はこちら。
+[astro-site-shellの概要](/news/astro-site-shell-published)
+
 ## 背景
 
 もともとの `CliTerminal.astro` には、仮想ファイルシステム、コマンド実行、タブ補完、コマンド履歴、アニメーションといったロジックが全部バニラ JS で書かれていた。Astro 固有の処理は props のハンドリングとテンプレート挿入だけで、残りはフレームワークに依存していない。
