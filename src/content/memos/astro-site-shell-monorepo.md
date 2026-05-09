@@ -25,6 +25,9 @@ packages/
 └── astro-site-shell/  # Astro 向けの薄いラッパー
 ```
 
+- [site-shell-core on npm](https://www.npmjs.com/package/site-shell-core)
+- [astro-site-shell on npm](https://www.npmjs.com/package/astro-site-shell)
+
 ### site-shell-core
 
 仮想 FS、コマンド処理、タブ補完、履歴、CSS をここに集約した。エントリポイントは `attachTerminal()` 関数一本で、DOM 要素と設定を渡すだけで動く。
