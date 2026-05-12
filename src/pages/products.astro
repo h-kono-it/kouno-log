@@ -3,6 +3,22 @@ import Layout from '../layouts/Layout.astro';
 
 const products = [
   {
+    name: 'Webエンジニアのための法務確認ガイド',
+    url: 'https://yomaigotolab.booth.pm/items/8344898',
+    description: '「これ、法務案件では？」とアラートを出せるようになることを目指した同人誌。決済・ポイント・プライバシー・偽装請負・ライセンス表記など、Webサービス開発現場で踏みやすい法的リスクのポイントを解説する。',
+    tags: ['同人誌', '技術書'],
+    repo: null,
+    relatedMemo: 'https://hk-it.hatenablog.com/entry/2026/04/28/083425',
+  },
+  {
+    name: 'Java 10+a年振り返り（上巻）',
+    url: 'https://techbookfest.org/product/fiphWJLZvYRKCvCZ7Hzc1h?productVariantID=jBb2qZXkRErHKWMXQ3PEa8',
+    description: 'Java 8から17にかけて追加・強化された開発者向けの機能をまとめて解説する本。150Pを超えたため上下巻構成で、上巻はJava 8〜17を扱う。',
+    tags: ['同人誌', '技術書'],
+    repo: null,
+    relatedMemo: 'https://hk-it.hatenablog.com/entry/2026/04/04/142839',
+  },
+  {
     name: 'chira-ura.net',
     url: 'https://chira-ura.pages.dev/',
     description: '「綺麗すぎるインターネット」へのアンチテーゼとして作った個人サイトプラットフォーム。オタクが好きなことを好きなだけ書き殴れる、牧歌的な空間を目指している。',
@@ -70,9 +86,15 @@ const products = [
           </div>
         )}
         <div class="links">
-          <a class="repo-link" href={product.repo} target="_blank" rel="noopener noreferrer">GitHub →</a>
+          {product.repo && (
+            <a class="repo-link" href={product.repo} target="_blank" rel="noopener noreferrer">GitHub →</a>
+          )}
           {product.relatedMemo && (
-            <a class="related-memo" href={product.relatedMemo}>詳細を読む →</a>
+            <a
+              class="related-memo"
+              href={product.relatedMemo}
+              {...(product.relatedMemo.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+            >詳細を読む →</a>
           )}
         </div>
       </li>
