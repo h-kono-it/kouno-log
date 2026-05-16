@@ -1,0 +1,444 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Shooting Player</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #000; display: flex; justify-content: center; align-items: center; height: 100vh; font-family: monospace; }
+    canvas { display: block; }
+
+    #startup {
+      position: fixed; inset: 0; background: #06080f;
+      display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 16px; z-index: 10;
+    }
+    #startup h1 { color: #4af; font-size: 28px; letter-spacing: 3px; margin-bottom: 8px; }
+    #startup p  { color: #555; font-size: 12px; }
+    #json-input {
+      width: 480px; height: 180px; background: #0a0a15; color: #5f5;
+      border: 1px solid #2a4a2a; padding: 10px; font-family: monospace; font-size: 11px; resize: none;
+    }
+    .start-btns { display: flex; gap: 10px; }
+    .start-btns button {
+      padding: 10px 20px; font-family: monospace; font-size: 13px; cursor: pointer; border: 1px solid;
+    }
+    #btn-start  { background: #1a3a1a; color: #8f8; border-color: #3a8a3a; }
+    #btn-start:hover  { background: #2a5a2a; }
+    #btn-editor { background: #1a2a3a; color: #8af; border-color: #2a5a8a; }
+    #btn-editor:hover { background: #2a3a5a; }
+    #btn-sample { background: #2a2a1a; color: #aa8; border-color: #6a6a2a; }
+    #btn-sample:hover { background: #3a3a2a; }
+    #error-msg  { color: #f66; font-size: 12px; min-height: 16px; }
+  </style>
+</head>
+<body>
+
+<div id="startup">
+  <h1>SHOOTING PLAYER</h1>
+  <textarea id="json-input" placeholder="エディタからコピーしたJSONをここに貼り付け..."></textarea>
+  <p id="error-msg"></p>
+  <div class="start-btns">
+    <button id="btn-start">ゲームスタート</button>
+    <button id="btn-editor">エディタから読み込む</button>
+    <button id="btn-sample">サンプルで遊ぶ</button>
+  </div>
+  <p>操作: 矢印キー / WASD で移動、R でリスタート</p>
+  <p><a href="/games/shooting-editor" style="color:#8af;font-size:12px;">エディタでゲームを作る →</a></p>
+</div>
+
+<canvas id="game" style="display:none"></canvas>
+<script is:inline>
+const SAMPLE_JSON = {
+  version: "1.0",
+  stage: { length: 3600, background: "space_default" },
+  player: { speed: 5, hp: 3 },
+  timeline: [
+    { tick:  60, enemyType: "Scout",   posY: 120, movement: "straight", bullet: "aim",      drop: null },
+    { tick: 120, enemyType: "Scout",   posY: 350, movement: "straight", bullet: "aim",      drop: null },
+    { tick: 180, enemyType: "Swarm",   posY: 200, movement: "wave",     bullet: "straight", drop: null },
+    { tick: 200, enemyType: "Swarm",   posY: 280, movement: "wave",     bullet: "straight", drop: null },
+    { tick: 300, enemyType: "Scout",   posY: 160, movement: "straight", bullet: "aim",      drop: "life" },
+    { tick: 360, enemyType: "Tank",    posY: 240, movement: "stop",     bullet: "spread3",  drop: "power_up" },
+    { tick: 500, enemyType: "Scout",   posY:  80, movement: "straight", bullet: "aim",      drop: null },
+    { tick: 500, enemyType: "Scout",   posY: 400, movement: "straight", bullet: "aim",      drop: null },
+    { tick: 600, enemyType: "Carrier", posY: 240, movement: "straight", bullet: null,       drop: "life" },
+  ]
+};
+
+// ---- 定数 ----
+const W = 640, H = 480;
+const ENEMY_DEFS = {
+  Scout:   { hp: 2,  speed: 2.5, color: "#e55" },
+  Sniper:  { hp: 3,  speed: 1.5, color: "#a5e" },
+  Carrier: { hp: 4,  speed: 1.0, color: "#5ae" },
+  Swarm:   { hp: 1,  speed: 3.0, color: "#ee5" },
+  Tank:    { hp: 12, speed: 0.8, color: "#e85" },
+};
+const DROP_COLOR = { life: "#f66", power_up: "#6cf" };
+
+// ---- Canvas設定 ----
+const canvas = document.getElementById("game");
+canvas.width = W; canvas.height = H;
+const ctx = canvas.getContext("2d");
+
+// ---- バリデーション ----
+const VALID_TYPES     = new Set(["Scout", "Sniper", "Carrier", "Swarm", "Tank"]);
+const VALID_MOVEMENTS = new Set(["straight", "wave", "stop", "aim"]);
+const VALID_BULLETS   = new Set(["aim", "straight", "spread3", null]);
+const VALID_DROPS     = new Set(["life", "power_up", null]);
+
+function validateGameData(raw) {
+  if (typeof raw !== "object" || raw === null) throw new Error("JSONが不正です");
+  if (typeof raw.player !== "object")          throw new Error("player が定義されていません");
+  if (typeof raw.stage  !== "object")          throw new Error("stage が定義されていません");
+  if (!Array.isArray(raw.timeline))            throw new Error("timeline が配列ではありません");
+
+  raw.player.hp    = Math.min(Math.max(parseInt(raw.player.hp)    || 3, 1), 10);
+  raw.player.speed = Math.min(Math.max(parseInt(raw.player.speed) || 5, 1), 20);
+  raw.stage.length = Math.min(Math.max(parseInt(raw.stage.length) || 3600, 300), 36000);
+
+  raw.timeline = raw.timeline.slice(0, 500).filter(e => {
+    if (typeof e !== "object" || e === null) return false;
+    if (Object.keys(e).some(k => k === "__proto__" || k === "constructor" || k === "prototype")) return false;
+    if (!VALID_TYPES.has(e.enemyType))        return false;
+    if (!VALID_MOVEMENTS.has(e.movement))     return false;
+    if (!VALID_BULLETS.has(e.bullet ?? null)) return false;
+    if (!VALID_DROPS.has(e.drop ?? null))     return false;
+    e.tick = Math.min(Math.max(parseInt(e.tick) || 0, 0), 36000);
+    e.posY = Math.min(Math.max(parseInt(e.posY) || 240, 0), H);
+    return true;
+  });
+
+  return raw;
+}
+
+// ---- 起動画面 ----
+let animFrameId = null;
+
+function startWithData(data) {
+  if (animFrameId !== null) { cancelAnimationFrame(animFrameId); animFrameId = null; }
+  document.getElementById("startup").style.display = "none";
+  canvas.style.display = "block";
+  initGame(data);
+  loop();
+}
+
+function tryStart(jsonStr) {
+  const errEl = document.getElementById("error-msg");
+  errEl.textContent = "";
+  try {
+    const raw = JSON.parse(jsonStr);
+    const data = validateGameData(raw);
+    startWithData(data);
+  } catch (e) {
+    errEl.textContent = `エラー: ${e.message}`;
+  }
+}
+
+document.getElementById("btn-start").addEventListener("click", () => {
+  const json = document.getElementById("json-input").value.trim();
+  if (!json) { document.getElementById("error-msg").textContent = "JSONを入力してください"; return; }
+  tryStart(json);
+});
+
+document.getElementById("btn-editor").addEventListener("click", () => {
+  const json = localStorage.getItem("shootingGameJson");
+  if (!json) { document.getElementById("error-msg").textContent = "エディタからのデータが見つかりません"; return; }
+  localStorage.removeItem("shootingGameJson");
+  tryStart(json);
+});
+
+document.getElementById("btn-sample").addEventListener("click", () => {
+  startWithData(SAMPLE_JSON);
+});
+
+// ---- 入力 ----
+const keys = {};
+document.addEventListener("keydown", e => {
+  keys[e.key] = true;
+  if (e.target.tagName !== "TEXTAREA" && e.target.tagName !== "INPUT") e.preventDefault();
+});
+document.addEventListener("keyup", e => { keys[e.key] = false; });
+
+// ---- ゲーム状態 ----
+let gameData, tick, player, enemies, playerBullets, enemyBullets, drops, powerLevel, gameOver, stageClear;
+
+function initGame(data) {
+  gameData   = data;
+  tick       = 0;
+  powerLevel = 1;
+  gameOver   = false;
+  stageClear = false;
+  player = {
+    x: 80, y: H / 2,
+    hw: 14, hh: 12,
+    speed: data.player.speed,
+    hp:    data.player.hp,
+    fireTimer: 0,
+  };
+  enemies       = [];
+  playerBullets = [];
+  enemyBullets  = [];
+  drops         = [];
+}
+
+// ---- スポーン ----
+function spawnEnemy(entry) {
+  const def = ENEMY_DEFS[entry.enemyType] ?? ENEMY_DEFS.Scout;
+  enemies.push({
+    x: W + 20,
+    y: entry.posY,
+    hw: 16, hh: 14,
+    type:      entry.enemyType,
+    movement:  entry.movement,
+    bullet:    entry.bullet,
+    drop:      entry.drop,
+    hp:        def.hp,
+    maxHp:     def.hp,
+    speed:     def.speed,
+    color:     def.color,
+    fireTimer: 80,
+    spawnTick: tick,
+    originY:   entry.posY,
+  });
+}
+
+// ---- 衝突（AABB、中心座標ベース） ----
+function hit(ax, ay, ahw, ahh, bx, by, bhw, bhh) {
+  return Math.abs(ax - bx) < ahw + bhw && Math.abs(ay - by) < ahh + bhh;
+}
+
+// ---- 更新 ----
+function update() {
+  tick++;
+
+  for (const entry of gameData.timeline) {
+    if (entry.tick === tick) spawnEnemy(entry);
+  }
+
+  const spd = player.speed;
+  if (keys["ArrowLeft"]  || keys["a"]) player.x = Math.max(player.hw,      player.x - spd);
+  if (keys["ArrowRight"] || keys["d"]) player.x = Math.min(W / 2,          player.x + spd);
+  if (keys["ArrowUp"]    || keys["w"]) player.y = Math.max(player.hh,      player.y - spd);
+  if (keys["ArrowDown"]  || keys["s"]) player.y = Math.min(H - player.hh,  player.y + spd);
+
+  player.fireTimer--;
+  if (player.fireTimer <= 0) {
+    const interval = Math.max(4, 10 - (powerLevel - 1) * 2);
+    player.fireTimer = interval;
+    if (powerLevel >= 2) {
+      playerBullets.push({ x: player.x + player.hw, y: player.y - 5, vx: 12 });
+      playerBullets.push({ x: player.x + player.hw, y: player.y + 5, vx: 12 });
+    } else {
+      playerBullets.push({ x: player.x + player.hw, y: player.y, vx: 12 });
+    }
+  }
+
+  for (const b of playerBullets) b.x += b.vx;
+  playerBullets = playerBullets.filter(b => b.x < W + 16);
+
+  for (const e of enemies) {
+    const age = tick - e.spawnTick;
+    switch (e.movement) {
+      case "straight": e.x -= e.speed; break;
+      case "wave":
+        e.x -= e.speed;
+        e.y = e.originY + Math.sin(age * 0.1) * 60;
+        break;
+      case "stop":
+        if (e.x > W * 0.6) e.x -= e.speed;
+        break;
+      case "aim": {
+        const dx = player.x - e.x, dy = player.y - e.y;
+        const d = Math.hypot(dx, dy) || 1;
+        e.x += dx / d * e.speed;
+        e.y += dy / d * e.speed;
+        break;
+      }
+      default: e.x -= e.speed;
+    }
+
+    if (e.bullet) {
+      e.fireTimer--;
+      if (e.fireTimer <= 0) {
+        e.fireTimer = 90;
+        const dx = player.x - e.x, dy = player.y - e.y;
+        const d = Math.hypot(dx, dy) || 1;
+        if (e.bullet === "aim") {
+          enemyBullets.push({ x: e.x, y: e.y, vx: dx/d * 3.5, vy: dy/d * 3.5 });
+        } else if (e.bullet === "straight") {
+          enemyBullets.push({ x: e.x, y: e.y, vx: -3.5, vy: 0 });
+        } else if (e.bullet === "spread3") {
+          for (const spread of [-0.3, 0, 0.3]) {
+            enemyBullets.push({ x: e.x, y: e.y, vx: -Math.cos(spread) * 3.5, vy: Math.sin(spread) * 3.5 });
+          }
+        }
+      }
+    }
+  }
+  enemies = enemies.filter(e => e.x > -40 && e.hp > 0);
+
+  for (const b of enemyBullets) { b.x += b.vx; b.y += b.vy; }
+  enemyBullets = enemyBullets.filter(b => b.x > -10 && b.x < W+10 && b.y > -10 && b.y < H+10);
+
+  for (const d of drops) d.x -= 1.5;
+  drops = drops.filter(d => d.x > -20);
+
+  for (const b of playerBullets) {
+    for (const e of enemies) {
+      if (hit(b.x, b.y, 2, 3, e.x, e.y, e.hw, e.hh)) {
+        e.hp--;
+        b.x = W + 999;
+        if (e.hp <= 0 && e.drop) {
+          drops.push({ x: e.x, y: e.y, type: e.drop });
+        }
+      }
+    }
+  }
+
+  for (const b of enemyBullets) {
+    if (hit(b.x, b.y, 4, 4, player.x, player.y, player.hw, player.hh)) {
+      player.hp--;
+      b.x = -999;
+      if (player.hp <= 0) gameOver = true;
+    }
+  }
+
+  for (const d of drops) {
+    if (hit(d.x, d.y, 8, 8, player.x, player.y, player.hw + 8, player.hh + 8)) {
+      if (d.type === "life")     player.hp = Math.min(player.hp + 1, 5);
+      if (d.type === "power_up") powerLevel = Math.min(powerLevel + 1, 3);
+      d.x = -999;
+    }
+  }
+
+  const lastTick = Math.max(...gameData.timeline.map(e => e.tick));
+  if (tick > lastTick && enemies.length === 0) stageClear = true;
+}
+
+// ---- 描画 ----
+function drawStars() {
+  for (let i = 0; i < 80; i++) {
+    const sy = (i * 137 + 17) % H;
+    const speed = 0.5 + (i % 3) * 0.5;
+    const sx = ((W - (i * 97 + tick * speed) % W) + W) % W;
+    const r = i % 3 === 0 ? 1.5 : 1;
+    ctx.globalAlpha = 0.3 + (i % 3) * 0.2;
+    ctx.fillStyle = "#fff";
+    ctx.fillRect(sx, sy, r, r);
+  }
+  ctx.globalAlpha = 1;
+}
+
+function draw() {
+  ctx.fillStyle = "#06080f";
+  ctx.fillRect(0, 0, W, H);
+  drawStars();
+
+  for (const d of drops) {
+    ctx.fillStyle = DROP_COLOR[d.type] ?? "#fff";
+    ctx.beginPath();
+    ctx.arc(d.x, d.y, 7, 0, Math.PI * 2);
+    ctx.fill();
+    ctx.strokeStyle = "#fff";
+    ctx.lineWidth = 1;
+    ctx.stroke();
+  }
+
+  for (const e of enemies) {
+    ctx.fillStyle = e.color;
+    ctx.fillRect(e.x - e.hw, e.y - e.hh, e.hw * 2, e.hh * 2);
+    const barW = e.hw * 2;
+    ctx.fillStyle = "#333";
+    ctx.fillRect(e.x - e.hw, e.y - e.hh - 5, barW, 3);
+    ctx.fillStyle = "#0f0";
+    ctx.fillRect(e.x - e.hw, e.y - e.hh - 5, barW * (e.hp / e.maxHp), 3);
+  }
+
+  ctx.fillStyle = "#ff0";
+  for (const b of playerBullets) {
+    ctx.fillRect(b.x - 7, b.y - 2, 14, 4);
+  }
+
+  ctx.fillStyle = "#f80";
+  for (const b of enemyBullets) {
+    ctx.beginPath();
+    ctx.arc(b.x, b.y, 4, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  ctx.fillStyle = "#4af";
+  ctx.beginPath();
+  ctx.moveTo(player.x + player.hw, player.y);
+  ctx.lineTo(player.x - player.hw, player.y - player.hh);
+  ctx.lineTo(player.x - player.hw, player.y + player.hh);
+  ctx.closePath();
+  ctx.fill();
+  ctx.strokeStyle = "#8df";
+  ctx.lineWidth = 1.5;
+  ctx.stroke();
+
+  ctx.font = "bold 16px monospace";
+  ctx.fillStyle = "#fff";
+  let hpStr = "";
+  for (let i = 0; i < 5; i++) hpStr += i < player.hp ? "♥" : "♡";
+  ctx.fillText(hpStr, 10, 28);
+
+  ctx.fillStyle = "#6cf";
+  ctx.fillText(`PWR: ${"★".repeat(powerLevel)}${"☆".repeat(3 - powerLevel)}`, 10, 50);
+
+  ctx.fillStyle = "#555";
+  ctx.font = "12px monospace";
+  ctx.textAlign = "right";
+  ctx.fillText(`tick: ${tick}`, W - 10, H - 10);
+  ctx.textAlign = "left";
+
+  if (gameOver) {
+    ctx.fillStyle = "rgba(0,0,0,0.65)";
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "#f44";
+    ctx.font = "bold 52px monospace";
+    ctx.textAlign = "center";
+    ctx.fillText("GAME OVER", W / 2, H / 2 - 24);
+    ctx.fillStyle = "#aaa";
+    ctx.font = "16px monospace";
+    ctx.fillText("R : もう一度  /  M : メニューに戻る", W / 2, H / 2 + 20);
+    ctx.textAlign = "left";
+  }
+
+  if (stageClear) {
+    ctx.fillStyle = "rgba(0,0,0,0.55)";
+    ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = "#ff0";
+    ctx.font = "bold 52px monospace";
+    ctx.textAlign = "center";
+    ctx.fillText("STAGE CLEAR", W / 2, H / 2 - 24);
+    ctx.fillStyle = "#aaa";
+    ctx.font = "16px monospace";
+    ctx.fillText("R : もう一度  /  M : メニューに戻る", W / 2, H / 2 + 20);
+    ctx.textAlign = "left";
+  }
+}
+
+// ---- メニューに戻る ----
+function returnToMenu() {
+  if (animFrameId !== null) { cancelAnimationFrame(animFrameId); animFrameId = null; }
+  canvas.style.display = "none";
+  document.getElementById("startup").style.display = "flex";
+  document.getElementById("json-input").value = "";
+  document.getElementById("error-msg").textContent = "";
+}
+
+// ---- メインループ ----
+function loop() {
+  if (!gameOver && !stageClear) update();
+  if ((gameOver || stageClear) && keys["r"]) initGame(gameData);
+  if ((gameOver || stageClear) && keys["m"]) returnToMenu();
+  draw();
+  animFrameId = requestAnimationFrame(loop);
+}
+</script>
+</body>
+</html>

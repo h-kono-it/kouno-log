@@ -1,0 +1,359 @@
+---
+---
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Shooting Editor</title>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body { background: #0a0a1a; color: #ccc; font-family: monospace; height: 100vh; display: flex; flex-direction: column; overflow: hidden; }
+
+    /* トップバー */
+    #topbar { display: flex; align-items: center; gap: 24px; padding: 8px 16px; background: #111; border-bottom: 1px solid #2a2a4a; flex-shrink: 0; }
+    #topbar h1 { font-size: 15px; color: #4af; letter-spacing: 1px; margin-right: 8px; }
+    #topbar label { font-size: 12px; color: #aaa; }
+    #topbar input[type=number] { width: 64px; background: #1a1a2e; color: #ccc; border: 1px solid #3a3a5a; padding: 3px 6px; font-family: monospace; font-size: 12px; }
+
+    /* ワークスペース */
+    #workspace { display: flex; flex: 1; overflow: hidden; }
+
+    /* サイドバー */
+    #sidebar { width: 160px; flex-shrink: 0; background: #111; border-right: 1px solid #2a2a4a; padding: 12px 10px; display: flex; flex-direction: column; gap: 14px; overflow-y: auto; }
+    .panel-title { font-size: 10px; color: #555; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 4px; border-bottom: 1px solid #222; padding-bottom: 3px; }
+    .field { display: flex; flex-direction: column; gap: 3px; }
+    .field label { font-size: 11px; color: #888; }
+    .field select { background: #1a1a2e; color: #ccc; border: 1px solid #3a3a5a; padding: 4px 5px; font-family: monospace; font-size: 12px; width: 100%; }
+    #selected-panel { display: none; }
+    #selected-info { font-size: 11px; color: #668; line-height: 1.6; }
+    #delete-btn { background: #2a0a0a; color: #f88; border: 1px solid #5a2a2a; padding: 5px; cursor: pointer; font-family: monospace; font-size: 11px; width: 100%; margin-top: 4px; }
+    #delete-btn:hover { background: #3a1a1a; }
+
+    /* ピアノロール */
+    #roll-wrap { flex: 1; overflow: auto; background: #090912; }
+    #roll { display: block; cursor: crosshair; }
+
+    /* ボトムバー */
+    #bottombar { flex-shrink: 0; padding: 8px 12px; background: #111; border-top: 1px solid #2a2a4a; display: flex; gap: 8px; align-items: stretch; height: 80px; }
+    #json-out { flex: 1; background: #060610; color: #5f5; border: 1px solid #2a3a2a; font-family: monospace; font-size: 11px; padding: 6px; resize: none; line-height: 1.4; }
+    .bar-btn { background: #1a2a3a; color: #8af; border: 1px solid #2a4a6a; padding: 0 14px; cursor: pointer; font-family: monospace; font-size: 12px; white-space: nowrap; }
+    .bar-btn:hover { background: #2a3a4a; }
+    #open-btn { background: #1a3a1a; color: #8f8; border-color: #2a6a2a; }
+    #open-btn:hover { background: #2a4a2a; }
+  </style>
+</head>
+<body>
+
+<div id="topbar">
+  <h1>SHOOTING EDITOR</h1>
+  <label>ステージ長 (tick) <input type="number" id="stage-length" value="3600" min="300" max="36000" step="300"></label>
+  <label>自機速度 <input type="number" id="player-speed" value="5" min="1" max="20"></label>
+  <label>自機HP <input type="number" id="player-hp" value="3" min="1" max="10"></label>
+</div>
+
+<div id="workspace">
+
+  <div id="sidebar">
+    <div>
+      <div class="panel-title">ブラシ設定</div>
+      <div class="field"><label>敵タイプ</label>
+        <select id="b-type">
+          <option value="Scout">Scout   HP:2  SPD:2.5</option>
+          <option value="Sniper">Sniper  HP:3  SPD:1.5</option>
+          <option value="Carrier">Carrier HP:4  SPD:1.0</option>
+          <option value="Swarm">Swarm   HP:1  SPD:3.0</option>
+          <option value="Tank">Tank    HP:12 SPD:0.8</option>
+        </select>
+      </div>
+      <div class="field"><label>移動パターン</label>
+        <select id="b-movement">
+          <option value="straight">直進</option>
+          <option value="wave">波型</option>
+          <option value="stop">停止</option>
+          <option value="aim">追尾</option>
+        </select>
+      </div>
+      <div class="field"><label>攻撃パターン</label>
+        <select id="b-bullet">
+          <option value="aim">自機狙い</option>
+          <option value="straight">直進</option>
+          <option value="spread3">3方向拡散</option>
+          <option value="">なし</option>
+        </select>
+      </div>
+      <div class="field"><label>ドロップ</label>
+        <select id="b-drop">
+          <option value="">なし</option>
+          <option value="life">life（HP+1）</option>
+          <option value="power_up">power_up（弾強化）</option>
+        </select>
+      </div>
+    </div>
+
+    <div id="selected-panel">
+      <div class="panel-title">選択中</div>
+      <div id="selected-info"></div>
+      <button id="delete-btn">削除 [右クリックも可]</button>
+    </div>
+  </div>
+
+  <div id="roll-wrap">
+    <canvas id="roll"></canvas>
+  </div>
+
+</div>
+
+<div id="bottombar">
+  <textarea id="json-out" readonly placeholder="JSONがここに出力されます..."></textarea>
+  <button class="bar-btn" id="copy-btn">コピー</button>
+  <button class="bar-btn" id="open-btn">プレイヤーで開く</button>
+</div>
+
+<script is:inline>
+// ---- ピアノロール定数 ----
+const TICK_PER_COL = 30;
+const CELL_W  = 44;
+const CELL_H  = 48;
+const ROWS    = 8;
+const ROW_Y   = [30, 90, 150, 210, 270, 330, 390, 450];
+const HEADER_H = 28;
+const LABEL_W  = 58;
+
+const ENEMY_COLORS = {
+  Scout:   "#a33",
+  Sniper:  "#73a",
+  Carrier: "#37a",
+  Swarm:   "#aa3",
+  Tank:    "#a63",
+};
+
+// ---- 状態 ----
+const state = {
+  enemies:  [],   // { col, row, type, movement, bullet, drop }
+  selected: -1,
+};
+
+// ---- DOM ----
+const canvas  = document.getElementById("roll");
+const ctx     = canvas.getContext("2d");
+const jsonOut = document.getElementById("json-out");
+
+// ---- ヘルパー ----
+function getStageLength() { return Math.min(Math.max(parseInt(document.getElementById("stage-length").value) || 3600, 300), 36000); }
+function getPlayerSpeed()  { return Math.min(Math.max(parseInt(document.getElementById("player-speed").value) || 5, 1), 20); }
+function getPlayerHp()     { return Math.min(Math.max(parseInt(document.getElementById("player-hp").value) || 3, 1), 10); }
+function cols()            { return Math.ceil(getStageLength() / TICK_PER_COL); }
+
+function getBrush() {
+  return {
+    type:     document.getElementById("b-type").value,
+    movement: document.getElementById("b-movement").value,
+    bullet:   document.getElementById("b-bullet").value || null,
+    drop:     document.getElementById("b-drop").value   || null,
+  };
+}
+
+function setBrush(e) {
+  document.getElementById("b-type").value     = e.type;
+  document.getElementById("b-movement").value = e.movement;
+  document.getElementById("b-bullet").value   = e.bullet   ?? "";
+  document.getElementById("b-drop").value     = e.drop     ?? "";
+}
+
+// ---- 描画 ----
+function draw() {
+  const C = cols();
+  canvas.width  = LABEL_W + C * CELL_W;
+  canvas.height = HEADER_H + ROWS * CELL_H;
+
+  ctx.fillStyle = "#090912";
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+  // グリッドセル
+  for (let r = 0; r < ROWS; r++) {
+    for (let c = 0; c < C; c++) {
+      const x = LABEL_W + c * CELL_W;
+      const y = HEADER_H + r * CELL_H;
+      ctx.fillStyle = r % 2 === 0 ? "#0f1020" : "#0c0d1a";
+      ctx.fillRect(x + 1, y + 1, CELL_W - 2, CELL_H - 2);
+    }
+  }
+
+  // 縦線・tick ラベル
+  ctx.font = "10px monospace";
+  ctx.textAlign = "left";
+  for (let c = 0; c <= C; c++) {
+    const x = LABEL_W + c * CELL_W;
+    const isMajor = c % 5 === 0;
+    ctx.strokeStyle = isMajor ? "#2a3060" : "#161628";
+    ctx.lineWidth = isMajor ? 1 : 0.5;
+    ctx.beginPath(); ctx.moveTo(x, HEADER_H); ctx.lineTo(x, canvas.height); ctx.stroke();
+    if (isMajor) {
+      ctx.fillStyle = "#445";
+      ctx.fillText(c * TICK_PER_COL, x + 2, 18);
+    }
+  }
+
+  // 横線
+  for (let r = 0; r <= ROWS; r++) {
+    const y = HEADER_H + r * CELL_H;
+    ctx.strokeStyle = "#1a1a30";
+    ctx.lineWidth = 1;
+    ctx.beginPath(); ctx.moveTo(LABEL_W, y); ctx.lineTo(canvas.width, y); ctx.stroke();
+  }
+
+  // 行ラベル（Y座標）
+  ctx.textAlign = "right";
+  ctx.fillStyle = "#4a4a6a";
+  ctx.font = "11px monospace";
+  for (let r = 0; r < ROWS; r++) {
+    const y = HEADER_H + r * CELL_H + CELL_H / 2 + 4;
+    ctx.fillText(`Y:${ROW_Y[r]}`, LABEL_W - 5, y);
+  }
+
+  // 配置済み敵
+  for (let i = 0; i < state.enemies.length; i++) {
+    const e = state.enemies[i];
+    const x = LABEL_W + e.col * CELL_W + 3;
+    const y = HEADER_H + e.row * CELL_H + 3;
+    const w = CELL_W - 6;
+    const h = CELL_H - 6;
+
+    ctx.fillStyle = ENEMY_COLORS[e.type] ?? "#666";
+    ctx.fillRect(x, y, w, h);
+
+    if (state.selected === i) {
+      ctx.strokeStyle = "#fff";
+      ctx.lineWidth = 2;
+      ctx.strokeRect(x - 1, y - 1, w + 2, h + 2);
+    }
+
+    ctx.fillStyle = "rgba(0,0,0,0.75)";
+    ctx.font = "bold 9px monospace";
+    ctx.textAlign = "center";
+    ctx.fillText(e.type.slice(0, 3).toUpperCase(), x + w / 2, y + h * 0.55);
+    if (e.drop) {
+      ctx.fillStyle = e.drop === "life" ? "#f66" : "#6cf";
+      ctx.fillRect(x + w - 6, y + 2, 4, 4);
+    }
+  }
+
+  updateJson();
+}
+
+// ---- JSON生成 ----
+function updateJson() {
+  const data = {
+    version: "1.0",
+    stage:   { length: getStageLength(), background: "space_default" },
+    player:  { speed: getPlayerSpeed(), hp: getPlayerHp() },
+    timeline: state.enemies
+      .slice()
+      .sort((a, b) => a.col - b.col || a.row - b.row)
+      .map(e => ({
+        tick:      e.col * TICK_PER_COL,
+        enemyType: e.type,
+        posY:      ROW_Y[e.row],
+        movement:  e.movement,
+        bullet:    e.bullet,
+        drop:      e.drop,
+      })),
+  };
+  jsonOut.value = JSON.stringify(data, null, 2);
+}
+
+// ---- セル座標変換 ----
+function cellAt(ev) {
+  const r = canvas.getBoundingClientRect();
+  const x = ev.clientX - r.left;
+  const y = ev.clientY - r.top;
+  if (x < LABEL_W || y < HEADER_H) return null;
+  const col = Math.floor((x - LABEL_W) / CELL_W);
+  const row = Math.floor((y - HEADER_H) / CELL_H);
+  if (col < 0 || col >= cols() || row < 0 || row >= ROWS) return null;
+  return { col, row };
+}
+
+function findAt(col, row) {
+  return state.enemies.findIndex(e => e.col === col && e.row === row);
+}
+
+// ---- マウス操作 ----
+canvas.addEventListener("click", ev => {
+  const cell = cellAt(ev);
+  if (!cell) return;
+  const idx = findAt(cell.col, cell.row);
+  if (idx >= 0) {
+    state.selected = idx;
+    setBrush(state.enemies[idx]);
+  } else {
+    if (state.enemies.length >= 500) return;
+    state.enemies.push({ col: cell.col, row: cell.row, ...getBrush() });
+    state.selected = state.enemies.length - 1;
+  }
+  showSelected();
+  draw();
+});
+
+canvas.addEventListener("contextmenu", ev => {
+  ev.preventDefault();
+  const cell = cellAt(ev);
+  if (!cell) return;
+  const idx = findAt(cell.col, cell.row);
+  if (idx >= 0) deleteEnemy(idx);
+});
+
+// ---- 選択パネル ----
+function showSelected() {
+  const panel = document.getElementById("selected-panel");
+  const info  = document.getElementById("selected-info");
+  if (state.selected < 0) { panel.style.display = "none"; return; }
+  panel.style.display = "block";
+  const e = state.enemies[state.selected];
+  info.innerHTML = `tick: ${e.col * TICK_PER_COL}<br>posY: ${ROW_Y[e.row]}<br>${e.type}`;
+}
+
+function deleteEnemy(idx) {
+  state.enemies.splice(idx, 1);
+  if (state.selected === idx)      { state.selected = -1; showSelected(); }
+  else if (state.selected > idx)   { state.selected--; }
+  draw();
+}
+
+document.getElementById("delete-btn").addEventListener("click", () => {
+  if (state.selected >= 0) deleteEnemy(state.selected);
+});
+
+["b-type", "b-movement", "b-bullet", "b-drop"].forEach(id => {
+  document.getElementById(id).addEventListener("change", () => {
+    if (state.selected >= 0) {
+      Object.assign(state.enemies[state.selected], getBrush());
+      showSelected();
+      draw();
+    }
+  });
+});
+
+["stage-length", "player-speed", "player-hp"].forEach(id => {
+  document.getElementById(id).addEventListener("change", draw);
+});
+
+// ---- ボタン ----
+document.getElementById("copy-btn").addEventListener("click", () => {
+  navigator.clipboard.writeText(jsonOut.value).then(() => {
+    const btn = document.getElementById("copy-btn");
+    btn.textContent = "コピー済！";
+    setTimeout(() => btn.textContent = "コピー", 1500);
+  });
+});
+
+document.getElementById("open-btn").addEventListener("click", () => {
+  localStorage.setItem("shootingGameJson", jsonOut.value);
+  window.open("/games/shooting-player", "_blank");
+});
+
+// ---- 初期描画 ----
+draw();
+</script>
+</body>
+</html>
