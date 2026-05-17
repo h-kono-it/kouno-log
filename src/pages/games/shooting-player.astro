@@ -52,7 +52,7 @@
 <script is:inline>
 const SAMPLE_JSON = {
   version: "1.0",
-  stage: { length: 3600, background: "space_default" },
+  stage: { name: "サンプルステージ", length: 3600, background: "space_default" },
   player: { speed: 5, hp: 3 },
   timeline: [
     { tick:  60, enemyType: "Scout",   posY: 120, movement: "straight", bullet: "aim",      drop: null },
@@ -98,6 +98,7 @@ function validateGameData(raw) {
   raw.player.hp    = Math.min(Math.max(parseInt(raw.player.hp)    || 3, 1), 10);
   raw.player.speed = Math.min(Math.max(parseInt(raw.player.speed) || 5, 1), 20);
   raw.stage.length = Math.min(Math.max(parseInt(raw.stage.length) || 3600, 300), 36000);
+  raw.stage.name   = typeof raw.stage.name === "string" ? raw.stage.name.slice(0, 40) : "名もなき戦場";
 
   raw.timeline = raw.timeline.slice(0, 500).filter(e => {
     if (typeof e !== "object" || e === null) return false;

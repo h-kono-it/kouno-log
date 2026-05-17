@@ -46,6 +46,7 @@
 
 <div id="topbar">
   <h1>SHOOTING EDITOR</h1>
+  <label>ステージ名 <input type="text" id="stage-name" placeholder="名もなき戦場" maxlength="40" style="width:160px;"></label>
   <label>ステージ長 (tick) <input type="number" id="stage-length" value="3600" min="300" max="36000" step="300"></label>
   <label>自機速度 <input type="number" id="player-speed" value="5" min="1" max="20"></label>
   <label>自機HP <input type="number" id="player-hp" value="3" min="1" max="10"></label>
@@ -139,6 +140,7 @@ const ctx     = canvas.getContext("2d");
 const jsonOut = document.getElementById("json-out");
 
 // ---- ヘルパー ----
+function getStageName()    { return document.getElementById("stage-name").value.trim() || "名もなき戦場"; }
 function getStageLength() { return Math.min(Math.max(parseInt(document.getElementById("stage-length").value) || 3600, 300), 36000); }
 function getPlayerSpeed()  { return Math.min(Math.max(parseInt(document.getElementById("player-speed").value) || 5, 1), 20); }
 function getPlayerHp()     { return Math.min(Math.max(parseInt(document.getElementById("player-hp").value) || 3, 1), 10); }
@@ -245,7 +247,7 @@ function draw() {
 function updateJson() {
   const data = {
     version: "1.0",
-    stage:   { length: getStageLength(), background: "space_default" },
+    stage:   { name: getStageName(), length: getStageLength(), background: "space_default" },
     player:  { speed: getPlayerSpeed(), hp: getPlayerHp() },
     timeline: state.enemies
       .slice()
@@ -334,8 +336,8 @@ document.getElementById("delete-btn").addEventListener("click", () => {
   });
 });
 
-["stage-length", "player-speed", "player-hp"].forEach(id => {
-  document.getElementById(id).addEventListener("change", draw);
+["stage-name", "stage-length", "player-speed", "player-hp"].forEach(id => {
+  document.getElementById(id).addEventListener("input", draw);
 });
 
 // ---- ボタン ----
