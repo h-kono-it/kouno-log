@@ -24,8 +24,8 @@ importers:
         specifier: ^5.18.1
         version: 5.18.1(@types/node@24.12.0)(rollup@4.59.0)(typescript@5.9.3)
       astro-site-shell:
-        specifier: ^0.3.0
-        version: 0.3.0(astro@5.18.1(@types/node@24.12.0)(rollup@4.59.0)(typescript@5.9.3))
+        specifier: ^0.3.1
+        version: 0.3.1(astro@5.18.1(@types/node@24.12.0)(rollup@4.59.0)(typescript@5.9.3))
       budoux:
         specifier: ^0.8.3
         version: 0.8.3
@@ -1141,8 +1141,8 @@ packages:
   array-iterate@2.0.1:
     resolution: {integrity: sha512-I1jXZMjAgCMmxT4qxXfPXa6SthSoE8h6gkSI9BGGNv8mP8G/v0blc+qFnZu6K42vTOiuME596QaLO0TP3Lk0xg==}
 
-  astro-site-shell@0.3.0:
-    resolution: {integrity: sha512-YhlTQIQgXAXA3Eykb8THzr9mKvmEGHmau78W4UwCUY4ARpUjl8cnVVMlGyv4+zvtV/YFLXg48NYlTmK+bjlRlg==}
+  astro-site-shell@0.3.1:
+    resolution: {integrity: sha512-HFCIY9qm9hBFvpRNpYJzDL4xHIkUow9MkjvmAMjRdZvaEQlNNudZI724u+Xi7FlGYKB7GCx/OEmuak64WnzpIA==}
     peerDependencies:
       astro: '>=4.0.0'
 
@@ -2022,8 +2022,8 @@ packages:
   sisteransi@1.0.5:
     resolution: {integrity: sha512-bLGGlR1QxBcynn2d5YmDX4MGjlZvy2MRBDRNHLJ8VI6l6+9FUiyTFNJ0IveOSP0bcXgVDPRcfGqA0pjaqUpfVg==}
 
-  site-shell-core@0.2.0:
-    resolution: {integrity: sha512-n+ttbeyMkREmg/hquomt3UHOF4JP1lpK1i9nmz7p8NnPtlZob6DEhca5l6XNMguHkbUMqfTdNbLfVSsuPyEWYQ==}
+  site-shell-core@0.2.1:
+    resolution: {integrity: sha512-7IKxig2yxiiEcnhNXtFcAmniTSK1rE0+EZZ0e8sLwe1NUkIk5DFPINyLZE8V+n1+/BBd1sNrIimWvHYEiY8miw==}
 
   sitemap@9.0.1:
     resolution: {integrity: sha512-S6hzjGJSG3d6if0YoF5kTyeRJvia6FSTBroE5fQ0bu1QNxyJqhhinfUsXi9fH3MgtXODWvwo2BDyQSnhPQ88uQ==}
@@ -3158,10 +3158,10 @@ snapshots:
 
   array-iterate@2.0.1: {}
 
-  astro-site-shell@0.3.0(astro@5.18.1(@types/node@24.12.0)(rollup@4.59.0)(typescript@5.9.3)):
+  astro-site-shell@0.3.1(astro@5.18.1(@types/node@24.12.0)(rollup@4.59.0)(typescript@5.9.3)):
     dependencies:
       astro: 5.18.1(@types/node@24.12.0)(rollup@4.59.0)(typescript@5.9.3)
-      site-shell-core: 0.2.0
+      site-shell-core: 0.2.1
 
   astro@5.18.1(@types/node@24.12.0)(rollup@4.59.0)(typescript@5.9.3):
     dependencies:
@@ -4544,7 +4544,7 @@ snapshots:
 
   sisteransi@1.0.5: {}
 
-  site-shell-core@0.2.0: {}
+  site-shell-core@0.2.1: {}
 
   sitemap@9.0.1:
     dependencies:
