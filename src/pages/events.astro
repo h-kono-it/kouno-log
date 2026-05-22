@@ -2,15 +2,14 @@
 import Layout from '../layouts/Layout.astro';
 import { events } from '../data/events';
 
-const today = new Date();
-today.setHours(0, 0, 0, 0);
+const todayJST = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
 
 const sorted = [...events].sort((a, b) => b.date.localeCompare(a.date));
 
-const upcoming = sorted.filter((e) => new Date(e.date) >= today);
-const past = sorted.filter((e) => new Date(e.date) < today);
+const upcoming = sorted.filter((e) => e.date >= todayJST);
+const past = sorted.filter((e) => e.date < todayJST);
 
-const currentYear = String(today.getFullYear());
+const currentYear = todayJST.slice(0, 4);
 
 // 年 → 月 → イベント のネスト構造に変換
 function groupByYearMonth(list: typeof events) {
