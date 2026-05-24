@@ -84,6 +84,20 @@ const currentPath = Astro.url.pathname;
 </script>
 
 <style is:global>
+  :root {
+    --color-primary: #0066cc;
+    --color-text: #333;
+    --color-text-muted: #666;
+    --color-text-light: #999;
+    --color-border: #eee;
+    --color-border-dark: #ccc;
+    --color-badge-note: #41c9b4;
+    --color-badge-hatena: #00a4de;
+    --color-badge-docswell: #ff6b35;
+    --color-badge-toralab: #7c3aed;
+    --color-badge-news: #8b5cf6;
+  }
+
   * {
     box-sizing: border-box;
     margin: 0;
@@ -96,7 +110,7 @@ const currentPath = Astro.url.pathname;
     left: 0;
     z-index: 100;
     padding: 0.5rem 1rem;
-    background: #0066cc;
+    background: var(--color-primary);
     color: #fff;
     text-decoration: none;
     border-radius: 0 0 4px 0;
@@ -107,7 +121,7 @@ const currentPath = Astro.url.pathname;
   }
 
   :focus-visible {
-    outline: 2px solid #0066cc;
+    outline: 2px solid var(--color-primary);
     outline-offset: 2px;
     border-radius: 2px;
   }
@@ -123,7 +137,7 @@ const currentPath = Astro.url.pathname;
   header {
     margin-bottom: 2rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
   }
 
   nav {
@@ -134,7 +148,7 @@ const currentPath = Astro.url.pathname;
   }
 
   nav a {
-    color: #333;
+    color: var(--color-text);
     text-decoration: none;
     white-space: nowrap;
   }
@@ -176,8 +190,8 @@ const currentPath = Astro.url.pathname;
   footer {
     margin-top: 2rem;
     padding-top: 1rem;
-    border-top: 1px solid #eee;
-    color: #666;
+    border-top: 1px solid var(--color-border);
+    color: var(--color-text-muted);
     font-size: 0.875rem;
     display: flex;
     align-items: center;
@@ -185,7 +199,7 @@ const currentPath = Astro.url.pathname;
   }
 
   .rss-link {
-    color: #666;
+    color: var(--color-text-muted);
     transition: color 0.2s;
   }
 
@@ -198,7 +212,7 @@ const currentPath = Astro.url.pathname;
   }
 
   a {
-    color: #0066cc;
+    color: var(--color-primary);
   }
 
   .ink-save-btn {
@@ -206,7 +220,7 @@ const currentPath = Astro.url.pathname;
     border: 1px solid transparent;
     border-radius: 4px;
     cursor: pointer;
-    color: #666;
+    color: var(--color-text-muted);
     font-size: 0.8rem;
     padding: 2px 6px;
     display: flex;
@@ -218,13 +232,13 @@ const currentPath = Astro.url.pathname;
   }
 
   .ink-save-btn:hover {
-    color: #333;
-    border-color: #ccc;
+    color: var(--color-text);
+    border-color: var(--color-border-dark);
   }
 
   .ink-save-btn[aria-pressed="true"] {
-    color: #333;
-    border-color: #999;
+    color: var(--color-text);
+    border-color: var(--color-text-light);
   }
 
   .ink-save-label-on {
@@ -241,5 +255,60 @@ const currentPath = Astro.url.pathname;
 
   body.ink-save-mode {
     filter: grayscale(100%);
+  }
+
+  .filter-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-border-dark);
+    border-radius: 20px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+
+  .filter-btn:hover {
+    border-color: var(--color-text-light);
+  }
+
+  .filter-btn.active {
+    background: var(--color-text);
+    color: white;
+    border-color: var(--color-text);
+  }
+
+  .page-btn {
+    padding: 0.5rem 1rem;
+    border: 1px solid var(--color-border-dark);
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    font-size: 0.875rem;
+    transition: all 0.2s;
+  }
+
+  .page-btn:hover:not(:disabled) {
+    border-color: var(--color-text-light);
+    background: #f5f5f5;
+  }
+
+  .page-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+
+  .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 1rem;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .page-info {
+    color: var(--color-text-muted);
+    font-size: 0.875rem;
   }
 </style>
