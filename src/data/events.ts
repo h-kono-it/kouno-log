@@ -11,7 +11,7 @@ export interface Event {
 export const events: Event[] = [
   { name: 'きのこカンファレンス 2026', date: '2026-06-28', role: 'コアスタッフ', url: 'https://kinoko-conf.dev/index.html' },
   { name: 'JJUG CCC 2026 Spring', date: '2026-05-30', role: '登壇', url: 'https://ccc2026spring.java-users.jp/' },
-  { name: '【エンジニアLTイベント】個人開発LT祭 2026年(神田開催)', date: '2026-05-22', role: '登壇', url: 'https://yumenosora.connpass.com/event/390878/', slideUrl: 'https://www.docswell.com/s/hk_it7/KGNQLP-personal_project' },
+  { name: '【エンジニアLTイベント】個人開発LT祭 2026年(神田開催)', date: '2026-05-22', role: '登壇', url: 'https://yumenosora.connpass.com/event/390878/', slideUrl: 'https://h-kono-it.github.io/personal_project-slide' },
   { name: '東葛.dev in 野田 交流会【第11回】', date: '2026-05-16', role: '主催', url: 'https://toukatsu.connpass.com/event/388936/' },
   { name: '第十三回技術書同人誌博覧会', date: '2026-05-10', role: 'サークル参加', url: 'https://gishohaku.connpass.com/event/372013/' },
   { name: 'コミュニティ・勉強会の作り方', date: '2026-04-27', role: '登壇', url: 'https://kaitou.connpass.com/event/383669/', slideUrl: 'https://www.docswell.com/s/hk_it7/5WRX7X-2026-04-27-community-ganbaranai' },
