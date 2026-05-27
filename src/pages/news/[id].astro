@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import ShareButtons from '../../components/ShareButtons.astro';
 import ArticleContent from '../../components/ArticleContent.astro';
+import OptimizedImg from '../../components/OptimizedImg.astro';
 import { getCollection, render } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -26,7 +27,7 @@ const pageUrl = Astro.url.href;
       </time>
     </header>
     <ArticleContent>
-      <Content />
+      <Content components={{ img: OptimizedImg }} />
     </ArticleContent>
     <div class="share-buttons-bottom">
       <ShareButtons title={item.data.title} url={pageUrl} showHatena={false} />

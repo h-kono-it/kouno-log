@@ -2,6 +2,7 @@
 import Layout from '../../layouts/Layout.astro';
 import ShareButtons from '../../components/ShareButtons.astro';
 import ArticleContent from '../../components/ArticleContent.astro';
+import OptimizedImg from '../../components/OptimizedImg.astro';
 import { getCollection, render, type CollectionEntry } from 'astro:content';
 
 export async function getStaticPaths() {
@@ -39,7 +40,7 @@ const pageUrl = Astro.url.href;
       <button id="raw-toggle" class="raw-toggle" aria-pressed="false">Raw</button>
     </header>
     <ArticleContent id="rendered-content">
-      <Content />
+      <Content components={{ img: OptimizedImg }} />
     </ArticleContent>
     <div id="raw-wrapper" hidden>
       <button id="copy-btn" class="copy-btn">Copy</button>

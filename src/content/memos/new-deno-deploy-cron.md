@@ -19,25 +19,16 @@ tags: [Deno Deploy, Cron]
 
 どのcronが何を出力したのかが一目でわかるようになった。旧環境では全ログが混在していたため、特定のcronの挙動を追うのが大変だった。
 
-<figure>
-  <img src="/memos/new-deno-deploy-log.png" alt="ログの表示画面。TraceID単位で表示されるため、cronの実行単位でログを確認できる。">
-  <figcaption>ログの表示画面。TraceID単位で表示されるため、cronの実行単位でログを確認できる。</figcaption>
-</figure>
+![ログの表示画面。TraceID単位で表示されるため、cronの実行単位でログを確認できる。](./new-deno-deploy-log.png)
 
 **GUI上からRun Nowができるようになった**
 
 管理画面から任意のタイミングで手動実行できる。次のスケジュール実行を待たずに動作確認できるのはかなり便利。
 
-<figure>
-  <img src="/memos/new-deno-deploy-run-now.png" alt="Deno CronのRun Now（即時実行）ボタン">
-  <figcaption>Deno CronのRun Now（即時実行）ボタン</figcaption>
-</figure>
+![Deno CronのRun Now（即時実行）ボタン](./new-deno-deploy-run-now.png)
 
 **Tracesが見られるようになった**
 
 実行のトレース情報が確認できるようになった。エラーが起きたときに原因を特定しやすくなっている。
 
-<figure>
-  <img src="/memos/new-deno-deploy-trace.png" alt="Traceの表示画面。全体の実行などを見ることができる。">
-  <figcaption>Traceの表示画面。全体の実行などを見ることができる。</figcaption>
-</figure>
+![Traceの表示画面。全体の実行などを見ることができる。](./new-deno-deploy-trace.png)

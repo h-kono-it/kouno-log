@@ -9,7 +9,7 @@ tags: [Cloudflare Pages]
 
 GitHub Actionsでの自動リンク更新時に `[skip ci]` をコミットメッセージにつけていたところ、Cloudflare Pagesのデプロイもスキップされていた。
 
-![Cloudflare Pagesでスキップされている様子](/memos/cloudflare-ci-skip.png)
+![Cloudflare Pagesでスキップされている様子](./cloudflare-ci-skip.png)
 
 ## 原因
 

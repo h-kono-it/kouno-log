@@ -19,7 +19,4 @@ pubDate: 2026-03-19
 
 ---
 
-<figure>
-  <img src="/news/events-page.png" alt="Eventsページの画像">
-  <figcaption>Eventsページの画像</figcaption>
-</figure>
+![Eventsページの画像](./events-page.png)
