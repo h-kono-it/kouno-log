@@ -19,7 +19,7 @@ pubDate: 2026-04-03
 
 ## 頒布する本
 
-![Java 10+a年振り返り（上巻）書影、タイトルと妻が描いたシマエナガのイラスト](./hyoushi.webp)
+![Java 10+a年振り返り（上巻）書影、タイトルと妻が描いたシマエナガのイラスト](./images/hyoushi.webp)
 
 **[Java 10+a年振り返り（上巻）](https://techbookfest.org/product/fiphWJLZvYRKCvCZ7Hzc1h)**
 

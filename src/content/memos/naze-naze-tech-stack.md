@@ -9,7 +9,7 @@ tags: [react, typescript, react-flow, vite, tailwind]
 
 [なぜなぜ分析ツール](https://h-kono-it.github.io/naze-naze/) を公開した。従来のなぜなぜ分析は一本道になりがちで、複数の原因の並列管理や優先順位づけが難しい。このツールでは「原因をツリーで記録する」「因果チェーンを逆順にたどって検証する」の2点を軸に設計した。
 
-![なぜなぜ分析ツールのサンプル画像 NullPointerException発生の分析をしている](./naze-naze_image.png)
+![なぜなぜ分析ツールのサンプル画像 NullPointerException発生の分析をしている](./images/naze-naze_image.png)
 
 
 ## 機能概要

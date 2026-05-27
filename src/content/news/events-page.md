@@ -19,4 +19,4 @@ pubDate: 2026-03-19
 
 ---
 
-![Eventsページの画像](./events-page.png)
+![Eventsページの画像](./images/events-page.png)
