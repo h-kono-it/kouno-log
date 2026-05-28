@@ -27,6 +27,6 @@
     "sharp": "^0.34.5"
   },
   "devDependencies": {
-    "oxlint": "^1.64.0"
+    "oxlint": "^1.66.0"
   }
 }
