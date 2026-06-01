@@ -1,0 +1,8 @@
+{
+  "title": "JavaのEnumにおける再帰的ジェネリクス `Enum<E extends Enum<E>>` の存在理由",
+  "url": "https://hk-it.hatenablog.com/entry/2026/05/31/214015",
+  "pubDate": "2026-05-31T12:40:15.000Z",
+  "source": "hatena",
+  "description": "はじめに\n先日、JJUG CCC 2026 Spring にて「Enum 徹底入門」というタイトルで登壇しました。\nスライドと当日のサンプルコードはこちらから参照できます。\nスライド/サンプルコード（GitHub）\ngithub.com\nスライド\nwww.docswell.com\n登壇内では、Enumがextends Enum<T> が自動的に付与されることには触れましたが、詳細としては「Enum",
+  "thumbnail": "/thumbnails/2026-05-31-hatena-javaenum-enume-extends-enume--1f3b95e7.png"
+}
