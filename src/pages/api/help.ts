@@ -71,6 +71,21 @@ export async function GET(_context: APIContext) {
       description: '外部記事の詳細を返す',
       params: [],
     },
+    {
+      method: 'GET',
+      path: '/api/events',
+      description: 'イベント一覧を返す',
+      params: [
+        { name: 'role', required: false, description: '参加 | 登壇 | スタッフ | コアスタッフ | サークル参加 | 主催 でフィルタ' },
+        { name: 'upcoming', required: false, description: 'true: 今後のイベントのみ / false: 過去のみ' },
+      ],
+    },
+    {
+      method: 'GET',
+      path: '/api/products',
+      description: 'プロダクト一覧を返す',
+      params: [],
+    },
   ];
 
   return jsonResponse({ endpoints });
