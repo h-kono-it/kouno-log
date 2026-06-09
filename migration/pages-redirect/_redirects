@@ -1,0 +1,3 @@
+# kouno-log.pages.dev → Workers への恒久リダイレクト
+# TODO: デプロイ前に実際の workers.dev URL（kouno-log.<subdomain>.workers.dev）に合わせること
+/* https://kouno-log.workers.dev/:splat 301

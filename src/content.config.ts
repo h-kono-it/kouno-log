@@ -29,7 +29,7 @@ const external = defineCollection({
   loader: glob({ pattern: '**/*.json', base: './src/content/external' }),
   schema: z.object({
     title: z.string(),
-    url: z.string().url(),
+    url: z.url(),
     pubDate: z.coerce.date(),
     source: z.enum(['note', 'hatena', 'docswell', 'toralab']),
     description: z.string().optional(),

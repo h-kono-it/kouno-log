@@ -66,13 +66,13 @@ src/
 
 ## 外部記事の自動取得
 
-GitHub Actionsで毎日自動取得してコミット。Cloudflare Pagesで自動デプロイ。
+GitHub Actionsで毎日自動取得してコミット。mainへのマージで自動デプロイ。
 
 ## デプロイ
 
-Cloudflare Pages
-- Build command: `pnpm build`
-- Build output: `dist`
+Cloudflare Workers
+- mainブランチへのpushで `.github/workflows/deploy.yml` が `pnpm build` → `wrangler deploy` を実行
+- 旧 `kouno-log.pages.dev` からのリダイレクトは `migration/pages-redirect/README.md` を参照
 
 ## ライセンス
 
