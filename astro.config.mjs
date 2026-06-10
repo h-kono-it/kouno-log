@@ -10,7 +10,7 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   // TODO: wrangler login 後に `pnpm exec wrangler whoami` でサブドメインを確認し、
   // 実際の workers.dev URL（kouno-log.<subdomain>.workers.dev）に合わせること
-  site: 'https://kouno-log.workers.dev',
+  site: 'https://kouno-log.hkono.workers.dev',
   adapter: cloudflare({
     imageService: 'compile',
     // OG画像生成（satori + resvg-wasm）が node_modules の wasm やフォントを
