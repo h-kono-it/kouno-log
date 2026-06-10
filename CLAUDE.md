@@ -23,4 +23,6 @@
 
 ## デプロイ
 
-Cloudflare Pages（mainブランチpushで自動デプロイ）
+Cloudflare Workers（mainブランチpushで `.github/workflows/deploy.yml` が `wrangler deploy` を実行）
+
+- 旧 `kouno-log.pages.dev` は Pages プロジェクトを `migration/pages-redirect/` の `_redirects` のみ配信に切り替えて 301 リダイレクト（詳細は `migration/pages-redirect/README.md`）
