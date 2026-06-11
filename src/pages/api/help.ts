@@ -61,7 +61,7 @@ export async function GET(_context: APIContext) {
       path: '/api/external',
       description: '外部記事（note / はてなブログ / Docswell）一覧を返す',
       params: [
-        { name: 'source', required: false, description: 'note | hatena | docswell | toralab でフィルタ' },
+        { name: 'source', required: false, description: 'note | hatena | docswell | toralab | qiita でフィルタ' },
         { name: 'limit', required: false, description: '件数上限（デフォルト: 20）' },
       ],
     },

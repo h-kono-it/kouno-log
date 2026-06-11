@@ -18,6 +18,7 @@ const FEEDS = [
   { url: 'https://hk-it.hatenablog.com/rss', source: 'hatena' },
   { url: 'https://www.docswell.com/user/hk_it7/feed', source: 'docswell' },
   { url: 'https://b.hatena.ne.jp/hk_it/bookmark.rss?tag=myposts', source: 'toralab' },
+  { url: 'https://qiita.com/hk_it7/feed', source: 'qiita' },
 ];
 
 const parser = new Parser({
@@ -70,6 +71,17 @@ function extractThumbnailFromRss(item) {
   return undefined;
 }
 
+// メタタグのcontent属性はHTMLエンティティ化されている（Qiitaのog:imageは
+// &amp;を含む署名付きURLのため、デコードしないと取得に失敗する）
+function decodeHtmlEntities(text) {
+  return text
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .replace(/&amp;/g, '&');
+}
+
 async function fetchOgData(url) {
   try {
     const response = await fetch(url, {
@@ -91,9 +103,11 @@ async function fetchOgData(url) {
     const ogDescMatch = html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i)
       || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:description["']/i);
 
+    const image = ogImageMatch?.[1] || twitterImageMatch?.[1];
+    const description = ogDescMatch?.[1];
     return {
-      image: ogImageMatch?.[1] || twitterImageMatch?.[1],
-      description: ogDescMatch?.[1],
+      image: image ? decodeHtmlEntities(image) : undefined,
+      description: description ? decodeHtmlEntities(description) : undefined,
     };
   } catch (error) {
     console.warn(`    Failed to fetch OGP from ${url}: ${error.message}`);

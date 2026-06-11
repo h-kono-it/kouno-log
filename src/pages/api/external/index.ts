@@ -4,7 +4,7 @@ import { jsonResponse } from '../../../lib/api-response';
 
 export const prerender = false;
 
-const VALID_SOURCES = ['note', 'hatena', 'docswell', 'toralab'] as const;
+const VALID_SOURCES = ['note', 'hatena', 'docswell', 'toralab', 'qiita'] as const;
 type Source = (typeof VALID_SOURCES)[number];
 
 export async function GET(context: APIContext) {

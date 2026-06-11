@@ -1,0 +1,8 @@
+{
+  "title": "Javaのswitch文とswitch式はどう区別する？値を代入しないアロー構文の正体",
+  "url": "https://qiita.com/hk_it7/items/1a9e195210ff1ddc7e03",
+  "pubDate": "2026-06-10T11:27:17.000Z",
+  "source": "qiita",
+  "description": "Java 14で正式導入されたアロー構文（->）を伴う switch は、従来の switch 文に比べて記述がシンプルになりました。しかし、そのシンプルさゆえに「今書いているのは switch 文なのか、それとも switch 式なのか」という区別で迷うケースがあります。...",
+  "thumbnail": "/thumbnails/2026-06-10-qiita-javaswitchswitch-0a6c1153.jpg"
+}
