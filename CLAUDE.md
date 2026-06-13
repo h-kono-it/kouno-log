@@ -2,6 +2,8 @@
 
 ## プロジェクト概要
 
+GitHub: https://github.com/h-kono-it/kouno-log
+
 **kouno.log** - Astro製の個人ポータルサイト。note、はてなブログ、ドクセルの記事を集約。
 
 ## コマンド
