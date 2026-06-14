@@ -16,9 +16,28 @@ export async function getStaticPaths() {
 const { memo } = Astro.props;
 const { Content } = await render(memo);
 const pageUrl = Astro.url.href;
+
+const articleSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BlogPosting',
+  headline: memo.data.title,
+  url: pageUrl,
+  datePublished: memo.data.pubDate.toISOString(),
+  ...(memo.data.description ? { description: memo.data.description } : {}),
+  ...(memo.data.tags.length > 0 ? { keywords: memo.data.tags } : {}),
+  image: `${Astro.url.origin}/og/memos/${memo.id}.png`,
+  author: {
+    '@type': 'Person',
+    name: 'kouno',
+    url: `${Astro.url.origin}/profile`,
+  },
+};
 ---
 
 <Layout title={`${memo.data.title} | kouno.log`} description={memo.data.description} ogImage={`/og/memos/${memo.id}.png`}>
+  <Fragment slot="head">
+    <script type="application/ld+json" set:html={JSON.stringify(articleSchema)} />
+  </Fragment>
   <article>
     <header>
       <h1>{memo.data.title}</h1>
