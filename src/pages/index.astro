@@ -37,6 +37,19 @@ const allContent = [
 
 const recentContent = allContent.slice(0, 10);
 
+const websiteSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'WebSite',
+  name: 'kouno.log',
+  url: Astro.url.origin,
+  description: 'note、はてなブログ、ドクセルの記事とメモをまとめています。',
+  author: {
+    '@type': 'Person',
+    name: 'kouno',
+    url: `${Astro.url.origin}/profile`,
+  },
+};
+
 // アーカイブ（news + memos のみ）
 const archiveContent = [
   ...memos.map((m) => ({ url: `/memos/${m.id}`, title: m.data.title, pubDate: m.data.pubDate, source: 'memo' as const })),
@@ -79,6 +92,9 @@ const links = [
 ---
 
 <Layout title="kouno.log">
+  <Fragment slot="head">
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
+  </Fragment>
   <h1>kouno.log</h1>
   <p>note、はてなブログ、ドクセルの記事とメモをまとめています。</p>
 

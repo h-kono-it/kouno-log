@@ -46,7 +46,7 @@ const talks: { title: string; event: string; date: string; url: string }[] = [
 
 <Layout title="Profile - kouno.log" description="kounoのプロフィール">
   <Fragment slot="head">
-    <script type="application/ld+json" set:html={JSON.stringify(personSchema)} />
+    <script is:inline type="application/ld+json" set:html={JSON.stringify(personSchema)} />
   </Fragment>
   <h1>Profile</h1>
 
