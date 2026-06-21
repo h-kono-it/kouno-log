@@ -93,6 +93,7 @@ const currentPath = Astro.url.pathname;
     --color-text-light: #999;
     --color-border: #eee;
     --color-border-dark: #ccc;
+    --color-badge-memo: #6b7280;
     --color-badge-note: #41c9b4;
     --color-badge-hatena: #00a4de;
     --color-badge-docswell: #ff6b35;
@@ -105,6 +106,52 @@ const currentPath = Astro.url.pathname;
     box-sizing: border-box;
     margin: 0;
     padding: 0;
+  }
+
+  ul {
+    list-style: none;
+  }
+
+  .badge {
+    font-size: 0.75rem;
+    padding: 0.125rem 0.5rem;
+    border-radius: 4px;
+    text-align: center;
+  }
+
+  .badge[data-source='memo'] {
+    background: var(--color-badge-memo);
+    color: white;
+  }
+
+  .badge[data-source='note'] {
+    background: var(--color-badge-note);
+    color: white;
+  }
+
+  .badge[data-source='hatena'] {
+    background: var(--color-badge-hatena);
+    color: white;
+  }
+
+  .badge[data-source='docswell'] {
+    background: var(--color-badge-docswell);
+    color: white;
+  }
+
+  .badge[data-source='toralab'] {
+    background: var(--color-badge-toralab);
+    color: white;
+  }
+
+  .badge[data-source='qiita'] {
+    background: var(--color-badge-qiita);
+    color: white;
+  }
+
+  .badge[data-source='news'] {
+    background: var(--color-badge-news);
+    color: white;
   }
 
   .skip-link {

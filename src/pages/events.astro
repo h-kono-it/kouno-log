@@ -102,7 +102,7 @@ const pastByYearMonth = groupByYearMonth(past);
   }
 
   p {
-    color: #666;
+    color: var(--color-text-muted);
     margin-bottom: 0;
   }
 
@@ -117,14 +117,14 @@ const pastByYearMonth = groupByYearMonth(past);
 
   h3 {
     font-size: 1rem;
-    color: #666;
+    color: var(--color-text-muted);
     margin-bottom: 0.5rem;
     margin-top: 1.5rem;
   }
 
   .year-group {
     margin-top: 1rem;
-    border: 1px solid #eee;
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     overflow: hidden;
   }
@@ -169,21 +169,17 @@ const pastByYearMonth = groupByYearMonth(past);
     margin-top: 0.5rem;
   }
 
-  .event-list {
-    list-style: none;
-  }
-
   .event-list li {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     padding: 0.5rem 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
     flex-wrap: wrap;
   }
 
   time {
-    color: #666;
+    color: var(--color-text-muted);
     font-size: 0.875rem;
     white-space: nowrap;
   }
@@ -256,11 +252,11 @@ const pastByYearMonth = groupByYearMonth(past);
   }
 
   .event-name {
-    color: #333;
+    color: var(--color-text);
   }
 
   .empty {
-    color: #999;
+    color: var(--color-text-light);
     font-size: 0.875rem;
   }
 

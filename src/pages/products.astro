@@ -50,12 +50,11 @@ import { products } from '../data/products';
   }
 
   .lead {
-    color: #666;
+    color: var(--color-text-muted);
     margin-bottom: 2rem;
   }
 
   .products-list {
-    list-style: none;
     display: flex;
     flex-direction: column;
     gap: 1.5rem;
@@ -63,7 +62,7 @@ import { products } from '../data/products';
 
   .product-card {
     padding: 1.25rem 1.5rem;
-    border: 1px solid #eee;
+    border: 1px solid var(--color-border);
     border-radius: 8px;
   }
 
@@ -75,7 +74,7 @@ import { products } from '../data/products';
     font-size: 1.25rem;
     font-weight: 700;
     text-decoration: none;
-    color: #333;
+    color: var(--color-text);
   }
 
   .product-name:hover {
@@ -100,7 +99,7 @@ import { products } from '../data/products';
     padding: 0.2rem 0.6rem;
     border-radius: 20px;
     font-size: 0.8rem;
-    color: #555;
+    color: var(--color-text-muted);
   }
 
   .links {
@@ -111,6 +110,6 @@ import { products } from '../data/products';
   .repo-link,
   .related-memo {
     font-size: 0.875rem;
-    color: #0066cc;
+    color: var(--color-primary);
   }
 </style>

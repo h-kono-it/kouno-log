@@ -156,7 +156,7 @@ const talks: { title: string; event: string; date: string; url: string }[] = [
   }
 
   .bio p {
-    color: #666;
+    color: var(--color-text-muted);
   }
 
   h3 {
@@ -177,13 +177,9 @@ const talks: { title: string; event: string; date: string; url: string }[] = [
     font-size: 0.875rem;
   }
 
-  .links-list {
-    list-style: none;
-  }
-
   .links-list li {
     padding: 0.5rem 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
   }
 
   .links-list a {
@@ -194,13 +190,9 @@ const talks: { title: string; event: string; date: string; url: string }[] = [
     text-decoration: underline;
   }
 
-  .talks-list {
-    list-style: none;
-  }
-
   .talks-list li {
     padding: 0.75rem 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
   }
 
   .talks-list a {
@@ -217,16 +209,12 @@ const talks: { title: string; event: string; date: string; url: string }[] = [
     display: block;
     margin-top: 0.25rem;
     font-size: 0.875rem;
-    color: #666;
-  }
-
-  .communities-list {
-    list-style: none;
+    color: var(--color-text-muted);
   }
 
   .communities-list li {
     padding: 0.75rem 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
   }
 
   .communities-list a {
@@ -242,6 +230,6 @@ const talks: { title: string; event: string; date: string; url: string }[] = [
     display: block;
     margin-top: 0.25rem;
     font-size: 0.875rem;
-    color: #666;
+    color: var(--color-text-muted);
   }
 </style>

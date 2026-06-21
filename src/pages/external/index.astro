@@ -102,10 +102,6 @@ const PER_PAGE = 20;
     border-color: var(--color-badge-qiita);
   }
 
-  .external-list {
-    list-style: none;
-  }
-
   .external-list li {
     margin-bottom: 1rem;
   }
@@ -162,33 +158,6 @@ const PER_PAGE = 20;
     margin-bottom: 0.5rem;
   }
 
-  .badge {
-    font-size: 0.75rem;
-    padding: 0.125rem 0.5rem;
-    border-radius: 4px;
-    color: white;
-  }
-
-  .badge[data-source='note'] {
-    background: var(--color-badge-note);
-  }
-
-  .badge[data-source='hatena'] {
-    background: var(--color-badge-hatena);
-  }
-
-  .badge[data-source='docswell'] {
-    background: var(--color-badge-docswell);
-  }
-
-  .badge[data-source='toralab'] {
-    background: var(--color-badge-toralab);
-  }
-
-  .badge[data-source='qiita'] {
-    background: var(--color-badge-qiita);
-  }
-
   .external-list h3 {
     font-size: 1rem;
     margin-bottom: 0.5rem;
@@ -213,11 +182,11 @@ const PER_PAGE = 20;
     background: #f9f9f9;
     border-radius: 8px;
     text-align: center;
-    color: #666;
+    color: var(--color-text-muted);
   }
 
   .empty code {
-    background: #eee;
+    background: var(--color-border);
     padding: 0.125rem 0.5rem;
     border-radius: 4px;
   }

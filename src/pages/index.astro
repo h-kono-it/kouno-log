@@ -203,26 +203,17 @@ const links = [
     font-size: 1.25rem;
   }
 
-  .content-list {
-    list-style: none;
-  }
-
   .content-list li {
     display: flex;
     align-items: center;
     gap: 0.75rem;
     padding: 0.5rem 0;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
     flex-wrap: wrap;
   }
 
   .badge {
-    font-size: 0.75rem;
-    padding: 0.125rem 0.5rem;
-    border-radius: 4px;
-    background: #eee;
     min-width: 60px;
-    text-align: center;
   }
 
   @media (max-width: 480px) {
@@ -241,47 +232,12 @@ const links = [
     }
   }
 
-  .badge[data-source='memo'] {
-    background: #6b7280;
-    color: white;
-  }
-
-  .badge[data-source='note'] {
-    background: #41c9b4;
-    color: white;
-  }
-
-  .badge[data-source='hatena'] {
-    background: #00a4de;
-    color: white;
-  }
-
-  .badge[data-source='docswell'] {
-    background: #ff6b35;
-    color: white;
-  }
-
-  .badge[data-source='toralab'] {
-    background: #7c3aed;
-    color: white;
-  }
-
-  .badge[data-source='qiita'] {
-    background: #55c500;
-    color: white;
-  }
-
-  .badge[data-source='news'] {
-    background: #8b5cf6;
-    color: white;
-  }
-
   .content-list a {
     flex: 1;
   }
 
   time {
-    color: #666;
+    color: var(--color-text-muted);
     font-size: 0.875rem;
   }
 
@@ -299,7 +255,7 @@ const links = [
     display: flex;
     flex-direction: column;
     padding: 1rem 1.25rem;
-    border: 1px solid #eee;
+    border: 1px solid var(--color-border);
     border-radius: 8px;
     text-decoration: none;
     color: inherit;
@@ -307,20 +263,20 @@ const links = [
   }
 
   .link-card:hover {
-    border-color: #ccc;
+    border-color: var(--color-border-dark);
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
   }
 
   .link-name {
     font-weight: 600;
     font-size: 1rem;
-    color: #333;
+    color: var(--color-text);
   }
 
   .link-desc {
     margin-top: 0.25rem;
     font-size: 0.875rem;
-    color: #666;
+    color: var(--color-text-muted);
   }
 
   .archive-section {
@@ -328,7 +284,7 @@ const links = [
   }
 
   .archive-section details {
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid var(--color-border);
   }
 
   .archive-year {
@@ -336,7 +292,7 @@ const links = [
     cursor: pointer;
     font-size: 0.95rem;
     font-weight: 600;
-    color: #333;
+    color: var(--color-text);
     list-style: none;
     display: flex;
     align-items: center;
@@ -347,7 +303,7 @@ const links = [
   .archive-year::before {
     content: '▶';
     font-size: 0.6rem;
-    color: #999;
+    color: var(--color-text-light);
     transition: transform 0.2s;
   }
 
@@ -356,7 +312,6 @@ const links = [
   }
 
   .archive-months {
-    list-style: none;
     display: flex;
     flex-wrap: wrap;
     gap: 0.5rem;
@@ -368,7 +323,7 @@ const links = [
     align-items: center;
     gap: 0.25rem;
     font-size: 0.875rem;
-    color: #555;
+    color: var(--color-text-muted);
     text-decoration: none;
     padding: 0.2rem 0.5rem;
     border-radius: 4px;
@@ -382,7 +337,7 @@ const links = [
 
   .archive-count {
     font-size: 0.75rem;
-    color: #999;
+    color: var(--color-text-light);
   }
 
   .events-banner {
@@ -407,13 +362,13 @@ const links = [
   .games-link {
     margin-top: 2rem;
     font-size: 0.875rem;
-    color: #888;
+    color: var(--color-text-light);
     text-align: right;
   }
 
   .share-section {
     margin-top: 3rem;
     padding-top: 1rem;
-    border-top: 1px solid #eee;
+    border-top: 1px solid var(--color-border);
   }
 </style>
