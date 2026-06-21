@@ -13,7 +13,7 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const GET: APIRoute = async ({ props }) => {
   const png = await generateOgImage(props.title as string);
 
-  return new Response(png, {
+  return new Response(png.buffer as ArrayBuffer, {
     headers: {
       'Content-Type': 'image/png',
       'Cache-Control': 'public, max-age=31536000, immutable',
