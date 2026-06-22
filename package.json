@@ -13,11 +13,11 @@
     "tags": "node scripts/list-tags.js"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^13.7.0",
+    "@astrojs/cloudflare": "^14.0.0",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.3",
     "@resvg/resvg-wasm": "^2.6.2",
-    "astro": "^6.4.6",
+    "astro": "^7.0.0",
     "astro-site-shell": "^0.3.3",
     "budoux": "^0.8.4",
     "rehype-autolink-headings": "^7.1.0",
