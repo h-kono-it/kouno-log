@@ -10,7 +10,9 @@
     "fetch-rss": "node sctipts/fetch-rss.js",
     "lint": "oxlint src",
     "lint:fix": "oxlint src --fix",
-    "tags": "node scripts/list-tags.js"
+    "tags": "node scripts/list-tags.js",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
     "@astrojs/cloudflare": "^14.0.0",
@@ -27,6 +29,7 @@
     "sharp": "^0.35.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.61.1",
     "oxlint": "^1.69.0",
     "wrangler": "^4.99.0"
   }
