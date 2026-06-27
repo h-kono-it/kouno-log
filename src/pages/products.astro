@@ -1,47 +1,88 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { products } from '../data/products';
+import { products, CATEGORY_LABELS, CATEGORY_ORDER } from '../data/products';
+import type { ProductCategory } from '../data/products';
+
+const grouped = CATEGORY_ORDER.reduce((acc, cat) => {
+  acc[cat] = products.filter((p) => p.category === cat);
+  return acc;
+}, {} as Record<ProductCategory, typeof products>);
+
+const activeCats = CATEGORY_ORDER.filter((cat) => grouped[cat].length > 0);
 ---
 
 <Layout title="Products - kouno.log" description="kounoが作ったプロダクト">
   <h1>Products</h1>
   <p class="lead">個人で作ったプロダクトをまとめています。</p>
 
-  <ul class="products-list">
-    {products.map((product) => (
-      <li class="product-card">
-        <div class="product-header">
-          {product.url ? (
-            <a class="product-name" href={product.url} target="_blank" rel="noopener noreferrer">
-              {product.name} ↗
-            </a>
-          ) : (
-            <span class="product-name">{product.name}</span>
-          )}
-        </div>
-        <p class="product-desc">{product.description}</p>
-        {product.tags.length > 0 && (
-          <div class="tags">
-            {product.tags.map((tag) => (
-              <span class="tag">{tag}</span>
-            ))}
-          </div>
-        )}
-        <div class="links">
-          {product.repo && (
-            <a class="repo-link" href={product.repo} target="_blank" rel="noopener noreferrer">GitHub →</a>
-          )}
-          {product.relatedMemo && (
-            <a
-              class="related-memo"
-              href={product.relatedMemo}
-              {...(product.relatedMemo.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
-            >詳細を読む →</a>
-          )}
-        </div>
-      </li>
+  <nav class="toc">
+    {activeCats.map((cat) => (
+      <a class="toc-item" href={`#${cat}`}>
+        {CATEGORY_LABELS[cat]}
+        <span class="toc-count">{grouped[cat].length}</span>
+      </a>
     ))}
-  </ul>
+  </nav>
+
+  {activeCats.map((cat) => (
+    <section class="category-section" id={cat}>
+      <h2 class="category-heading">
+        <a class="anchor-link" href={`#${cat}`}>{CATEGORY_LABELS[cat]}</a>
+      </h2>
+
+      {cat === 'tool' ? (
+        <ul class="tools-grid">
+          {grouped[cat].map((product) => (
+            <li class="tool-card">
+              <a class="tool-name" href={product.url} target="_blank" rel="noopener noreferrer">
+                {product.name} ↗
+              </a>
+              <p class="tool-desc">{product.description}</p>
+              {product.repo && (
+                <a class="repo-link" href={product.repo} target="_blank" rel="noopener noreferrer">GitHub →</a>
+              )}
+            </li>
+          ))}
+        </ul>
+      ) : (
+        <ul class="products-list">
+          {grouped[cat].map((product) => (
+            <li class="product-card">
+              <div class="product-header">
+                {product.url ? (
+                  <a class="product-name" href={product.url} target="_blank" rel="noopener noreferrer">
+                    {product.name} ↗
+                  </a>
+                ) : (
+                  <span class="product-name">{product.name}</span>
+                )}
+              </div>
+              <p class="product-desc">{product.description}</p>
+              {product.tags.length > 0 && (
+                <div class="tags">
+                  {product.tags.map((tag) => (
+                    <span class="tag">{tag}</span>
+                  ))}
+                </div>
+              )}
+              <div class="links">
+                {product.repo && (
+                  <a class="repo-link" href={product.repo} target="_blank" rel="noopener noreferrer">GitHub →</a>
+                )}
+                {product.relatedMemo && (
+                  <a
+                    class="related-memo"
+                    href={product.relatedMemo}
+                    {...(product.relatedMemo.startsWith('http') ? { target: '_blank', rel: 'noopener noreferrer' } : {})}
+                  >詳細を読む →</a>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  ))}
 </Layout>
 
 <style>
@@ -51,13 +92,81 @@ import { products } from '../data/products';
 
   .lead {
     color: var(--color-text-muted);
-    margin-bottom: 2rem;
+    margin-bottom: 1.5rem;
   }
 
+  /* 目次 */
+  .toc {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin-bottom: 2.5rem;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    background: #fafafa;
+  }
+
+  .toc-item {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    text-decoration: none;
+    color: var(--color-text);
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    transition: background 0.15s;
+  }
+
+  .toc-item:hover {
+    background: var(--color-border);
+    text-decoration: none;
+  }
+
+  .toc-count {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    background: #e8e8e8;
+    padding: 0.05rem 0.4rem;
+    border-radius: 10px;
+  }
+
+  .category-section {
+    margin-bottom: 3rem;
+    scroll-margin-top: 1.5rem;
+  }
+
+  .category-heading {
+    font-size: 1rem;
+    font-weight: 600;
+    border-bottom: 1px solid var(--color-border);
+    padding-bottom: 0.5rem;
+    margin-bottom: 1.25rem;
+  }
+
+  .anchor-link {
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    text-decoration: none;
+  }
+
+  .anchor-link:hover {
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .anchor-link::before {
+    content: '# ';
+    color: var(--color-border);
+  }
+
+  /* 通常プロダクトカード */
   .products-list {
     display: flex;
     flex-direction: column;
-    gap: 1.5rem;
+    gap: 1.25rem;
   }
 
   .product-card {
@@ -67,11 +176,11 @@ import { products } from '../data/products';
   }
 
   .product-header {
-    margin-bottom: 0.75rem;
+    margin-bottom: 0.625rem;
   }
 
   .product-name {
-    font-size: 1.25rem;
+    font-size: 1.15rem;
     font-weight: 700;
     text-decoration: none;
     color: var(--color-text);
@@ -90,15 +199,15 @@ import { products } from '../data/products';
   .tags {
     display: flex;
     flex-wrap: wrap;
-    gap: 0.5rem;
+    gap: 0.4rem;
     margin-bottom: 0.75rem;
   }
 
   .tag {
     background: #f0f0f0;
-    padding: 0.2rem 0.6rem;
+    padding: 0.15rem 0.55rem;
     border-radius: 20px;
-    font-size: 0.8rem;
+    font-size: 0.78rem;
     color: var(--color-text-muted);
   }
 
@@ -111,5 +220,39 @@ import { products } from '../data/products';
   .related-memo {
     font-size: 0.875rem;
     color: var(--color-primary);
+  }
+
+  /* 小さなツールグリッド */
+  .tools-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+    gap: 1rem;
+  }
+
+  .tool-card {
+    padding: 1rem 1.1rem;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    display: flex;
+    flex-direction: column;
+    gap: 0.4rem;
+  }
+
+  .tool-name {
+    font-size: 0.95rem;
+    font-weight: 700;
+    text-decoration: none;
+    color: var(--color-text);
+  }
+
+  .tool-name:hover {
+    text-decoration: underline;
+  }
+
+  .tool-desc {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+    flex: 1;
   }
 </style>
