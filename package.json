@@ -15,7 +15,7 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^14.0.0",
+    "@astrojs/cloudflare": "^14.0.1",
     "@astrojs/rss": "^4.0.18",
     "@astrojs/sitemap": "^3.7.3",
     "@resvg/resvg-wasm": "^2.6.2",
