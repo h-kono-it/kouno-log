@@ -21,7 +21,7 @@ GitHub: https://github.com/h-kono-it/kouno-log
 
 ## 注意事項
 
-- `src/pages/api/profile.ts` のプロフィール情報は `src/pages/profile.astro` と別管理。どちらかを更新したらもう一方も手動で合わせること。
+- プロフィール情報は `src/data/profile.ts` が唯一のデータソース。`src/pages/profile.astro` と `src/pages/api/profile.ts` はどちらもここから import する。
 
 ## デプロイ
 
