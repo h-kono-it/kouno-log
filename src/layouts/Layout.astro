@@ -38,6 +38,7 @@ const currentPath = Astro.url.pathname;
       <nav>
         <a href="/" class="site-title" aria-current={currentPath === '/' ? 'page' : undefined}>kouno.log</a>
         <a href="/profile" aria-current={currentPath.startsWith('/profile') ? 'page' : undefined}>Profile</a>
+        <a href="/portfolio" aria-current={currentPath.startsWith('/portfolio') ? 'page' : undefined}>Portfolio</a>
         <a href="/products" aria-current={currentPath.startsWith('/products') ? 'page' : undefined}>Products</a>
         <a href="/news" aria-current={currentPath.startsWith('/news') ? 'page' : undefined}>News</a>
         <a href="/memos" aria-current={currentPath.startsWith('/memos') ? 'page' : undefined}>Memos</a>

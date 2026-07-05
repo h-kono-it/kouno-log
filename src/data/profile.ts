@@ -18,8 +18,7 @@ export interface ProfileTalk {
 
 export const name = 'kouno';
 
-export const bio =
-  'Webエンジニア。Java / Kotlin / Ruby / TypeScript などを使った開発に携わっています。技術コミュニティの運営やカンファレンス登壇も行っています。技術同人誌サークル「世迷言ラボ」代表。';
+export const bio = 'Webエンジニア。技術同人誌サークル「世迷言ラボ」代表。';
 
 export const skills: string[] = ['Java', 'Kotlin', 'Ruby', 'TypeScript', 'Node.js', 'AWS'];
 
