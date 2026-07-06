@@ -1,17 +1,21 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { name, skills, links, communities, talks } from '../data/profile';
+import { name, skills, links, communities, talks, publications } from '../data/profile';
 import { products, CATEGORY_LABELS } from '../data/products';
 import { experience } from '../data/experience';
 import { certifications } from '../data/certifications';
 
-// TODO: 自己PR文・活動のハイライトの語りは実際の本文に差し替える
 const featuredProductNames = ['Webエンジニアのための法務確認ガイド', 'chira-ura.net', 'unagi-tasks', 'rough-table'];
 const featuredProducts = featuredProductNames
   .map((n) => products.find((p) => p.name === n))
   .filter((p): p is (typeof products)[number] => Boolean(p));
 
 const highlightTalks = talks.slice(0, 3);
+
+const experienceByCompany = experience.reduce<Record<string, typeof experience>>((acc, item) => {
+  (acc[item.company] ??= []).push(item);
+  return acc;
+}, {});
 ---
 
 <Layout title="Portfolio - kouno.log" description="kounoのポートフォリオ">
@@ -19,12 +23,23 @@ const highlightTalks = talks.slice(0, 3);
 
   <section class="pitch">
     <h2>{name}</h2>
-    <p class="placeholder">
-      TODO: 自己PR文をここに書く（どんなエンジニアで、何を大事にしているか）
+    <p>
+      Webエンジニアとして10年以上の経験を持ち、技術とビジネスの双方から組織を牽引するテックリード兼エンジニアリングマネージャー。
     </p>
-    <p class="placeholder">
-      TODO: コミュニティ運営やカンファレンス登壇に取り組んでいる理由・想いをここに書く
-    </p>
+    <dl class="pitch-facts">
+      <div>
+        <dt>得意な技術領域</dt>
+        <dd>Java, Kotlin, Ruby を中心としたWebアプリケーション開発</dd>
+      </div>
+      <div>
+        <dt>確かな実績</dt>
+        <dd>大手SIerにおけるミッションクリティカルな大規模案件の経験</dd>
+      </div>
+      <div>
+        <dt>現在の役割</dt>
+        <dd>技術的な意思決定に加え、事業成長を見据えたエンジニアリングマネジメントの推進</dd>
+      </div>
+    </dl>
   </section>
 
   <section>
@@ -63,19 +78,35 @@ const highlightTalks = talks.slice(0, 3);
 
   <section>
     <h3>プロジェクト経験</h3>
-    {experience.length > 0 ? (
-      <ul class="experience-list">
-        {experience.map((item) => (
-          <li class="experience-card">
-            <div class="experience-header">
-              <span class="experience-title">{item.title}</span>
-              <span class="experience-period">{item.period}</span>
-            </div>
-            <p class="experience-role">{item.role}</p>
-            <p class="experience-desc">{item.description}</p>
-          </li>
-        ))}
-      </ul>
+    {Object.keys(experienceByCompany).length > 0 ? (
+      Object.entries(experienceByCompany).map(([company, items]) => (
+        <div class="company-block">
+          <h4 class="company-name">{company}</h4>
+          <ul class="experience-list">
+            {items.map((item) => (
+              <li class="experience-card">
+                <div class="experience-header">
+                  <span class="experience-project">{item.project}</span>
+                  <span class="experience-period">{item.period}</span>
+                </div>
+                <p class="experience-role">{item.role}</p>
+                {item.stack.length > 0 && (
+                  <div class="tags">
+                    {item.stack.map((s) => (
+                      <span class="tag">{s}</span>
+                    ))}
+                  </div>
+                )}
+                <ul class="experience-highlights">
+                  {item.highlights.map((h) => (
+                    <li>{h}</li>
+                  ))}
+                </ul>
+              </li>
+            ))}
+          </ul>
+        </div>
+      ))
     ) : (
       <p class="placeholder">TODO: 経験したプロジェクトの内容や自身の役割を記入する</p>
     )}
@@ -95,6 +126,55 @@ const highlightTalks = talks.slice(0, 3);
         </li>
       ))}
     </ul>
+  </section>
+
+  {publications.length > 0 && (
+    <section>
+      <h3>執筆・寄稿実績</h3>
+      <ul class="highlight-list">
+        {publications.map((publication) => (
+          <li>
+            <a href={publication.url} target="_blank" rel="noopener noreferrer">
+              {publication.title}
+            </a>
+            <span class="highlight-meta">
+              {publication.publisher} / {publication.role} / {publication.date}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  <section>
+    <h3>自己PR</h3>
+    <p>できること、得意なことは大きく3つあります。</p>
+    <ul class="pr-summary">
+      <li>事業を加速させる技術活用力</li>
+      <li>カンファレンス登壇・執筆による対外発信</li>
+      <li>コミュニティ運営を通じた関係構築</li>
+    </ul>
+
+    <div class="pr-detail">
+      <h4>事業を加速させる技術活用力</h4>
+      <p>
+        Javaエンジニアとして10年以上、大手SIerでのミッションクリティカルな案件からテックリードまで一貫して開発に携わってきました。技術を「プロジェクトを加速させる手段」と捉え、ビジネスと技術の両面から課題解決に取り組んでいます。CI/CDフローの改善によるデプロイ時間の短縮（3時間→1時間）、3ヶ月停滞していた会計処理要件の2週間での解決、生成AIを活用したコンテキストエンジニアリングの導入推進など、堅実なデリバリー力とモダンな技術スタックへの柔軟な適応力を併せ持っています。
+      </p>
+    </div>
+
+    <div class="pr-detail">
+      <h4>カンファレンス登壇・執筆による対外発信</h4>
+      <p>
+        JJUG CCCやKaigi on Railsといった大規模カンファレンスへの登壇経験、共著での商業誌掲載経験があります。
+      </p>
+    </div>
+
+    <div class="pr-detail">
+      <h4>コミュニティ運営を通じた関係構築</h4>
+      <p>
+        コミュニティ活動の原点は、自分自身が登壇や参加を通じて数多くの刺激とサポートを受けてきたことへの恩返しです。「いつか登壇したい」という目標を果たした後、今度は運営を支える側としてボランティアスタッフに関わるようになりました。地域のエンジニア同士がもっと気軽に技術を語り合える場を作りたいという思いから「東葛.dev」を立ち上げ、近隣のコミュニティとも積極的に交流しています。特定の技術に閉じず、複数言語・マネジメント・インフラ・設計など領域を横断して学び活動できることを自分の強みと捉え、それを地域コミュニティとカンファレンス双方への貢献に活かしていきたいと考えています。
+      </p>
+    </div>
   </section>
 
   <section>
@@ -165,6 +245,80 @@ const highlightTalks = talks.slice(0, 3);
 
   .pitch .placeholder {
     margin-top: 0.5rem;
+  }
+
+  .pitch-facts {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.6rem;
+  }
+
+  .pitch-facts div {
+    display: flex;
+    gap: 1rem;
+    align-items: baseline;
+  }
+
+  .pitch-facts dt {
+    flex: 0 0 7.5rem;
+    font-size: 0.85rem;
+    font-weight: 700;
+    color: var(--color-text-muted);
+  }
+
+  .pitch-facts dd {
+    font-size: 0.95rem;
+    line-height: 1.6;
+  }
+
+  @media (max-width: 480px) {
+    .pitch-facts div {
+      flex-direction: column;
+      gap: 0.15rem;
+    }
+
+    .pitch-facts dt {
+      flex: none;
+    }
+  }
+
+  /* PR */
+  .pr-summary {
+    margin: 0.75rem 0 1.5rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .pr-summary li {
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding-left: 1.1rem;
+    position: relative;
+  }
+
+  .pr-summary li::before {
+    content: '・';
+    position: absolute;
+    left: 0;
+    color: var(--color-primary);
+  }
+
+  .pr-detail {
+    margin-top: 1.25rem;
+  }
+
+  .pr-detail h4 {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.5rem;
+  }
+
+  .pr-detail p {
+    color: #444;
+    line-height: 1.7;
+    font-size: 0.9rem;
   }
 
   /* Works */
@@ -257,6 +411,20 @@ const highlightTalks = talks.slice(0, 3);
   }
 
   /* Experience */
+  .company-block {
+    margin-bottom: 1.5rem;
+  }
+
+  .company-block:last-child {
+    margin-bottom: 0;
+  }
+
+  .company-name {
+    font-size: 1rem;
+    font-weight: 700;
+    margin-bottom: 0.75rem;
+  }
+
   .experience-list {
     display: flex;
     flex-direction: column;
@@ -264,7 +432,7 @@ const highlightTalks = talks.slice(0, 3);
   }
 
   .experience-card {
-    padding: 1rem;
+    padding: 1.1rem 1.25rem;
     border: 1px solid var(--color-border);
     border-radius: 8px;
   }
@@ -277,13 +445,14 @@ const highlightTalks = talks.slice(0, 3);
     flex-wrap: wrap;
   }
 
-  .experience-title {
+  .experience-project {
     font-weight: 500;
   }
 
   .experience-period {
     font-size: 0.875rem;
     color: var(--color-text-muted);
+    white-space: nowrap;
   }
 
   .experience-role {
@@ -292,9 +461,25 @@ const highlightTalks = talks.slice(0, 3);
     color: var(--color-text-muted);
   }
 
-  .experience-desc {
-    margin-top: 0.5rem;
+  .experience-highlights {
+    margin-top: 0.75rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0.35rem;
+  }
+
+  .experience-highlights li {
     font-size: 0.9rem;
+    line-height: 1.6;
+    padding-left: 1.1rem;
+    position: relative;
+  }
+
+  .experience-highlights li::before {
+    content: '・';
+    position: absolute;
+    left: 0;
+    color: var(--color-text-muted);
   }
 
   /* Talks */

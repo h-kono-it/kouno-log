@@ -16,6 +16,14 @@ export interface ProfileTalk {
   url: string;
 }
 
+export interface ProfilePublication {
+  title: string;
+  publisher: string;
+  role: string;
+  date: string;
+  url: string;
+}
+
 export const name = 'kouno';
 
 export const bio = 'Webエンジニア。技術同人誌サークル「世迷言ラボ」代表。';
@@ -43,4 +51,14 @@ export const talks: ProfileTalk[] = [
   { title: 'ActiveRecord使いが知るべきORMの世界', event: 'Kaigi on Rails 2025', date: '2025-09-27', url: 'https://www.docswell.com/s/hk_it7/ZWMNJR-orm-kaigi-on-rails' },
   { title: '地方でエンジニアコミュニティを成功させる秘訣', event: '大吉祥寺.pm 2025', date: '2025-09-06', url: 'https://www.docswell.com/s/hk_it7/Z446WL-community-toukatsu-dev' },
   { title: '『氷菓』と心理的安全性', event: '【劇場版】アニメから得た学びを発表会2025', date: '2025-08-10', url: 'https://www.docswell.com/s/hk_it7/5EYWQ8-2025-08-10-anime' },
+];
+
+export const publications: ProfilePublication[] = [
+  {
+    title: 'プロフェッショナルのための学び戦略 AI時代に結果を出す！学び方再定義',
+    publisher: 'インプレス NextPublishing',
+    role: '共著',
+    date: '2026-01-23',
+    url: 'https://nextpublishing.jp/book/19205.html',
+  },
 ];
