@@ -1,6 +1,6 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import { name, bio, skills, links, communities, talks } from '../data/profile';
+import { name, bio, skills, links, communities, talks, publications } from '../data/profile';
 
 const siteUrl = Astro.url.origin;
 const personSchema = {
@@ -28,13 +28,8 @@ const personSchema = {
     </div>
     <div class="bio">
       <h2>{name}</h2>
-      <p>エンジニア。技術メモやアウトプットをまとめています。</p>
+      <p>{bio}</p>
     </div>
-  </section>
-
-  <section>
-    <h3>About</h3>
-    <p>{bio}</p>
   </section>
 
   <section>
@@ -71,6 +66,24 @@ const personSchema = {
             </a>
             <span class="talk-meta">
               {talk.event} / {talk.date}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </section>
+  )}
+
+  {publications.length > 0 && (
+    <section>
+      <h3>Publications</h3>
+      <ul class="publications-list">
+        {publications.map((publication) => (
+          <li>
+            <a href={publication.url} target="_blank" rel="noopener noreferrer">
+              {publication.title}
+            </a>
+            <span class="publication-meta">
+              {publication.publisher} / {publication.role} / {publication.date}
             </span>
           </li>
         ))}
@@ -175,6 +188,28 @@ const personSchema = {
   }
 
   .talk-meta {
+    display: block;
+    margin-top: 0.25rem;
+    font-size: 0.875rem;
+    color: var(--color-text-muted);
+  }
+
+  .publications-list li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--color-border);
+  }
+
+  .publications-list a {
+    display: block;
+    text-decoration: none;
+    font-weight: 500;
+  }
+
+  .publications-list a:hover {
+    text-decoration: underline;
+  }
+
+  .publication-meta {
     display: block;
     margin-top: 0.25rem;
     font-size: 0.875rem;
