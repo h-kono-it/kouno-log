@@ -16,6 +16,17 @@ const experienceByCompany = experience.reduce<Record<string, typeof experience>>
   (acc[item.company] ??= []).push(item);
   return acc;
 }, {});
+
+const tocItems = [
+  { href: '#works', label: '制作物' },
+  { href: '#experience', label: 'プロジェクト経験' },
+  { href: '#talks', label: '登壇実績（ハイライト）' },
+  ...(publications.length > 0 ? [{ href: '#publications', label: '執筆・寄稿実績' }] : []),
+  { href: '#pr', label: '自己PR' },
+  { href: '#communities', label: 'コミュニティ活動' },
+  { href: '#skills', label: 'スキル・資格' },
+  { href: '#links', label: 'Links' },
+];
 ---
 
 <Layout title="Portfolio - kouno.log" description="kounoのポートフォリオ">
@@ -42,7 +53,16 @@ const experienceByCompany = experience.reduce<Record<string, typeof experience>>
     </dl>
   </section>
 
-  <section>
+  <nav class="toc" aria-labelledby="toc-heading">
+    <h3 id="toc-heading">目次</h3>
+    <ol>
+      {tocItems.map((item) => (
+        <li><a href={item.href}>{item.label}</a></li>
+      ))}
+    </ol>
+  </nav>
+
+  <section id="works">
     <h3>制作物</h3>
     <ul class="works-list">
       {featuredProducts.map((product) => (
@@ -76,7 +96,7 @@ const experienceByCompany = experience.reduce<Record<string, typeof experience>>
     <p class="more-link"><a href="/products">その他の制作物を見る →</a></p>
   </section>
 
-  <section>
+  <section id="experience">
     <h3>プロジェクト経験</h3>
     {Object.keys(experienceByCompany).length > 0 ? (
       Object.entries(experienceByCompany).map(([company, items]) => (
@@ -112,7 +132,7 @@ const experienceByCompany = experience.reduce<Record<string, typeof experience>>
     )}
   </section>
 
-  <section>
+  <section id="talks">
     <h3>登壇実績（ハイライト）</h3>
     <ul class="highlight-list">
       {highlightTalks.map((talk) => (
@@ -129,7 +149,7 @@ const experienceByCompany = experience.reduce<Record<string, typeof experience>>
   </section>
 
   {publications.length > 0 && (
-    <section>
+    <section id="publications">
       <h3>執筆・寄稿実績</h3>
       <ul class="highlight-list">
         {publications.map((publication) => (
@@ -146,7 +166,7 @@ const experienceByCompany = experience.reduce<Record<string, typeof experience>>
     </section>
   )}
 
-  <section>
+  <section id="pr">
     <h3>自己PR</h3>
     <p>できること、得意なことは大きく3つあります。</p>
     <ul class="pr-summary">
@@ -177,7 +197,7 @@ const experienceByCompany = experience.reduce<Record<string, typeof experience>>
     </div>
   </section>
 
-  <section>
+  <section id="communities">
     <h3>コミュニティ活動</h3>
     <ul class="communities-list">
       {communities.map((community) => (
@@ -191,7 +211,7 @@ const experienceByCompany = experience.reduce<Record<string, typeof experience>>
     </ul>
   </section>
 
-  <section>
+  <section id="skills">
     <h3>スキル・資格</h3>
     <div class="skills">
       {skills.map((skill) => (
@@ -205,7 +225,7 @@ const experienceByCompany = experience.reduce<Record<string, typeof experience>>
     </ul>
   </section>
 
-  <section>
+  <section id="links">
     <h3>Links</h3>
     <ul class="links-list">
       {links.map((link) => (
@@ -238,13 +258,56 @@ const experienceByCompany = experience.reduce<Record<string, typeof experience>>
     font-size: 1.1rem;
   }
 
+  section[id] {
+    scroll-margin-top: 1rem;
+  }
+
+  /* TOC */
+  .toc {
+    margin-bottom: 2.5rem;
+    padding: 1rem 1.25rem;
+    border: 1px dashed var(--color-border-dark);
+    border-radius: 10px;
+    background: var(--color-surface);
+  }
+
+  .toc h3 {
+    margin-bottom: 0.625rem;
+    font-size: 1rem;
+  }
+
+  .toc h3::before {
+    content: '## ' / '';
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-weight: 600;
+  }
+
+  .toc ol {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr));
+    gap: 0.375rem 1.5rem;
+    list-style: decimal-leading-zero inside;
+  }
+
+  .toc li::marker {
+    font-family: var(--font-mono);
+    font-weight: 600;
+    color: var(--color-accent);
+  }
+
+  .toc a {
+    text-decoration: none;
+  }
+
+  .toc a:hover,
+  .toc a:focus-visible {
+    text-decoration: underline;
+  }
+
   .placeholder {
     color: var(--color-text-light);
     font-style: italic;
-  }
-
-  .pitch .placeholder {
-    margin-top: 0.5rem;
   }
 
   .pitch-facts {
@@ -556,16 +619,31 @@ const experienceByCompany = experience.reduce<Record<string, typeof experience>>
   }
 
   /* Links */
-  .links-list li {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--color-border);
+  .links-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   .links-list a {
+    display: inline-block;
+    padding: 0.3rem 0.875rem;
+    border: 1px solid var(--color-border-dark);
+    border-radius: 999px;
+    background: #fff;
     text-decoration: none;
+    font-size: 0.9rem;
+    transition: border-color 0.15s, background 0.15s;
   }
 
-  .links-list a:hover {
-    text-decoration: underline;
+  .links-list a::after {
+    content: ' ↗' / '';
+    color: var(--color-accent);
+  }
+
+  .links-list a:hover,
+  .links-list a:focus-visible {
+    border-color: var(--color-accent);
+    background: var(--color-surface);
   }
 </style>

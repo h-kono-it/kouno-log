@@ -56,16 +56,20 @@ const { items, showTags = false, class: className } = Astro.props;
 
   .card-list a {
     display: block;
-    padding: 1rem;
-    border: 1px solid var(--color-border);
-    border-radius: 8px;
+    padding: 1rem 1.25rem;
+    border: 1px solid var(--color-border-dark);
+    border-radius: 10px;
+    background: #fff;
     text-decoration: none;
     color: inherit;
-    transition: border-color 0.2s;
+    box-shadow: 3px 3px 0 var(--color-border);
+    transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s;
   }
 
   .card-list a:hover {
-    border-color: var(--color-border-dark);
+    border-color: var(--color-accent);
+    box-shadow: 5px 5px 0 var(--color-marker);
+    transform: translate(-2px, -2px);
   }
 
   .card-list h2 {
@@ -81,20 +85,29 @@ const { items, showTags = false, class: className } = Astro.props;
 
   time {
     color: var(--color-text-light);
-    font-size: 0.875rem;
+    font-size: 0.8rem;
+    font-family: var(--font-mono);
   }
 
   .tags {
     margin-top: 0.5rem;
     display: flex;
+    flex-wrap: wrap;
     gap: 0.5rem;
   }
 
   .tag {
     font-size: 0.75rem;
-    padding: 0.125rem 0.5rem;
-    background: #f0f0f0;
-    border-radius: 4px;
+    padding: 0.125rem 0.625rem;
+    background: var(--color-surface);
+    border-radius: 999px;
+    color: var(--color-text-muted);
+  }
+
+  .tag::before {
+    content: '#' / '';
+    color: var(--color-accent);
+    margin-right: 0.125rem;
   }
 
   @media (max-width: 480px) {
