@@ -139,7 +139,7 @@ const pastByYearMonth = groupByYearMonth(past);
     font-size: 1rem;
     cursor: pointer;
     user-select: none;
-    background: #f8fafc;
+    background: var(--color-surface);
     list-style: none;
     display: flex;
     align-items: center;
@@ -153,7 +153,7 @@ const pastByYearMonth = groupByYearMonth(past);
   .year-group summary::before {
     content: '▶';
     font-size: 0.625rem;
-    color: #94a3b8;
+    color: var(--color-accent);
     transition: transform 0.15s;
   }
 
@@ -241,14 +241,14 @@ const pastByYearMonth = groupByYearMonth(past);
     font-size: 0.75rem;
     padding: 0.125rem 0.5rem;
     border-radius: 4px;
-    background: #f1f5f9;
-    color: #475569;
-    border: 1px solid #cbd5e1;
+    background: var(--color-surface);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border-dark);
     white-space: nowrap;
   }
 
   .slide-link:hover {
-    background: #e2e8f0;
+    background: var(--color-surface-hover);
   }
 
   .event-name {

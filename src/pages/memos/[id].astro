@@ -100,16 +100,22 @@ const articleSchema = {
 
   .tag {
     font-size: 0.75rem;
-    padding: 0.125rem 0.5rem;
-    background: #f0f0f0;
-    border-radius: 4px;
-    color: var(--color-text);
+    padding: 0.125rem 0.625rem;
+    background: var(--color-surface);
+    border-radius: 999px;
+    color: var(--color-text-muted);
     text-decoration: none;
     transition: background 0.2s;
   }
 
+  .tag::before {
+    content: '#' / '';
+    color: var(--color-accent);
+    margin-right: 0.125rem;
+  }
+
   .tag:hover {
-    background: #e0e0e0;
+    background: var(--color-surface-hover);
   }
 
   .back-link {

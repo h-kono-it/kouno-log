@@ -146,6 +146,13 @@ const personSchema = {
     font-size: 1.1rem;
   }
 
+  section > h3::before {
+    content: '### ' / '';
+    color: var(--color-accent);
+    font-family: var(--font-mono);
+    font-weight: 600;
+  }
+
   .skills {
     display: flex;
     flex-wrap: wrap;
@@ -153,23 +160,39 @@ const personSchema = {
   }
 
   .skill-tag {
-    background: #f0f0f0;
+    background: var(--color-surface);
+    border: 1px solid var(--color-border-dark);
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.875rem;
   }
 
-  .links-list li {
-    padding: 0.5rem 0;
-    border-bottom: 1px solid var(--color-border);
+  .links-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
   }
 
   .links-list a {
+    display: inline-block;
+    padding: 0.3rem 0.875rem;
+    border: 1px solid var(--color-border-dark);
+    border-radius: 999px;
+    background: #fff;
     text-decoration: none;
+    font-size: 0.9rem;
+    transition: border-color 0.15s, background 0.15s;
   }
 
-  .links-list a:hover {
-    text-decoration: underline;
+  .links-list a::after {
+    content: ' ↗' / '';
+    color: var(--color-accent);
+  }
+
+  .links-list a:hover,
+  .links-list a:focus-visible {
+    border-color: var(--color-accent);
+    background: var(--color-surface);
   }
 
   .talks-list li {
