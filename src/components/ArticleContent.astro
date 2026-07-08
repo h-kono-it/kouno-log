@@ -23,6 +23,11 @@ const { id } = Astro.props;
     line-height: 1.4;
   }
 
+  /* md冒頭の h1 はページヘッダーのタイトルと重複するため非表示（Raw表示とRSSには残る） */
+  .content > :global(h1:first-child) {
+    display: none;
+  }
+
   .content :global(h1)::before {
     content: "# ";
     content: "# " / "";
@@ -87,16 +92,16 @@ const { id } = Astro.props;
   }
 
   .content :global(code) {
-    background: #faf0f3;
-    color: #b02458;
-    border: 1px solid #f3dde5;
+    background: light-dark(#faf0f3, #3a232c);
+    color: light-dark(#b02458, #ff9fbe);
+    border: 1px solid light-dark(#f3dde5, #4d2f3a);
     padding: 0.125rem 0.375rem;
     border-radius: 4px;
     font-size: 0.9rem;
   }
 
   .content :global(pre) {
-    background: #f5f5f5;
+    background: light-dark(#f5f5f5, #2b2620);
     padding: 1rem 1.25rem;
     border-radius: 10px;
     overflow-x: auto;
@@ -116,7 +121,7 @@ const { id } = Astro.props;
     padding: 0.75rem 1.25rem;
     border-left: 4px solid var(--color-accent);
     border-radius: 0 8px 8px 0;
-    background: #fdf3ec;
+    background: light-dark(#fdf3ec, #32261b);
     color: var(--color-text-muted);
   }
 
@@ -148,6 +153,11 @@ const { id } = Astro.props;
 
   .content :global(th) {
     font-weight: 600;
+  }
+
+  /* rough-tableの手書き線はstroke属性で描かれるため、CSSで両テーマ対応の色に上書きする */
+  .content :global(.rough-table-container svg path) {
+    stroke: var(--color-text-muted);
   }
 
   .content :global(figure) {

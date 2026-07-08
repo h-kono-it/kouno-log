@@ -379,7 +379,7 @@ const tocItems = [
   }
 
   .pr-detail p {
-    color: #444;
+    color: var(--color-text-muted);
     line-height: 1.7;
     font-size: 0.9rem;
   }
@@ -397,7 +397,7 @@ const tocItems = [
     padding: 1.25rem 1.4rem;
     border: 1px solid var(--color-border);
     border-radius: 12px;
-    background: #fff;
+    background: var(--color-card);
     transition: transform 0.15s ease, box-shadow 0.15s ease, border-color 0.15s ease;
   }
 
@@ -413,7 +413,7 @@ const tocItems = [
     font-weight: 600;
     letter-spacing: 0.03em;
     color: var(--color-primary);
-    background: rgba(0, 102, 204, 0.08);
+    background: light-dark(rgba(0, 102, 204, 0.08), rgba(92, 168, 255, 0.14));
     padding: 0.15rem 0.6rem;
     border-radius: 20px;
     margin-bottom: 0.7rem;
@@ -432,7 +432,7 @@ const tocItems = [
 
   .work-desc {
     margin-top: 0.6rem;
-    color: #444;
+    color: var(--color-text-muted);
     line-height: 1.7;
     font-size: 0.9rem;
     flex: 1;
@@ -446,7 +446,7 @@ const tocItems = [
   }
 
   .tag {
-    background: #f0f0f0;
+    background: var(--color-surface);
     padding: 0.15rem 0.55rem;
     border-radius: 20px;
     font-size: 0.75rem;
@@ -598,7 +598,7 @@ const tocItems = [
   }
 
   .skill-tag {
-    background: #f0f0f0;
+    background: var(--color-surface);
     padding: 0.25rem 0.75rem;
     border-radius: 20px;
     font-size: 0.875rem;
@@ -630,7 +630,7 @@ const tocItems = [
     padding: 0.3rem 0.875rem;
     border: 1px solid var(--color-border-dark);
     border-radius: 999px;
-    background: #fff;
+    background: var(--color-card);
     text-decoration: none;
     font-size: 0.9rem;
     transition: border-color 0.15s, background 0.15s;

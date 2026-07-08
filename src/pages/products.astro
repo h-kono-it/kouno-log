@@ -104,7 +104,7 @@ const activeCats = CATEGORY_ORDER.filter((cat) => grouped[cat].length > 0);
     padding: 1rem 1.25rem;
     border: 1px solid var(--color-border);
     border-radius: 8px;
-    background: #fafafa;
+    background: var(--color-surface);
   }
 
   .toc-item {
@@ -127,7 +127,7 @@ const activeCats = CATEGORY_ORDER.filter((cat) => grouped[cat].length > 0);
   .toc-count {
     font-size: 0.75rem;
     color: var(--color-text-muted);
-    background: #e8e8e8;
+    background: var(--color-surface-hover);
     padding: 0.05rem 0.4rem;
     border-radius: 10px;
   }
@@ -186,7 +186,7 @@ const activeCats = CATEGORY_ORDER.filter((cat) => grouped[cat].length > 0);
   }
 
   .product-desc {
-    color: #444;
+    color: var(--color-text-muted);
     line-height: 1.7;
     margin-bottom: 0.75rem;
   }
@@ -199,7 +199,7 @@ const activeCats = CATEGORY_ORDER.filter((cat) => grouped[cat].length > 0);
   }
 
   .tag {
-    background: #f0f0f0;
+    background: var(--color-surface);
     padding: 0.15rem 0.55rem;
     border-radius: 20px;
     font-size: 0.78rem;

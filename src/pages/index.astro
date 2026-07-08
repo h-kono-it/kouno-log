@@ -42,7 +42,7 @@ const websiteSchema = {
   '@type': 'WebSite',
   name: 'kouno.log',
   url: Astro.url.origin,
-  description: 'note、はてなブログ、ドクセルの記事とメモをまとめています。',
+  description: 'kounoの個人活動であるnote、はてなブログ、ドクセルの記事とメモをまとめています。',
   author: {
     '@type': 'Person',
     name: 'kouno',
@@ -95,8 +95,8 @@ const links = [
   <Fragment slot="head">
     <script is:inline type="application/ld+json" set:html={JSON.stringify(websiteSchema)} />
   </Fragment>
-  <h1>kouno.log</h1>
-  <p>note、はてなブログ、ドクセルの記事とメモをまとめています。</p>
+  <h1>Hello World!!</h1>
+  <p>kounoの個人活動であるnote、はてなブログ、ドクセルの記事とメモをまとめています。</p>
 
   <section>
     <h2>Recent</h2>
@@ -189,6 +189,7 @@ const links = [
   <p class="games-link"><a href="/games">ゲームはこちら</a></p>
 
   <section class="share-section">
+    <span class="share-label">このサイトをシェア</span>
     <ShareButtons title="kouno.log" url={pageUrl} />
   </section>
 </Layout>
@@ -219,7 +220,8 @@ const links = [
   }
 
   .badge {
-    min-width: 60px;
+    /* 最長ソース名「docswell」が収まる幅に固定してタイトルの開始位置を揃える */
+    min-width: 7em;
   }
 
   @media (max-width: 480px) {
@@ -264,7 +266,7 @@ const links = [
     padding: 1rem 1.25rem;
     border: 1px solid var(--color-border-dark);
     border-radius: 10px;
-    background: #fff;
+    background: var(--color-card);
     text-decoration: none;
     color: inherit;
     box-shadow: 3px 3px 0 var(--color-border);
@@ -380,5 +382,14 @@ const links = [
     margin-top: 3rem;
     padding-top: 1rem;
     border-top: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 0.75rem;
+  }
+
+  .share-label {
+    font-size: 0.8rem;
+    color: var(--color-text-muted);
   }
 </style>
