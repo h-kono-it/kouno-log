@@ -41,9 +41,12 @@ const articleSchema = {
   <article>
     <header>
       <h1>{memo.data.title}</h1>
-      <time datetime={memo.data.pubDate.toISOString()}>
-        {memo.data.pubDate.toLocaleDateString('ja-JP')}
-      </time>
+      <div class="meta-row">
+        <time datetime={memo.data.pubDate.toISOString()}>
+          {memo.data.pubDate.toLocaleDateString('ja-JP')}
+        </time>
+        <button id="raw-toggle" class="raw-toggle" aria-pressed="false">Raw</button>
+      </div>
       {
         memo.data.tags.length > 0 && (
           <div class="tags">
@@ -56,7 +59,6 @@ const articleSchema = {
       <div class="share-buttons-top">
         <ShareButtons title={memo.data.title} url={pageUrl} />
       </div>
-      <button id="raw-toggle" class="raw-toggle" aria-pressed="false">Raw</button>
     </header>
     <ArticleContent id="rendered-content">
       <Content components={{ img: OptimizedImg }} />
@@ -76,7 +78,6 @@ const articleSchema = {
 
 <style>
   article header {
-    position: relative;
     margin-bottom: 2rem;
     padding-bottom: 1rem;
     border-bottom: 1px solid var(--color-border);
@@ -84,7 +85,13 @@ const articleSchema = {
 
   article h1 {
     margin-bottom: 0.5rem;
-    padding-right: 4rem;
+  }
+
+  .meta-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
   }
 
   time {
@@ -127,9 +134,7 @@ const articleSchema = {
   }
 
   .raw-toggle {
-    position: absolute;
-    top: 0;
-    right: 0;
+    flex: none;
     padding: 0.25rem 0.625rem;
     font-size: 0.75rem;
     font-family: 'SF Mono', 'Fira Code', monospace;

@@ -23,6 +23,11 @@ const { id } = Astro.props;
     line-height: 1.4;
   }
 
+  /* md冒頭の h1 はページヘッダーのタイトルと重複するため非表示（Raw表示とRSSには残る） */
+  .content > :global(h1:first-child) {
+    display: none;
+  }
+
   .content :global(h1)::before {
     content: "# ";
     content: "# " / "";

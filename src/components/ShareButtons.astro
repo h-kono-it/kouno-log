@@ -32,24 +32,41 @@ const hatenaUrl = `https://b.hatena.ne.jp/entry/s/${url.replace(/^https?:\/\//, 
   .share-btn {
     display: inline-flex;
     align-items: center;
-    padding: 0.25rem 0.5rem;
-    border-radius: 4px;
+    gap: 0.375rem;
+    padding: 0.25rem 0.75rem;
+    border-radius: 999px;
     font-size: 0.75rem;
+    font-weight: 600;
     text-decoration: none;
-    color: white;
-    transition: opacity 0.2s;
+    background: var(--share-bg);
+    color: var(--share-fg);
+    border: 1px solid transparent;
+    transition: border-color 0.15s;
   }
 
-  .share-btn:hover {
-    opacity: 0.8;
-    color: white;
+  .share-btn::before {
+    content: '';
+    flex: none;
+    width: 0.5em;
+    height: 0.5em;
+    border-radius: 50%;
+    background: var(--share-dot);
+  }
+
+  .share-btn:hover,
+  .share-btn:focus-visible {
+    border-color: var(--share-dot);
   }
 
   .twitter {
-    background: #1da1f2;
+    --share-dot: #1da1f2;
+    --share-bg: light-dark(#e2f3fc, #14324a);
+    --share-fg: light-dark(#0c5e8e, #85c8f0);
   }
 
   .hatena {
-    background: #00a4de;
+    --share-dot: #00a4de;
+    --share-bg: light-dark(#e2f3fb, #16344a);
+    --share-fg: light-dark(#015d86, #82c9ee);
   }
 </style>
