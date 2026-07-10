@@ -3,7 +3,7 @@ import { test, expect } from '@playwright/test';
 test.describe('共通レイアウト', () => {
   test('ナビゲーションが全ページで表示される', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('nav a[href="/"]')).toBeVisible();
+    await expect(page.locator('header a[href="/"]')).toBeVisible();
     await expect(page.locator('nav a[href="/profile"]')).toBeVisible();
     await expect(page.locator('nav a[href="/products"]')).toBeVisible();
     await expect(page.locator('nav a[href="/memos"]')).toBeVisible();
