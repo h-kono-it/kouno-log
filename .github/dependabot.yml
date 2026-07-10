@@ -10,6 +10,13 @@ updates:
       semver-major-days: 30
       semver-minor-days: 7
       semver-patch-days: 5
+    groups:
+      # minor/patchは1つのPRにまとめてlockfileの競合頻度を下げる
+      npm-minor-patch:
+        applies-to: version-updates
+        update-types:
+          - "minor"
+          - "patch"
 
   # GitHub Actionsの自動更新
   - package-ecosystem: "github-actions"
