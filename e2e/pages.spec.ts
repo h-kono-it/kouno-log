@@ -25,7 +25,7 @@ test.describe('トップページ (/)', () => {
 
   test('h1が表示される', async ({ page }) => {
     await page.goto('/');
-    await expect(page.locator('main h1')).toContainText('kouno.log');
+    await expect(page.locator('main h1')).toContainText('About');
   });
 });
 
