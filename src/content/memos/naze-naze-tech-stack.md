@@ -2,7 +2,7 @@
 title: なぜなぜ分析ツールの技術スタック
 description: ツリー構造となぜなぜ分析の因果検証をサポートするWebアプリの技術選定と設計を解説
 pubDate: 2026-04-26
-tags: [react, typescript, react-flow, vite, tailwind]
+tags: [React, TypeScript, React Flow, Vite, Tailwind CSS]
 ---
 
 # なぜなぜ分析ツールの技術スタック

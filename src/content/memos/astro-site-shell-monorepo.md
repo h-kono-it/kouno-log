@@ -2,7 +2,7 @@
 title: astro-site-shell をモノレポ化してコアロジックを切り出した
 description: Astro コンポーネントに混在していたバニラ JS ロジックを site-shell-core として分離し、フレームワーク非依存なパッケージに切り出した話
 pubDate: 2026-05-09
-tags: [astro, npm, typescript, monorepo]
+tags: [Astro, npm, TypeScript, monorepo]
 ---
 
 # astro-site-shell をモノレポ化してコアロジックを切り出した

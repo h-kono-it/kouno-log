@@ -2,7 +2,7 @@
 title: chira-ura.netの技術スタック
 description: 個人サイトプラットフォーム「チラ裏」の技術選定と構成を解説
 pubDate: 2026-03-28
-tags: [nuxt, hono, supabase, cloudflare]
+tags: [Nuxt, Hono, Supabase, Cloudflare]
 ---
 
 # chira-ura.netの技術スタック

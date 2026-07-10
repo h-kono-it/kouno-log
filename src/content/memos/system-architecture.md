@@ -2,7 +2,7 @@
 title: kouno.logのシステム構成
 description: このサイトの技術スタックと構成について
 pubDate: 2026-01-19
-tags: [astro, cloudflare]
+tags: [Astro, Cloudflare]
 ---
 
 # kouno.logのシステム構成
