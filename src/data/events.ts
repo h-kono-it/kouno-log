@@ -9,6 +9,9 @@ export interface Event {
 }
 
 export const events: Event[] = [
+  { name: '大Funabashi.dev', date: '2026-09-12', role: '登壇', url: 'https://funabashidev.connpass.com/event/398253/' },
+  { name: '書籍交換会 with 東葛.dev【第1回】', date: '2026-08-01', role: '主催', url: 'https://toukatsu.connpass.com/event/400075/' },
+  { name: '東葛.dev in 柏 交流会【第12回】', date: '2026-07-04', role: '主催', url: 'https://toukatsu.connpass.com/event/394079/' },
   { name: 'きのこカンファレンス 2026', date: '2026-06-28', role: 'コアスタッフ', url: 'https://kinoko-conf.dev/index.html' },
   { name: 'JJUG CCC 2026 Spring', date: '2026-05-30', role: '登壇', url: 'https://ccc2026spring.java-users.jp/', slideUrl: 'https://www.docswell.com/s/hk_it7/Z8NMQ1-2026-05-30-075434' },
   { name: '【エンジニアLTイベント】個人開発LT祭 2026年(神田開催)', date: '2026-05-22', role: '登壇', url: 'https://yumenosora.connpass.com/event/390878/', slideUrl: 'https://h-kono-it.github.io/personal_project-slide' },
