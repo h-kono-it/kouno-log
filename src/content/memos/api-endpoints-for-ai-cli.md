@@ -2,7 +2,7 @@
 title: Cloudflare Pages上のAstroサイトでJSON APIを作る
 description: Cloudflare Pages上のAstroサイトにJSON APIを追加した際のハマりどころをまとめる
 pubDate: 2026-04-07
-tags: [Astro, Cloudflare Pages]
+tags: [Astro, Cloudflare]
 ---
 
 AI CLI（Claude Codeなど）から自分のアウトプットを参照できる環境を作りたくて、kouno.logにJSON APIを追加した。追加したエンドポイントの詳細は「[kouno.log に API エンドポイントを追加しました](/news/api-endpoints)」の記事を参照。

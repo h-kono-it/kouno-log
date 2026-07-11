@@ -2,7 +2,7 @@
 title: Cloudflare Pagesのデプロイがスキップされていた件
 description: コミットメッセージに[Skip CI]をつけるとCloudflare Pagesのデプロイがスキップされる
 pubDate: 2026-01-27
-tags: [Cloudflare Pages]
+tags: [Cloudflare]
 ---
 
 # Cloudflare Pagesのデプロイがスキップされていた件

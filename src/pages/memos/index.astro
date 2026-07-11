@@ -8,8 +8,21 @@ const sortedMemos = memos.sort(
   (a, b) => b.data.pubDate.getTime() - a.data.pubDate.getTime()
 );
 
-// 全タグを取得（重複除去してソート）
-const allTags = [...new Set(memos.flatMap((m) => m.data.tags))].sort();
+// タグを利用数（記事数）順に集計。同数はアルファベット順
+const tagCounts = new Map<string, number>();
+for (const memo of memos) {
+  for (const tag of memo.data.tags) {
+    tagCounts.set(tag, (tagCounts.get(tag) ?? 0) + 1);
+  }
+}
+const sortedTags = [...tagCounts.entries()].sort(
+  ([tagA, countA], [tagB, countB]) => countB - countA || tagA.localeCompare(tagB)
+);
+
+// 上位のみ常時表示し、残りは「もっと見る」で展開
+const VISIBLE_TAG_COUNT = 8;
+const visibleTags = sortedTags.slice(0, VISIBLE_TAG_COUNT);
+const extraTags = sortedTags.slice(VISIBLE_TAG_COUNT);
 
 // CardList用にデータを変換
 const items = sortedMemos.map((memo) => ({
@@ -28,12 +41,27 @@ const PER_PAGE = 20;
   <h1>Memos</h1>
   <p>メモ書き・記事一覧</p>
 
-  {allTags.length > 0 && (
+  {sortedTags.length > 0 && (
     <div class="tag-filter">
       <button class="filter-btn active" data-tag="">All</button>
-      {allTags.map((tag) => (
-        <button class="filter-btn" data-tag={tag}>{tag}</button>
+      {visibleTags.map(([tag, count]) => (
+        <button class="filter-btn" data-tag={tag}>{tag} ({count})</button>
       ))}
+      {extraTags.length > 0 && (
+        <>
+          <div class="extra-tags" id="extra-tags" hidden>
+            {extraTags.map(([tag, count]) => (
+              <button class="filter-btn" data-tag={tag}>{tag} ({count})</button>
+            ))}
+          </div>
+          <button
+            class="filter-btn tag-toggle"
+            id="tag-toggle"
+            aria-expanded="false"
+            aria-controls="extra-tags"
+          >もっと見る (+{extraTags.length})</button>
+        </>
+      )}
     </div>
   )}
 
@@ -53,14 +81,30 @@ const PER_PAGE = 20;
     margin: 1.5rem 0;
     flex-wrap: wrap;
   }
+
+  /* 展開時は中のボタンを親のflexにそのまま流し込む */
+  .extra-tags {
+    display: contents;
+  }
+
+  .extra-tags[hidden] {
+    display: none;
+  }
+
+  .tag-toggle {
+    border-style: dashed;
+  }
 </style>
 
 <script define:vars={{ PER_PAGE }}>
   const allItems = Array.from(document.querySelectorAll('.card-list li'));
-  const filterTags = document.querySelectorAll('.filter-btn');
+  const filterTags = document.querySelectorAll('.filter-btn[data-tag]');
   const prevBtn = document.getElementById('prev-btn');
   const nextBtn = document.getElementById('next-btn');
   const pageInfo = document.getElementById('page-info');
+  const extraTags = document.getElementById('extra-tags');
+  const tagToggle = document.getElementById('tag-toggle');
+  const tagToggleLabel = tagToggle?.textContent;
 
   // URLからタグを取得
   const urlParams = new URLSearchParams(window.location.search);
@@ -70,11 +114,27 @@ const PER_PAGE = 20;
   let currentTag = initialTag;
   let filteredItems = allItems;
 
+  function setExtraTagsExpanded(expanded) {
+    if (!extraTags || !tagToggle) return;
+    extraTags.hidden = !expanded;
+    tagToggle.setAttribute('aria-expanded', String(expanded));
+    tagToggle.textContent = expanded ? '閉じる' : tagToggleLabel;
+  }
+
+  tagToggle?.addEventListener('click', () => {
+    setExtraTagsExpanded(extraTags.hidden);
+  });
+
   // 初期タグがあればボタンのactiveを更新
   if (initialTag) {
     filterTags.forEach((btn) => {
       btn.classList.toggle('active', btn.dataset.tag === initialTag);
     });
+    // 初期タグが折りたたみ内にあれば展開しておく
+    const isExtra = [...filterTags].some(
+      (btn) => btn.dataset.tag === initialTag && extraTags?.contains(btn)
+    );
+    if (isExtra) setExtraTagsExpanded(true);
   }
 
   function getFilteredItems() {

@@ -2,7 +2,7 @@
 title: 手書き風テーブルライブラリ「rough-table」を作った
 description: Rough.jsを使ってHTMLテーブルに手書き風ボーダーを描画するvanilla JSライブラリを公開した
 pubDate: 2026-04-02
-tags: [javascript, oss, rough-table]
+tags: [JavaScript, OSS, rough-table]
 ---
 
 # 手書き風テーブルライブラリ「rough-table」を作った

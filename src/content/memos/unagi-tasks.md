@@ -2,7 +2,7 @@
 title: 判断コストゼロを目指すTODOアプリ「Unagi Tasks」を作った
 description: タスクを自動スコアリングして今やるべき1件だけを表示するTODOアプリをDeno / Fresh 2で作った
 pubDate: 2026-04-15
-tags: [deno, fresh, preact, tailwindcss, todo]
+tags: [Deno, Fresh, Preact, Tailwind CSS, todo]
 ---
 
 # 判断コストゼロを目指すTODOアプリ「Unagi Tasks」を作った

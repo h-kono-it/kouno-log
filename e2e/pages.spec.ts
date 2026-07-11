@@ -46,6 +46,26 @@ test.describe('メモ一覧 (/memos)', () => {
     const articles = page.locator('main a[href^="/memos/"]');
     await expect(articles.first()).toBeVisible();
   });
+
+  test('タグフィルターに件数が表示される', async ({ page }) => {
+    await page.goto('/memos');
+    const filter = page.locator('.tag-filter');
+    await expect(filter.locator('.filter-btn[data-tag=""]')).toHaveText('All');
+    await expect(filter.locator('.filter-btn[data-tag]').nth(1)).toContainText(/\(\d+\)$/);
+  });
+
+  test('「もっと見る」で残りのタグを展開できる', async ({ page }) => {
+    await page.goto('/memos');
+    const toggle = page.locator('#tag-toggle');
+    const extraBtn = page.locator('#extra-tags .filter-btn').first();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'false');
+    await expect(extraBtn).toBeHidden();
+    await toggle.click();
+    await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+    await expect(extraBtn).toBeVisible();
+    await toggle.click();
+    await expect(extraBtn).toBeHidden();
+  });
 });
 
 test.describe('外部記事一覧 (/external)', () => {
