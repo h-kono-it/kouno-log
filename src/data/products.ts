@@ -57,6 +57,15 @@ export const products: Product[] = [
     category: 'app',
   },
   {
+    name: '法務案件チェックポイント',
+    url: 'https://h-kono-it.github.io/legal-check-helper',
+    description: 'エンジニア向けの「逆引き」法務・経理リファレンスサイト。「作ろうとしている機能」や「売ろうとしている商材」から、疑うべき法令・確認事項を引ける。同人誌『Webエンジニアのための法務確認ガイド』を参考情報のベースにしている。',
+    tags: ['Blume', 'MDX', 'GitHub Pages'],
+    repo: 'https://github.com/h-kono-it/legal-check-helper',
+    relatedMemo: null,
+    category: 'app',
+  },
+  {
     name: 'なぜなぜ分析ツール',
     url: 'https://h-kono-it.github.io/naze-naze/',
     description: 'ツリー構造となぜなぜ分析の因果検証をサポートするWebアプリ。原因をツリーで記録し、因果チェーンを逆順にたどって論理的飛躍を検出できる。データはlocalStorageに保存するためサーバー送信なし。',
