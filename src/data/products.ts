@@ -62,7 +62,7 @@ export const products: Product[] = [
     description: 'エンジニア向けの「逆引き」法務・経理リファレンスサイト。「作ろうとしている機能」や「売ろうとしている商材」から、疑うべき法令・確認事項を引ける。同人誌『Webエンジニアのための法務確認ガイド』を参考情報のベースにしている。',
     tags: ['Blume', 'MDX', 'GitHub Pages'],
     repo: 'https://github.com/h-kono-it/legal-check-helper',
-    relatedMemo: null,
+    relatedMemo: '/news/legal-check-helper',
     category: 'app',
   },
   {
