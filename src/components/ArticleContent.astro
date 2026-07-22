@@ -172,15 +172,23 @@ const { id } = Astro.props;
   }
 </style>
 
-<script is:inline src="https://unpkg.com/roughjs@latest/bundled/rough.js"></script>
-<script is:inline src="https://unpkg.com/rough-table/rough-table.min.js"></script>
-<script is:inline>
-  document.addEventListener('DOMContentLoaded', function () {
-    if (typeof RoughTable !== 'undefined') {
-      document.querySelectorAll('.content table').forEach(function (table) {
-        table.dataset.border = 'rows';
-      });
-      RoughTable.init('.content table');
-    }
-  });
+<script>
+  import rough from 'roughjs';
+
+  // rough-tableはグローバルの `rough` を参照するIIFEなので、importより先に生やしておく
+  (window as any).rough = rough;
+  await import('rough-table');
+
+  const init = () => {
+    document.querySelectorAll<HTMLTableElement>('.content table').forEach((table) => {
+      table.dataset.border = 'rows';
+    });
+    (window as any).RoughTable.init('.content table');
+  };
+
+  if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', init);
+  } else {
+    init();
+  }
 </script>
