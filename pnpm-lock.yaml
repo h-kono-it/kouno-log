@@ -36,8 +36,8 @@ importers:
         specifier: ^6.0.0
         version: 6.0.0
       rough-table:
-        specifier: 0.1.3
-        version: 0.1.3(roughjs@4.6.6)
+        specifier: 0.1.4
+        version: 0.1.4(roughjs@4.6.6)
       roughjs:
         specifier: 4.6.6
         version: 4.6.6
@@ -2010,8 +2010,8 @@ packages:
     engines: {node: '>=18.0.0', npm: '>=8.0.0'}
     hasBin: true
 
-  rough-table@0.1.3:
-    resolution: {integrity: sha512-mAxNmBdnwjnzvW0bYqEfqb09SVkK6uE0rG+Ap0uYtRpBuY3c9/3fetV8P6YQ7iETB3kp2Q+5y+adixqk+TAhQQ==}
+  rough-table@0.1.4:
+    resolution: {integrity: sha512-dh1hL+YnImBK1oC4gLKzcyyRVrFHK97tmZ4y/0RoIPcPucwfNgdkJ9M5NI24J/bioSwP0WZgB7RX3+umMxwaYA==}
     peerDependencies:
       roughjs: '>=4.0.0'
 
@@ -4217,7 +4217,7 @@ snapshots:
       fsevents: 2.3.3
     optional: true
 
-  rough-table@0.1.3(roughjs@4.6.6):
+  rough-table@0.1.4(roughjs@4.6.6):
     dependencies:
       roughjs: 4.6.6
 
