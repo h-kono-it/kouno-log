@@ -52,4 +52,4 @@ jobs:
             --body "RSS取得による外部コンテンツの自動更新" \
             --base main \
             --head "$BRANCH"
-          gh pr merge --squash --yes
+          gh pr merge --squash --delete-branch
