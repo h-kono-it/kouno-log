@@ -1,0 +1,8 @@
+{
+  "title": "Blume で作るドキュメントサイト — ポジショニングと拡張の勘所",
+  "url": "https://hk-it.hatenablog.com/entry/2026/07/25/121733",
+  "pubDate": "2026-07-25T03:17:33.000Z",
+  "source": "hatena",
+  "description": "Blume = 静的サイトジェネレーター\nBlume は Astro + Vite ベースの Markdown ファーストな静的サイトジェネレーターです。「Fast, AI-ready, zero-config」を掲げていて、docs/ に Markdown を置くだけで、ナビゲーション・全文検索・テーマ・OG 画像生成・llms.txt（サイトの内容を LLM に読ませるための規定形式のテキスト",
+  "thumbnail": "/thumbnails/2026-07-25-hatena-blume--425d1c4c.png"
+}
