@@ -4,12 +4,18 @@ on: pull_request
 permissions:
   contents: write
   pull-requests: write
+  actions: write # deploy.yml を workflow_dispatch で起動するため
 
 jobs:
   dependabot:
     runs-on: ubuntu-latest
     if: github.actor == 'dependabot[bot]'
     steps:
+      # PR のブランチではなく main のスクリプトを実行する
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
       - name: Dependabot metadata
         id: metadata
         uses: dependabot/fetch-metadata@v3
@@ -30,10 +36,21 @@ jobs:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Trigger deploy after merge
+        if: steps.metadata.outputs.update-type != 'version-update:semver-major'
+        run: .github/scripts/deploy-after-merge.sh "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
   github-actions-bot:
     runs-on: ubuntu-latest
     if: github.actor == 'github-actions[bot]'
     steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+
       - name: Approve PR
         run: gh pr review --approve "$PR_URL"
         env:
@@ -42,6 +59,12 @@ jobs:
 
       - name: Enable auto-merge
         run: gh pr merge --auto --squash "$PR_URL"
+        env:
+          PR_URL: ${{ github.event.pull_request.html_url }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Trigger deploy after merge
+        run: .github/scripts/deploy-after-merge.sh "$PR_URL"
         env:
           PR_URL: ${{ github.event.pull_request.html_url }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

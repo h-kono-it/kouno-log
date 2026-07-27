@@ -12,6 +12,7 @@ jobs:
     permissions:
       contents: write
       pull-requests: write
+      actions: write # deploy.yml を workflow_dispatch で起動するため
 
     steps:
       - uses: actions/checkout@v7
@@ -53,3 +54,6 @@ jobs:
             --base main \
             --head "$BRANCH"
           gh pr merge --squash --delete-branch
+          # GITHUB_TOKEN による push は他ワークフローをトリガーしない仕様のため、
+          # deploy.yml を明示的に起動する（workflow_dispatch はこの制限の例外）
+          gh workflow run deploy.yml --ref main
