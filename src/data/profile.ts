@@ -33,9 +33,9 @@ export const skills: string[] = ['Java', 'Kotlin', 'Ruby', 'TypeScript', 'Node.j
 export const links: ProfileLink[] = [
   { name: 'GitHub', url: 'https://github.com/h-kono-it' },
   { name: 'Twitter', url: 'https://x.com/hk_it7' },
-  { name: 'note', url: 'https://note.com/h_kono' },
-  { name: 'はてなブログ', url: 'https://h-kono-it.hatenablog.com/' },
-  { name: 'Docswell', url: 'https://www.docswell.com/user/h-kono-it' },
+  { name: 'note', url: 'https://note.com/hk_it7' },
+  { name: 'はてなブログ', url: 'https://hk-it.hatenablog.com/' },
+  { name: 'Docswell', url: 'https://www.docswell.com/user/hk_it7' },
   { name: 'Cosense', url: 'https://scrapbox.io/kouno-sense/' },
   { name: 'Qiita', url: 'https://qiita.com/hk_it7' },
 ];
