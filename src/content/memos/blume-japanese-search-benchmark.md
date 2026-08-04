@@ -7,7 +7,7 @@ tags: [Blume, Orama, Pagefind]
 
 # Blume の日本語検索、バージョン別の計測記録
 
-[Blume](https://useblume.dev/) で作っている[法務案件チェックポイント](https://h-kono-it.github.io/legal-check-helper/)の日本語検索について、バージョンごとに精度を測った記録。**なぜそうなったかの経緯と設計の話は別途はてなブログに書いたので、こちらは数字だけを残しておく。**
+[Blume](https://useblume.dev/) で作っている[法務案件チェックポイント](https://h-kono-it.github.io/legal-check-helper/)の日本語検索について、バージョンごとに精度を測った記録。なぜそうなったかの経緯と設計の話は別途はてなブログに書くので、こちらは数字だけを残しておく。
 
 自分用の定点観測でもあるけど、日本語の全文検索で「どの方式がどれくらい効くのか」の実データはあまり見かけないので、置いておけば誰かの役には立つと思う。
 
@@ -26,7 +26,7 @@ tags: [Blume, Orama, Pagefind]
 |---|---|
 | 1.2.0以前 | トークナイザ差し替えなし。Orama の english 固定 |
 | 1.2.1 | `Intl.Segmenter` による辞書分割（分かち書き） |
-| 語bigram | 分かち書き＋隣接する語の連結（**自分が最初に考えて外した案**） |
+| 語bigram | 分かち書き＋隣接する語の連結（自分が最初に考えて外した案） |
 | 文字bigramのみ | 漢字・かな・カナの連なりを文字2-gram に切り、unigram を出さない |
 | 1.3.0 | 文字bigram ＋ AND（`threshold: 0`）、0件なら OR にフォールバック |
 | Pagefind | 比較用。`rootSelector: "article"` で本文のみ索引 |
