@@ -7,7 +7,7 @@ tags: [Blume, Orama, Pagefind]
 
 # Blume の日本語検索、バージョン別の計測記録
 
-[Blume](https://useblume.dev/) で作っている[法務案件チェックポイント](https://h-kono-it.github.io/legal-check-helper/)の日本語検索について、バージョンごとに精度を測った記録。なぜそうなったかの経緯と設計の話は別途はてなブログに書くので、こちらは数字だけを残しておく。
+[Blume](https://useblume.dev/) で作っている[法務案件チェックポイント](https://h-kono-it.github.io/legal-check-helper/)の日本語検索について、バージョンごとに精度を測った記録。なぜそうなったかの経緯と設計の話ははてなブログの「[日本語の全文検索は「分かち書き」だけでは足りない — Pagefind と Orama を測って、文字bigram で直すまで](https://hk-it.hatenablog.com/entry/2026/08/05/210424)」に書いたので、こちらは数字だけを残しておく。
 
 自分用の定点観測でもあるけど、日本語の全文検索で「どの方式がどれくらい効くのか」の実データはあまり見かけないので、置いておけば誰かの役には立つと思う。
 
