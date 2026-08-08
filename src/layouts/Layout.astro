@@ -1,5 +1,6 @@
 ---
 import playlist from '../data/playlist.json';
+import SearchPalette from '../components/SearchPalette.astro';
 
 interface Props {
   title: string;
@@ -55,6 +56,7 @@ const initialSong = songs[Math.floor(Math.random() * songs.length)];
       <div class="masthead">
         <a href="/" class="site-title" aria-current={currentPath === '/' ? 'page' : undefined}>kouno<span class="site-title-log">.log</span></a>
         <div class="header-tools">
+          <SearchPalette />
           <button id="theme-toggle" class="theme-toggle-btn">
             <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
               <path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20zm0 2v16a8 8 0 0 1 0-16z"/>
