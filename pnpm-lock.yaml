@@ -32,6 +32,9 @@ importers:
       budoux:
         specifier: ^0.8.4
         version: 0.8.4
+      ja-bigram-tokenizer:
+        specifier: ^0.1.1
+        version: 0.1.1(@orama/orama@3.1.18)
       rehype-autolink-headings:
         specifier: ^7.1.0
         version: 7.1.0
@@ -1682,6 +1685,15 @@ packages:
 
   is-unsafe@1.0.1:
     resolution: {integrity: sha512-CLK2+VdgERgD96EYm5lUQssZYlRg2tkZnbsxZoacmSiRxiFJ4Nk4SzjCl+Ur+v3kXIY9dTIdb3IH22y1mZ56LA==}
+
+  ja-bigram-tokenizer@0.1.1:
+    resolution: {integrity: sha512-P+2wpF/at/ZN52kPf/4W2C/htFjHGvHdgy6f5+y/EO9zCy0ryIrqtLzCt5pUUpV+y3tI2R1X90fab8IQV+bQgw==}
+    engines: {node: '>=20'}
+    peerDependencies:
+      '@orama/orama': '>=3'
+    peerDependenciesMeta:
+      '@orama/orama':
+        optional: true
 
   js-yaml@4.3.0:
     resolution: {integrity: sha512-1td788aAnnZ5qs7V2QIRl1owjtYpbKt749Y3xauqQgwIIGF/xXWz1wMTEBx5O3LK3lXLVuqXPdPxj2BoFHaW9Q==}
@@ -3863,6 +3875,10 @@ snapshots:
   is-stream@2.0.1: {}
 
   is-unsafe@1.0.1: {}
+
+  ja-bigram-tokenizer@0.1.1(@orama/orama@3.1.18):
+    optionalDependencies:
+      '@orama/orama': 3.1.18
 
   js-yaml@4.3.0:
     dependencies:

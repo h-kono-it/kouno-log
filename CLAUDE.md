@@ -18,6 +18,7 @@ GitHub: https://github.com/h-kono-it/kouno-log
 - `src/content/external/` - 外部記事（RSS自動取得、JSON）
 - `scripts/fetch-rss.js` - RSS取得スクリプト（FEEDS配列で設定）
 - `.github/workflows/fetch-external.yml` - 毎日自動取得
+- `src/components/SearchPalette.astro` - サイト内検索（⌘K）。索引は `src/pages/search-index.json.ts` が配る素のJSONからブラウザ側で組む。日本語のトークナイズとAND→ORフォールバックは npm の [ja-bigram-tokenizer](https://github.com/h-kono-it/ja-bigram-tokenizer)（自作）にあるので、検索の当たり方を変えたいときはそちらを直す
 
 ## 注意事項
 

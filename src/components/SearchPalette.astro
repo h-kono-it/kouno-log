@@ -73,9 +73,9 @@
     function ensureIndex(): Promise<void> {
       if (!indexing) {
         indexing = (async () => {
-          const [orama, tokenizerMod, res] = await Promise.all([
+          const [orama, ja, res] = await Promise.all([
             import('@orama/orama'),
-            import('../lib/search-tokenizer'),
+            import('ja-bigram-tokenizer/orama'),
             fetch('/search-index.json'),
           ]);
           const { docs } = (await res.json()) as { docs: SearchDoc[] };
@@ -88,7 +88,7 @@
             },
             // create() に language は渡せない（カスタムtokenizerと併用すると
             // NO_LANGUAGE_WITH_CUSTOM_TOKENIZER で落ちる）
-            components: { tokenizer: tokenizerMod.createJaTokenizer() },
+            components: { tokenizer: ja.createJaTokenizer() },
           });
           await orama.insertMultiple(instance, docs as never[]);
           db = instance;
@@ -198,31 +198,26 @@
       // 入力が進んでいたらこの結果は捨てる
       if (input!.value.trim() !== q) return;
 
-      const orama = await import('@orama/orama');
-      const params = { term: q, limit: 20, boost: { title: 3, description: 1.5, tags: 2 } };
-      // まず全トークンを含むページだけに絞る（threshold: 0 が AND）。
-      // 文字bigramはORで引くと広く拾いすぎるため。0件なら文章クエリとみなして
-      // OR（threshold: 1）に落とす
-      let res = await orama.search(db as AnyOrama, { ...params, threshold: 0 });
-      let fuzzy = false;
-      if (res.count === 0) {
-        fuzzy = true;
-        res = await orama.search(db as AnyOrama, { ...params, threshold: 1 });
-      }
+      // 全トークンを含むページだけに絞り、0件なら文章クエリとみなしてORに落とす
+      // 2パスは searchJa の中身。fuzzy がそのフォールバックが起きたかを返す
+      const { searchJa } = await import('ja-bigram-tokenizer/orama');
+      const { hits, count, fuzzy } = await searchJa<SearchDoc>(db as AnyOrama, {
+        term: q,
+        limit: 20,
+        boost: { title: 3, description: 1.5, tags: 2 },
+      });
 
       if (input!.value.trim() !== q) return;
       // ORは全トークンを含まなくても当たるので、存在しない語だと数十件がほぼ横並びの
       // スコアで返る。上位だけ出して「近いもの」だと明示する
-      const docs = (fuzzy ? res.hits.slice(0, 5) : res.hits).map(
-        (h) => h.document as unknown as SearchDoc,
-      );
+      const docs = fuzzy ? hits.slice(0, 5) : hits;
       render(docs, q);
       statusEl!.textContent =
         docs.length === 0
           ? `「${q}」に一致する記事はありません`
           : fuzzy
             ? `完全一致なし — 近いもの ${docs.length} 件`
-            : `${res.count} 件`;
+            : `${count} 件`;
     }
 
     let timer: number | undefined;
