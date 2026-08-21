@@ -49,11 +49,17 @@ jobs:
           git checkout -b "$BRANCH"
           git commit -m "chore: update external content"
           git push origin "$BRANCH"
-          gh pr create --title "chore: update external content" \
+          PR_URL=$(gh pr create --title "chore: update external content" \
             --body "RSS取得による外部コンテンツの自動更新" \
             --base main \
-            --head "$BRANCH"
-          gh pr merge --squash --delete-branch
+            --head "$BRANCH")
           # GITHUB_TOKEN による push は他ワークフローをトリガーしない仕様のため、
-          # deploy.yml を明示的に起動する（workflow_dispatch はこの制限の例外）
-          gh workflow run deploy.yml --ref main
+          # このPRでは e2e.yml が pull_request では走らない（action_required で止まる）。
+          # main の必須チェック `e2e` を満たすには明示起動が要る
+          # （workflow_dispatch はこのトリガー制限の例外）。
+          gh workflow run e2e.yml --ref "$BRANCH"
+          # E2E が通ってから初めてマージされる。落ちたらマージされない
+          gh pr merge "$PR_URL" --auto --squash --delete-branch
+          # 同じトリガー制限のため deploy.yml も明示起動する。
+          # --auto はすぐにはマージしないので、マージ完了を待ってから叩く
+          .github/scripts/deploy-after-merge.sh "$PR_URL"
