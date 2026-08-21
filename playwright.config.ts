@@ -19,8 +19,10 @@ export default defineConfig({
   ],
   webServer: {
     // Astro 7 の `astro dev` はdaemon起動のためフォアグラウンドプロセスがすぐ終了する。
-    // `; sleep 3600` でプロセスを生存させてPlaywrightのポート待機に対応。
-    command: 'pnpm dev; sleep 3600',
+    // `&& sleep 3600` でプロセスを生存させてPlaywrightのポート待機に対応。
+    // `;` ではなく `&&` なのは、dev の起動自体が失敗したときに sleep へ進ませないため。
+    // `;` だとサーバーが死んでいてもプロセスが生き続け、原因の見えない60秒タイムアウトになる。
+    command: 'pnpm dev && sleep 3600',
     port: 4321,
     reuseExistingServer: !process.env.CI,
     timeout: 60_000,
