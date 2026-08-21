@@ -8,7 +8,8 @@
 set -euo pipefail
 
 PR_URL="$1"
-TIMEOUT_SECONDS=300
+# 必須チェック `e2e` の完了を待ってから auto-merge が走るぶん、余裕を持たせる
+TIMEOUT_SECONDS=600
 INTERVAL_SECONDS=10
 
 for ((elapsed = 0; elapsed < TIMEOUT_SECONDS; elapsed += INTERVAL_SECONDS)); do
