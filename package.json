@@ -35,6 +35,6 @@
   "devDependencies": {
     "@playwright/test": "^1.62.0",
     "oxlint": "^1.76.0",
-    "wrangler": "^4.115.0"
+    "wrangler": "^4.123.0"
   }
 }
