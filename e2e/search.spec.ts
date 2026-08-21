@@ -21,12 +21,24 @@ test.describe('検索パレット', () => {
   });
 
   test('Ctrl+K で開いて Esc で閉じる', async ({ page }) => {
+    const dialog = page.locator('#search-dialog');
+
     await page.goto('/');
     await page.locator('body').click();
-    await page.keyboard.press('Control+k');
-    await expect(page.locator('#search-dialog')).toBeVisible();
+
+    // devサーバー起動直後はviteが依存の再最適化でfull reloadをかけることがあり、
+    // その瞬間に押したキーはリスナーごと消えて誰にも拾われない。
+    // click と違って keyboard.press は自動リトライしないので、押し直しで吸収する。
+    // 開いているときに押すと閉じてしまうため、押す前に状態を見る。
+    await expect(async () => {
+      if (!(await dialog.isVisible())) {
+        await page.keyboard.press('Control+k');
+      }
+      await expect(dialog).toBeVisible({ timeout: 1000 });
+    }).toPass({ timeout: 15_000 });
+
     await page.keyboard.press('Escape');
-    await expect(page.locator('#search-dialog')).toBeHidden();
+    await expect(dialog).toBeHidden();
   });
 
   test('本文の語で記事が引ける', async ({ page }) => {

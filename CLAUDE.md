@@ -29,3 +29,8 @@ GitHub: https://github.com/h-kono-it/kouno-log
 Cloudflare Workers（mainブランチpushで `.github/workflows/deploy.yml` が `wrangler deploy` を実行）
 
 - 旧 `kouno-log.pages.dev` は Pages プロジェクトを `migration/pages-redirect/` の `_redirects` のみ配信に切り替えて 301 リダイレクト（詳細は `migration/pages-redirect/README.md`）
+
+## CI
+
+- main は GitHub ruleset「branch-protect」で `e2e` を required status check にしてある。E2Eが落ちたPRはマージできない。**この設定はリポジトリ内のファイルに現れない**ので、確認は `gh api repos/h-kono-it/kouno-log/rulesets/12274110`、更新は PATCH ではなく **PUT**
+- 毎日の外部コンテンツ更新PRは `GITHUB_TOKEN` で作られるため pull_request では e2e.yml が走らない（`action_required` で止まる）。必須チェックを埋めるために `fetch-external.yml` が `gh workflow run e2e.yml --ref "$BRANCH"` で明示起動してから `--auto` でマージしている。ワークフローを増やして必須チェックを足すときは、このbot経路でもチェックが埋まるか確認すること
