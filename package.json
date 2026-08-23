@@ -35,6 +35,7 @@
   "devDependencies": {
     "@astrojs/markdown-satteri": "^0.3.7",
     "@playwright/test": "^1.62.0",
+    "github-slugger": "^2.0.0",
     "oxlint": "^1.76.0",
     "wrangler": "^4.123.0"
   }

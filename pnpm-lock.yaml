@@ -63,6 +63,9 @@ importers:
       '@playwright/test':
         specifier: ^1.62.0
         version: 1.62.1
+      github-slugger:
+        specifier: ^2.0.0
+        version: 2.0.0
       oxlint:
         specifier: ^1.76.0
         version: 1.77.0

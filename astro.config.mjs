@@ -4,6 +4,7 @@ import rehypeSlug from 'rehype-slug';
 import rehypeAutolinkHeadings from 'rehype-autolink-headings';
 import { satteri } from '@astrojs/markdown-satteri';
 import satteriDropEmptyThead from './src/plugins/satteri-drop-empty-thead.mjs';
+import satteriHeadingAnchor from './src/plugins/satteri-heading-anchor.mjs';
 
 import cloudflare from '@astrojs/cloudflare';
 import sitemap from '@astrojs/sitemap';
@@ -22,7 +23,7 @@ export default defineConfig({
   integrations: [sitemap()],
   markdown: {
     processor: satteri({
-      hastPlugins: [satteriDropEmptyThead()],
+      hastPlugins: [satteriDropEmptyThead(), satteriHeadingAnchor],
     }),
     // rehypePlugins: [
     //   rehypeSlug, // 見出しにidを付与

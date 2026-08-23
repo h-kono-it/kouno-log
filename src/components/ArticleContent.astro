@@ -41,19 +41,23 @@ const { id } = Astro.props;
     border-bottom: 2px dashed var(--color-border-dark);
   }
 
-  .content :global(h2)::before {
-    content: "## ";
-    content: "## " / "";
+  /* h2/h3 の「##」は satteri-heading-anchor が実要素として挿入する。
+     見た目は ::before だった頃と同じまま、記号がそのままアンカーリンクになる */
+  .content :global(.heading-anchor) {
+    margin-right: 0.5em;
     color: var(--color-accent);
     font-family: var(--font-mono);
+    text-decoration: none;
   }
 
-  .content :global(h3)::before {
-    content: "### ";
-    content: "### " / "";
-    color: var(--color-accent);
+  .content :global(h3 .heading-anchor) {
     opacity: 0.75;
-    font-family: var(--font-mono);
+  }
+
+  .content :global(.heading-anchor:hover),
+  .content :global(.heading-anchor:focus-visible) {
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
   }
 
   .content :global(p) {
