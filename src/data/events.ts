@@ -11,6 +11,10 @@ export interface Event {
 export const events: Event[] = [
   { name: '？？？', date: '2026-12-13', role: '登壇' },
   { name: '技術書典21 オフライン', date: '2026-11-23', role: 'サークル参加', url: 'https://techbookfest.org/event/tbf21' },
+  { name: '？？？', date: '2026-11-15', role: '主催' },
+  { name: 'KomeKaigi 2026', date: '2026-10-31', role: '登壇', url: 'https://komekaigi.dev/' },
+  { name: 'Kaigi on Rails 2026', date: '2026-10-16', role: '参加', url: 'https://kaigionrails.org/2026/' },
+  { name: '東葛.dev in 柏 交流会【第13回】？', date: '2026-10-09', role: '主催' },
   { name: '武蔵野線.dev クロスコミュニティ交流会 vol.1', date: '2026-09-23', role: '主催', url: 'https://musashino-line.connpass.com/event/401818/' },
   { name: '大Funabashi.dev', date: '2026-09-12', role: '登壇', url: 'https://funabashidev.connpass.com/event/398253/' },
   { name: '書籍交換会 with 東葛.dev【第1回】', date: '2026-08-01', role: '主催', url: 'https://toukatsu.connpass.com/event/400075/' },
