@@ -9,7 +9,7 @@ export interface Event {
 }
 
 export const events: Event[] = [
-  { name: '？？？', date: '2026-12-13', role: '登壇' },
+  { name: 'TechTAMA 2026 Conference', date: '2026-12-13', role: '登壇', url: 'https://tamadev.jp/events/20261213/' },
   { name: '技術書典21 オフライン', date: '2026-11-23', role: 'サークル参加', url: 'https://techbookfest.org/event/tbf21' },
   { name: '？？？', date: '2026-11-15', role: '主催' },
   { name: 'KomeKaigi 2026', date: '2026-10-31', role: '登壇', url: 'https://komekaigi.dev/' },
