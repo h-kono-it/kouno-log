@@ -66,7 +66,11 @@ test.describe('検索パレット', () => {
   test('一致しない語では0件と表示される', async ({ page }) => {
     await page.goto('/');
     await page.locator('#search-trigger').click();
-    await page.locator('#search-input').fill('カピバラ');
+    // 日本語は文字bigramで索引しているため、カタカナ語を「無い語」として使うと
+    // 記事側の別語と部分一致してフォールバックが効いてしまう
+    //（例: 「カピバラ」の bigram「バラ」が「バラバラ」に刺さる）。
+    // 索引に絶対現れない英字列なら、どんな記事が増えても0件のままになる
+    await page.locator('#search-input').fill('zzqqxxnomatch');
     await expect(page.locator('#search-status')).toContainText('一致する記事はありません');
   });
 });
