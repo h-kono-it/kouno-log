@@ -57,7 +57,40 @@ jobs:
           # このPRでは e2e.yml が pull_request では走らない（action_required で止まる）。
           # main の必須チェック `e2e` を満たすには明示起動が要る
           # （workflow_dispatch はこのトリガー制限の例外）。
+          #
+          # ただし action_required の run は「チェックを1つも持たない check suite」を
+          # head SHA に残す。GitHub の status rollup は同じアプリの最新 suite を採るので、
+          # 放置すると dispatch した e2e の成功 suite が空の suite に上書きされ、
+          # 必須チェック `e2e` が存在しない扱いになって PR が永久に BLOCKED になる。
+          # 先に空の run を消してから dispatch する。
+          for _ in $(seq 12); do
+            PENDING=$(gh run list --branch "$BRANCH" --status action_required --json databaseId --jq '.[].databaseId')
+            [ -n "$PENDING" ] && break
+            sleep 5
+          done
+          # 複数ワークフロー分が少しずつ遅れて登録されるので、出揃うのを待って取り直す
+          sleep 5
+          for id in $(gh run list --branch "$BRANCH" --status action_required --json databaseId --jq '.[].databaseId'); do
+            gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/runs/$id" \
+              || echo "::warning::run $id を削除できなかった"
+          done
+
           gh workflow run e2e.yml --ref "$BRANCH"
+
+          # rollup に e2e が現れないと --auto は永久に発火しない。
+          # 黙って詰まらせず、現れなければこのワークフローを失敗させて気づけるようにする
+          SEEN=""
+          for _ in $(seq 24); do
+            SEEN=$(gh pr view "$PR_URL" --json statusCheckRollup \
+              --jq '[.statusCheckRollup[].name] | index("e2e") // empty') || SEEN=""
+            [ -n "$SEEN" ] && break
+            sleep 5
+          done
+          if [ -z "$SEEN" ]; then
+            echo "::error::e2e が PR のチェック一覧に現れなかった。必須チェックが埋まらずマージできない"
+            exit 1
+          fi
+
           # E2E が通ってから初めてマージされる。落ちたらマージされない
           gh pr merge "$PR_URL" --auto --squash --delete-branch
           # 同じトリガー制限のため deploy.yml も明示起動する。
