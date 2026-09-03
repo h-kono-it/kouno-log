@@ -15,28 +15,28 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^14.2.1",
+    "@astrojs/cloudflare": "^14.2.5",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.3",
     "@orama/orama": "^3.1.18",
     "@resvg/resvg-wasm": "^2.6.2",
-    "astro": "^7.2.2",
+    "astro": "^7.2.9",
     "astro-site-shell": "^0.3.3",
-    "budoux": "^0.8.4",
+    "budoux": "^0.9.0",
     "ja-bigram-tokenizer": "^0.1.2",
     "rehype-autolink-headings": "^7.1.0",
     "rehype-slug": "^6.0.0",
     "rough-table": "0.1.4",
     "roughjs": "4.6.6",
     "rss-parser": "^3.13.0",
-    "satori": "^0.29.0",
-    "sharp": "^0.35.3"
+    "satori": "^0.33.4",
+    "sharp": "^0.35.4"
   },
   "devDependencies": {
-    "@astrojs/markdown-satteri": "^0.3.7",
+    "@astrojs/markdown-satteri": "^0.3.8",
     "@playwright/test": "^1.62.0",
     "github-slugger": "^2.0.0",
-    "oxlint": "^1.76.0",
-    "wrangler": "^4.123.0"
+    "oxlint": "^1.80.0",
+    "wrangler": "^4.127.0"
   }
 }
