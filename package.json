@@ -37,6 +37,6 @@
     "@playwright/test": "^1.62.0",
     "github-slugger": "^2.0.0",
     "oxlint": "^1.80.0",
-    "wrangler": "^4.127.0"
+    "wrangler": "^4.127.1"
   }
 }
