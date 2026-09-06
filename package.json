@@ -7,7 +7,7 @@
     "build": "astro build",
     "preview": "astro preview",
     "astro": "astro",
-    "fetch-rss": "node sctipts/fetch-rss.js",
+    "fetch-rss": "node scripts/fetch-rss.js",
     "lint": "oxlint src",
     "lint:fix": "oxlint src --fix",
     "tags": "node scripts/list-tags.js",
