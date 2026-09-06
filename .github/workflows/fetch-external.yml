@@ -54,7 +54,7 @@ jobs:
             --base main \
             --head "$BRANCH")
           # GITHUB_TOKEN による push は他ワークフローをトリガーしない仕様のため、
-          # このPRでは e2e.yml が pull_request では走らない（action_required で止まる）。
+          # このPRでは ci.yml が pull_request では走らない（action_required で止まる）。
           # main の必須チェック `e2e` を満たすには明示起動が要る
           # （workflow_dispatch はこのトリガー制限の例外）。
           #
@@ -75,7 +75,7 @@ jobs:
               || echo "::warning::run $id を削除できなかった"
           done
 
-          gh workflow run e2e.yml --ref "$BRANCH"
+          gh workflow run ci.yml --ref "$BRANCH"
 
           # rollup に e2e が現れないと --auto は永久に発火しない。
           # 黙って詰まらせず、現れなければこのワークフローを失敗させて気づけるようにする

@@ -32,7 +32,9 @@ Cloudflare Workers（mainブランチpushで `.github/workflows/deploy.yml` が 
 
 ## CI
 
-- main は GitHub ruleset「branch-protect」で `e2e` を required status check にしてある。E2Eが落ちたPRはマージできない。**この設定はリポジトリ内のファイルに現れない**ので、確認は `gh api repos/h-kono-it/kouno-log/rulesets/12274110`、更新は PATCH ではなく **PUT**
-- 毎日の外部コンテンツ更新PRは `GITHUB_TOKEN` で作られるため pull_request では e2e.yml が走らない（`action_required` で止まる）。必須チェックを埋めるために `fetch-external.yml` が `gh workflow run e2e.yml --ref "$BRANCH"` で明示起動してから `--auto` でマージしている。ワークフローを増やして必須チェックを足すときは、このbot経路でもチェックが埋まるか確認すること
+- main は GitHub ruleset「branch-protect」で `e2e` を required status check にしてある。落ちたPRはマージできない。**この設定はリポジトリ内のファイルに現れない**ので、確認は `gh api repos/h-kono-it/kouno-log/rulesets/12274110`、更新は PATCH ではなく **PUT**
+- **必須チェック `e2e` は `ci.yml` のジョブID**。ファイル名（`ci.yml`）でも workflow の `name:`（`CI`）でもなく、check run 名＝ジョブIDが ruleset の context になる。中身は lint → build → E2E だが、名前を変えると ruleset と `fetch-external.yml` の両方を同時に直す必要があるので据え置いてある
+- lint と build は `ci.yml` の `e2e` ジョブに step として入れてある。**別ジョブに切り出して `needs:` でぶら下げてはいけない**。GitHub は required status check の skipped を成功扱いにするため、lint が落ちて `e2e` が skip されるとマージゲートがザルになる
+- 毎日の外部コンテンツ更新PRは `GITHUB_TOKEN` で作られるため pull_request では ci.yml が走らない（`action_required` で止まる）。必須チェックを埋めるために `fetch-external.yml` が `gh workflow run ci.yml --ref "$BRANCH"` で明示起動してから `--auto` でマージしている。ワークフローを増やして必須チェックを足すときは、このbot経路でもチェックが埋まるか確認すること
 - **`action_required` の run は消してから dispatch すること**。チェックを1つも持たない check suite が head SHA に残り、GitHub の status rollup は同じアプリの最新 suite を採るので、成功した dispatch の suite が空 suite に上書きされて `e2e` が「存在しない」扱いになり PR が永久に BLOCKED になる。2026-08-21 の e2e 必須化から 2026-09-01 までこれで bot PR が1本もマージされていなかった。`fetch-external.yml` は空 run を削除 → dispatch → rollup に `e2e` が現れたことを確認 → `--auto`、の順にしてあり、現れなければ `exit 1` で気づけるようにしてある
 - 詰まりの調査は `gh pr view <n> --json statusCheckRollup` と `gh api repos/h-kono-it/kouno-log/commits/<sha>/check-suites` を突き合わせる。前者に無くて後者にあるなら、この空 suite 上書きを疑う

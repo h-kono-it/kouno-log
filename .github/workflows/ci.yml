@@ -1,4 +1,4 @@
-name: E2E Tests
+name: CI
 
 on:
   push:
@@ -8,6 +8,9 @@ on:
   workflow_dispatch:
 
 jobs:
+  # ジョブIDの `e2e` は main の ruleset「branch-protect」が必須チェックとして
+  # 見ている context そのもの。lint/build を含むようになった今も名前は変えられない。
+  # 変えるなら ruleset の PUT と fetch-external.yml の dispatch を同時に直すこと。
   e2e:
     runs-on: ubuntu-latest
     steps:
@@ -26,6 +29,16 @@ jobs:
 
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
+
+      # lint と build は chromium のダウンロード（約1分）より前に置く。
+      # 壊れているPRを安く落とすため。
+      - name: Lint
+        run: pnpm lint
+
+      # `astro dev`（PlaywrightのwebServer）では adapter/prerender/SSR まわりの
+      # 壊れが出ないため、build は別に通す必要がある。
+      - name: Build
+        run: pnpm build
 
       - name: Install Playwright browsers
         run: pnpm exec playwright install chromium --with-deps
