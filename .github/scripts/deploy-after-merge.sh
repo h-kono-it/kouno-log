@@ -16,6 +16,18 @@ for ((elapsed = 0; elapsed < TIMEOUT_SECONDS; elapsed += INTERVAL_SECONDS)); do
   state=$(gh pr view "$PR_URL" --json state --jq .state)
   case "$state" in
     MERGED)
+      # PAT でマージした場合は main への push が PAT 名義になり deploy.yml が自分で走る。
+      # GITHUB_TOKEN でマージした場合（dependabot 経路）は走らない。
+      # 両方から呼ばれるので、既に走っていないかを見てから起動し、二重デプロイを避ける
+      sha=$(gh api "repos/${GITHUB_REPOSITORY}/commits/main" --jq .sha)
+      for ((waited = 0; waited < 60; waited += INTERVAL_SECONDS)); do
+        if [ -n "$(gh run list --workflow deploy.yml --json headSha \
+              --jq "[.[] | select(.headSha == \"${sha}\")] | first // empty")" ]; then
+          echo "deploy.yml は push で既に起動済み (${sha})"
+          exit 0
+        fi
+        sleep "$INTERVAL_SECONDS"
+      done
       gh workflow run deploy.yml --ref main
       echo "Triggered deploy.yml"
       exit 0
