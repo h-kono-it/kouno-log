@@ -16,6 +16,12 @@ jobs:
 
     steps:
       - uses: actions/checkout@v7
+        with:
+          # push と PR 作成を PAT 名義にするための checkout トークン。
+          # GITHUB_TOKEN のままだと pull_request イベントが発火しない（下記参照）。
+          # 未設定時にここで落ちると原因が見えないので、フォールバックして
+          # 「Commit and push if changed」のガードで理由付きで止める
+          token: ${{ secrets.BOT_PAT || github.token }}
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v6
@@ -36,8 +42,20 @@ jobs:
 
       - name: Commit and push if changed
         env:
-          GH_TOKEN: ${{ github.token }}
+          # GITHUB_TOKEN による push / PR 作成は他ワークフローをトリガーしない仕様で、
+          # ci.yml が pull_request で走らず必須チェック `e2e` が埋まらない。
+          # 以前は workflow_dispatch で明示起動して凌いでいたが、2026-09-13 の PR #169 で
+          # dispatch した run のチェックが PR の statusCheckRollup に載らなくなり
+          # （head SHA 上には success で存在するのに rollup に現れない）、PR が BLOCKED のまま
+          # 詰まった。dispatch 経路自体が信用できないので PAT 名義に切り替える。
+          GH_TOKEN: ${{ secrets.BOT_PAT }}
         run: |
+          # 未設定のまま動くと GITHUB_TOKEN にフォールバックせず gh が無認証で落ちるだけなので、
+          # 何が足りないのかをはっきり出して止める
+          if [ -z "${GH_TOKEN}" ]; then
+            echo "::error::secret BOT_PAT が未設定。PAT が無いと pull_request が発火せず必須チェック e2e が埋まらない"
+            exit 1
+          fi
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add src/content/external/ public/thumbnails/
@@ -53,32 +71,11 @@ jobs:
             --body "RSS取得による外部コンテンツの自動更新" \
             --base main \
             --head "$BRANCH")
-          # GITHUB_TOKEN による push は他ワークフローをトリガーしない仕様のため、
-          # このPRでは ci.yml が pull_request では走らない（action_required で止まる）。
-          # main の必須チェック `e2e` を満たすには明示起動が要る
-          # （workflow_dispatch はこのトリガー制限の例外）。
+          # PAT 名義のPRなので pull_request が普通に発火し、ci.yml が走って
+          # 必須チェック `e2e` が rollup に載る。dispatch も空 run 削除も要らない。
           #
-          # ただし action_required の run は「チェックを1つも持たない check suite」を
-          # head SHA に残す。GitHub の status rollup は同じアプリの最新 suite を採るので、
-          # 放置すると dispatch した e2e の成功 suite が空の suite に上書きされ、
-          # 必須チェック `e2e` が存在しない扱いになって PR が永久に BLOCKED になる。
-          # 先に空の run を消してから dispatch する。
-          for _ in $(seq 12); do
-            PENDING=$(gh run list --branch "$BRANCH" --status action_required --json databaseId --jq '.[].databaseId')
-            [ -n "$PENDING" ] && break
-            sleep 5
-          done
-          # 複数ワークフロー分が少しずつ遅れて登録されるので、出揃うのを待って取り直す
-          sleep 5
-          for id in $(gh run list --branch "$BRANCH" --status action_required --json databaseId --jq '.[].databaseId'); do
-            gh api -X DELETE "repos/$GITHUB_REPOSITORY/actions/runs/$id" \
-              || echo "::warning::run $id を削除できなかった"
-          done
-
-          gh workflow run ci.yml --ref "$BRANCH"
-
-          # rollup に e2e が現れないと --auto は永久に発火しない。
-          # 黙って詰まらせず、現れなければこのワークフローを失敗させて気づけるようにする
+          # 念のため、チェックが本当に現れたことは確認してから --auto に渡す。
+          # 現れないまま放置すると PR が黙って永久に BLOCKED になるため、失敗させて気づけるようにする
           SEEN=""
           for _ in $(seq 24); do
             SEEN=$(gh pr view "$PR_URL" --json statusCheckRollup \
@@ -93,6 +90,6 @@ jobs:
 
           # E2E が通ってから初めてマージされる。落ちたらマージされない
           gh pr merge "$PR_URL" --auto --squash --delete-branch
-          # 同じトリガー制限のため deploy.yml も明示起動する。
-          # --auto はすぐにはマージしないので、マージ完了を待ってから叩く
+          # PAT で有効化した auto-merge なら main への push も PAT 名義になり deploy.yml が
+          # 自動で走るはずだが、走らなかった場合に静かにデプロイが止まるのは困るので確認して補う
           .github/scripts/deploy-after-merge.sh "$PR_URL"
