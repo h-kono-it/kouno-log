@@ -2,6 +2,10 @@
 import Layout from '../layouts/Layout.astro';
 import { events } from '../data/events';
 
+// 「今後の予定」と「参加履歴」の境目が今日の日付で決まるページなので、
+// 静的に焼くとビルドした日の判定が固定されてしまう。リクエスト時に描画する。
+export const prerender = false;
+
 const todayJST = new Date().toLocaleDateString('sv-SE', { timeZone: 'Asia/Tokyo' });
 
 const sorted = [...events].sort((a, b) => b.date.localeCompare(a.date));
