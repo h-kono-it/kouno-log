@@ -11,10 +11,10 @@ export interface Event {
 export const events: Event[] = [
   { name: 'TechTAMA 2026 Conference', date: '2026-12-13', role: '登壇', url: 'https://tamadev.jp/events/20261213/' },
   { name: '技術書典21 オフライン', date: '2026-11-23', role: 'サークル参加', url: 'https://techbookfest.org/event/tbf21' },
-  { name: '？？？', date: '2026-11-15', role: '主催' },
+  { name: 'JAWS-UG千葉支部 x 東葛.dev コラボLT大会', date: '2026-11-15', role: '主催', url: 'https://jawsug-chiba.connpass.com/event/406553/' },
   { name: 'KomeKaigi 2026', date: '2026-10-31', role: '登壇', url: 'https://komekaigi.dev/' },
   { name: 'Kaigi on Rails 2026', date: '2026-10-16', role: '参加', url: 'https://kaigionrails.org/2026/' },
-  { name: '東葛.dev in 柏 交流会【第13回】？', date: '2026-10-09', role: '主催' },
+  { name: '東葛.dev in 柏 交流会【第13回】', date: '2026-10-09', role: '主催', url: 'https://toukatsu.connpass.com/event/405845/' },
   { name: '武蔵野線.dev クロスコミュニティ交流会 vol.1', date: '2026-09-23', role: '主催', url: 'https://musashino-line.connpass.com/event/401818/' },
   { name: '第十四回技術書同人誌博覧会', date: '2026-09-13', role: 'スタッフ', url: 'https://gishohaku.connpass.com/event/393530/' },
   { name: '大Funabashi.dev', date: '2026-09-12', role: '登壇', url: 'https://funabashidev.connpass.com/event/398253/' },
