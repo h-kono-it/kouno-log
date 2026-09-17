@@ -15,12 +15,12 @@
     "test:e2e:ui": "playwright test --ui"
   },
   "dependencies": {
-    "@astrojs/cloudflare": "^14.3.0",
+    "@astrojs/cloudflare": "^14.3.1",
     "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.7.4",
     "@orama/orama": "^3.1.18",
     "@resvg/resvg-wasm": "^2.6.2",
-    "astro": "^7.3.1",
+    "astro": "^7.3.2",
     "astro-site-shell": "^0.3.3",
     "budoux": "^0.9.1",
     "ja-bigram-tokenizer": "^0.1.2",
@@ -33,10 +33,10 @@
     "sharp": "^0.35.4"
   },
   "devDependencies": {
-    "@astrojs/markdown-satteri": "^0.4.0",
-    "@playwright/test": "^1.62.0",
+    "@astrojs/markdown-satteri": "^0.4.1",
+    "@playwright/test": "^1.63.0",
     "github-slugger": "^2.0.0",
-    "oxlint": "^1.81.0",
-    "wrangler": "^4.128.0"
+    "oxlint": "^1.82.0",
+    "wrangler": "^4.130.0"
   }
 }
