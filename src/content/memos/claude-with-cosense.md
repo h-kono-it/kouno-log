@@ -11,7 +11,7 @@ Claude CodeがChrome上で動くということでお試しでショートカッ
 
 実際に作成してもらった記事は次の記事です。
 
-[https://scrapbox.io/kouno-sense/オブジェクト指向は禁止するべき](https://scrapbox.io/kouno-sense/オブジェクト指向は禁止するべき)
+https://scrapbox.io/kouno-sense/オブジェクト指向は禁止するべき
 
 ## ざっくりとしたプロンプト
 
@@ -24,7 +24,7 @@ Claude CodeがChrome上で動くということでお試しでショートカッ
 
 詳細なプロンプト全文は次のリンクをご確認ください。
 
-[https://scrapbox.io/kouno-sense/暫定版Claude_in_ChromeのCosense記載ショートカット](https://scrapbox.io/kouno-sense/暫定版Claude_in_ChromeのCosense記載ショートカット)
+https://scrapbox.io/kouno-sense/暫定版Claude_in_ChromeのCosense記載ショートカット
 
 ### 参考にしたもの
 

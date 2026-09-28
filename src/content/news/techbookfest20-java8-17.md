@@ -39,7 +39,7 @@ Java 8から17にかけて追加・強化された開発者向けの機能をま
 
 詳細ははてなブログのほうに書いてます。
 
-[はてなブログの紹介記事](https://hk-it.hatenablog.com/entry/2026/04/04/142839)
+https://hk-it.hatenablog.com/entry/2026/04/04/142839
 
 ---
 
