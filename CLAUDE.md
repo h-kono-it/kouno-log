@@ -26,7 +26,8 @@ GitHub: https://github.com/h-kono-it/kouno-log
 
 - プロフィール情報は `src/data/profile.ts` が唯一のデータソース。`src/pages/profile.astro` と `src/pages/api/profile.ts` はどちらもここから import する。
 - OGPカードの取得は `pnpm fetch-ogp` だけが行い、結果（`src/data/ogp-cache.json` と `public/ogp-cards/`）をリポジトリにコミットする。`fetch-rss.js` と同じ「取ってコミットする」方式で、これがキャッシュそのものなのでTTLもKVも要らない。**レンダリング側のプラグインは絶対にネットワークを叩かない**（ビルドが外部サイトの生死に依存すると、相手が落ちている日にデプロイできなくなる）。キャッシュに無いURLと取得に失敗したURLは素のリンクのまま残り、ビルドは落ちない
-- **カードはMarkdownのレンダリング時に差し込まれるので、OGPを取り直しただけではビルドに反映されない。** Astroのcontent layerが `node_modules/.astro/data-store.json` にレンダリング結果を溜めていて、`.md` が変わっていなければそれを再利用するため。`fetch-ogp.js` はキャッシュの中身が変わったとき自動でこのファイルを消すが、`ogp-cache.json` を手で編集したときは自分で消すこと（`.astro/` ごと消すと型定義まで飛ぶので、このファイルだけ消す）
+- **カードはMarkdownのレンダリング時に差し込まれるので、OGPを取り直しただけでは反映されない。** Astroのcontent layerがレンダリング結果を `data-store.json` に溜めていて、`.md` が変わっていなければそれを再利用するため。**この store は2箇所にあり、`astro dev` は `.astro/data-store.json`、`astro build` は `node_modules/.astro/data-store.json` を使う。** 片方だけ消すと「ビルドでは出るのに dev では出ない」という食い違いになる（実際にこれで1度ハマった）。`fetch-ogp.js` はキャッシュの中身が変わったとき両方を自動で消すが、`ogp-cache.json` を手で編集したときは自分で消すこと（ディレクトリごと消すと型定義まで飛ぶので、このファイルだけ消す）
+- **起動中の `astro dev` は data-store をメモリに持っているので、ファイルを消しただけでは反映されない。** `astro dev stop && pnpm dev` で入れ直すこと。なお dev は `.md` の変更を検知して `Reloaded data from ...` とログに出すが、それでもレンダリング結果は作り直さない（ログが出ているのに画面が変わらないのはこれ）
 - OGP画像はホットリンクせず `public/ogp-cards/` に落として自前で配信する。取得ロジックは `scripts/lib/ogp.js` に置いて `fetch-rss.js` と共用している
 - 任意URLのOGPを実行時に取りに行くエンドポイント（`/api/ogp?url=` 的なもの）は作らないこと。オープンプロキシ／SSRFになる。自分が書いたリンクだけならビルド前の取得で足りる
 

@@ -24,8 +24,14 @@ const CACHE_FILE = path.join(__dirname, '../src/data/ogp-cache.json');
 // Astroのcontent layerはMarkdownのレンダリング結果をここに溜める。カードはレンダリング時に
 // キャッシュJSONを読んで差し込まれるので、.mdが変わっていないとこのストアが再利用され、
 // OGPを取り直してもカードが更新されない。中身が変わったときだけ捨てる
-// （.astro/types.d.ts は残すため、ディレクトリごとではなくこのファイルだけを消す）
-const ASTRO_DATA_STORE = path.join(__dirname, '../node_modules/.astro/data-store.json');
+// （types.d.ts などを巻き込まないよう、ディレクトリごとではなくこのファイルだけを消す）。
+//
+// 置き場が2つあるのが罠で、dev（astro dev）は .astro/、build は node_modules/.astro/ を使う。
+// 片方だけ消すと「ビルドしたら出るのに dev では出ない」という食い違いになるので両方消す
+const ASTRO_DATA_STORES = [
+  path.join(__dirname, '../.astro/data-store.json'),
+  path.join(__dirname, '../node_modules/.astro/data-store.json'),
+];
 // public/ogp/ には手で置いたOG画像があるので、自動生成ぶんは混ぜずに分ける
 const IMAGES_DIR = path.join(__dirname, '../public/ogp-cards');
 const PUBLIC_PREFIX = '/ogp-cards';
@@ -169,8 +175,9 @@ async function main() {
   await fs.writeFile(CACHE_FILE, `${JSON.stringify(sorted, null, 2)}\n`);
 
   if (fetched + failed + pruned > 0) {
-    await fs.rm(ASTRO_DATA_STORE, { force: true });
-    console.log('Dropped Astro content cache so the next build re-renders the cards.');
+    await Promise.all(ASTRO_DATA_STORES.map((store) => fs.rm(store, { force: true })));
+    // 起動中の astro dev はストアをメモリに持っているので、消しただけでは反映されない
+    console.log('Dropped Astro content caches. Restart `astro dev` if it is running.');
   }
 
   console.log(
