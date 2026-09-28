@@ -8,6 +8,7 @@
     "preview": "astro preview",
     "astro": "astro",
     "fetch-rss": "node scripts/fetch-rss.js",
+    "fetch-ogp": "node scripts/fetch-ogp.js",
     "lint": "oxlint src",
     "lint:fix": "oxlint src --fix",
     "tags": "node scripts/list-tags.js",

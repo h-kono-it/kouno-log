@@ -11,18 +11,24 @@ GitHub: https://github.com/h-kono-it/kouno-log
 - `pnpm dev` - 開発サーバー
 - `pnpm build` - ビルド
 - `node scripts/fetch-rss.js` - 外部記事を取得
+- `pnpm fetch-ogp` - 記事中の裸のリンクのOGPを取得（`--retry-failed` で前回失敗ぶんを再挑戦、`--force` で全件取り直し）
 
 ## 構成
 
 - `src/content/memos/` - 自分で書くメモ（Markdown）
 - `src/content/external/` - 外部記事（RSS自動取得、JSON）
 - `scripts/fetch-rss.js` - RSS取得スクリプト（FEEDS配列で設定）
-- `.github/workflows/fetch-external.yml` - 毎日自動取得
+- `.github/workflows/fetch-external.yml` - 毎日自動取得（RSSに加えて裸リンクのOGPも拾う）
 - `src/components/SearchPalette.astro` - サイト内検索（⌘K）。索引は `src/pages/search-index.json.ts` が配る素のJSONからブラウザ側で組む。日本語のトークナイズとAND→ORフォールバックは npm の [ja-bigram-tokenizer](https://github.com/h-kono-it/ja-bigram-tokenizer)（自作）にあるので、検索の当たり方を変えたいときはそちらを直す
+- `scripts/fetch-ogp.js` + `src/plugins/satteri-link-card.mjs` - 記事中の「段落に単独で置いた裸のURL」をOGPカードにする。`[ラベル](url)` 形式は文章として読ませたい意図なので触らない
 
 ## 注意事項
 
 - プロフィール情報は `src/data/profile.ts` が唯一のデータソース。`src/pages/profile.astro` と `src/pages/api/profile.ts` はどちらもここから import する。
+- OGPカードの取得は `pnpm fetch-ogp` だけが行い、結果（`src/data/ogp-cache.json` と `public/ogp-cards/`）をリポジトリにコミットする。`fetch-rss.js` と同じ「取ってコミットする」方式で、これがキャッシュそのものなのでTTLもKVも要らない。**レンダリング側のプラグインは絶対にネットワークを叩かない**（ビルドが外部サイトの生死に依存すると、相手が落ちている日にデプロイできなくなる）。キャッシュに無いURLと取得に失敗したURLは素のリンクのまま残り、ビルドは落ちない
+- **カードはMarkdownのレンダリング時に差し込まれるので、OGPを取り直しただけではビルドに反映されない。** Astroのcontent layerが `node_modules/.astro/data-store.json` にレンダリング結果を溜めていて、`.md` が変わっていなければそれを再利用するため。`fetch-ogp.js` はキャッシュの中身が変わったとき自動でこのファイルを消すが、`ogp-cache.json` を手で編集したときは自分で消すこと（`.astro/` ごと消すと型定義まで飛ぶので、このファイルだけ消す）
+- OGP画像はホットリンクせず `public/ogp-cards/` に落として自前で配信する。取得ロジックは `scripts/lib/ogp.js` に置いて `fetch-rss.js` と共用している
+- 任意URLのOGPを実行時に取りに行くエンドポイント（`/api/ogp?url=` 的なもの）は作らないこと。オープンプロキシ／SSRFになる。自分が書いたリンクだけならビルド前の取得で足りる
 
 ## デプロイ
 

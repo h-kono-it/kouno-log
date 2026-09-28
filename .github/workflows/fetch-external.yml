@@ -40,6 +40,12 @@ jobs:
       - name: Fetch RSS feeds
         run: node scripts/fetch-rss.js
 
+      # 記事に裸のリンクを書いても、取得を忘れるとカードが出ないまま公開される
+      # （落ちはせず素のリンクになるだけなので、静かに効かない）。日次でここが拾う。
+      # 取得済みURLはスキップされるので、毎日走らせても実質タダ
+      - name: Fetch OGP for bare links
+        run: node scripts/fetch-ogp.js
+
       - name: Commit and push if changed
         env:
           # GITHUB_TOKEN による push / PR 作成は他ワークフローをトリガーしない仕様で、
@@ -58,7 +64,7 @@ jobs:
           fi
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add src/content/external/ public/thumbnails/
+          git add src/content/external/ public/thumbnails/ src/data/ogp-cache.json public/ogp-cards/
           if git diff --staged --quiet; then
             echo "No changes to commit"
             exit 0

@@ -1,0 +1,8 @@
+{
+  "https://h-kono-it.github.io/java-gc/": {
+    "title": "Java GC の基礎",
+    "host": "h-kono-it.github.io",
+    "fetchedAt": "2026-09-27T23:59:51.686Z",
+    "description": "ガベージコレクションは何を「ゴミ」と呼び、どうやって片付け、その間なぜアプリケーションを止めるのか。"
+  }
+}
