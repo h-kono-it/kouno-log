@@ -31,7 +31,7 @@ pubDate: 2026-08-23
 
 経緯や「なぜやるか」をもう少し詳しく書いたものが、はてなブログにあります。
 
-**[武蔵野線.dev、始動します！（はてなブログ）](https://hk-it.hatenablog.com/entry/2026/08/13/091844)**
+https://hk-it.hatenablog.com/entry/2026/08/13/091844
 
 ---
 

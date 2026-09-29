@@ -174,6 +174,92 @@ const { id } = Astro.props;
     color: var(--color-text-light);
     text-align: center;
   }
+
+  /* OGPカード。段落に単独で置いた裸のリンクを satteri-link-card が差し替える。
+     影とオフセットは pre と同じ作りにして、記事の中で浮かないようにしてある */
+  .content :global(.link-card) {
+    display: flex;
+    gap: 1rem;
+    align-items: stretch;
+    margin: 1.5rem 0;
+    padding: 0.875rem 1rem;
+    border: 1px solid var(--color-border-dark);
+    border-radius: 10px;
+    background: var(--color-card);
+    box-shadow: 3px 3px 0 var(--color-border);
+    text-decoration: none;
+    color: var(--color-text);
+    transition: box-shadow 0.15s, transform 0.15s;
+  }
+
+  .content :global(.link-card:hover) {
+    transform: translate(1px, 1px);
+    box-shadow: 2px 2px 0 var(--color-border-dark);
+    text-decoration: none;
+  }
+
+  .content :global(.link-card-body) {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    flex: 1;
+    min-width: 0;
+  }
+
+  .content :global(.link-card-title) {
+    font-weight: 700;
+    line-height: 1.5;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .content :global(.link-card-desc) {
+    font-size: 0.82rem;
+    line-height: 1.6;
+    color: var(--color-text-muted);
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    overflow: hidden;
+  }
+
+  .content :global(.link-card-host) {
+    margin-top: auto;
+    padding-top: 0.25rem;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--color-text-light);
+  }
+
+  .content :global(.link-card-thumb) {
+    flex: 0 0 auto;
+    width: 150px;
+  }
+
+  .content :global(.link-card-thumb img) {
+    width: 100%;
+    height: 100%;
+    max-height: 110px;
+    object-fit: cover;
+    border: 1px solid var(--color-border);
+    border-radius: 6px;
+  }
+
+  @media (max-width: 480px) {
+    .content :global(.link-card) {
+      gap: 0.75rem;
+    }
+
+    .content :global(.link-card-thumb) {
+      width: 84px;
+    }
+
+    .content :global(.link-card-desc) {
+      display: none;
+    }
+  }
 </style>
 
 <script>

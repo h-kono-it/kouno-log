@@ -1,0 +1,48 @@
+{
+  "https://h-kono-it.github.io/java-gc/": {
+    "title": "Java GC の基礎",
+    "host": "h-kono-it.github.io",
+    "fetchedAt": "2026-09-27T23:59:51.686Z",
+    "description": "ガベージコレクションは何を「ゴミ」と呼び、どうやって片付け、その間なぜアプリケーションを止めるのか。"
+  },
+  "https://hk-it.hatenablog.com/entry/2026/04/04/142839": {
+    "title": "技術書典 20 で 『Java 10+a年振り返り （上巻）』 という同人誌を頒布します！ - 世迷言ラボの世迷言",
+    "host": "hk-it.hatenablog.com",
+    "fetchedAt": "2026-09-28T00:40:05.614Z",
+    "description": "久しぶりに「世迷言ラボ」としてのお知らせ記事です。 2026/04/11〜（オフライン開催は04/12）開催される技術書典 20に世迷言ラボとして出展します。 techbookfest.org この記事ではどんな本で、どんな人に読んで欲しいのかを宣伝します。",
+    "siteName": "世迷言ラボの世迷言",
+    "image": "/ogp-cards/2989cca2.png"
+  },
+  "https://hk-it.hatenablog.com/entry/2026/05/17/150624": {
+    "title": "非Javaエンジニアに送るJJUG CCC 2026 Springの歩き方（非公式） - 世迷言ラボの世迷言",
+    "host": "hk-it.hatenablog.com",
+    "fetchedAt": "2026-09-28T00:40:03.206Z",
+    "description": "JJUG CCC 2026 SpringはJavaエンジニアのためのお祭りですが、実はJavaの知識がなくても楽しめるセッションが盛りだくさんです！ jjug.doorkeeper.jp Javaは非常に成熟された言語で、大規模サービスでの活用事例も豊富です。それゆえに設計などの理論については他の言語のみの経験であっても非常に有益な知識になると思っています！ そこで、このブログでは、非Javaエン",
+    "siteName": "世迷言ラボの世迷言",
+    "image": "/ogp-cards/e33dfbc9.png"
+  },
+  "https://hk-it.hatenablog.com/entry/2026/08/13/091844": {
+    "title": "武蔵野線.dev、始動します！ - 世迷言ラボの世迷言",
+    "host": "hk-it.hatenablog.com",
+    "fetchedAt": "2026-09-28T00:40:04.437Z",
+    "description": "タイトルの通り、「武蔵野線.dev」という地域コミュニティを始めます。 初回実施は2026/9/23（秋分の日）に朝霞市産業文化センターで開催します。 イベントページはこちら musashino-line.connpass.com このブログでは開催の経緯と「なぜやるか」とお伝えします。 対象読者 武蔵野線.devがどんなイベントか気になる方 地域コミュニティの運営が気になる方 武蔵野線.devと",
+    "siteName": "世迷言ラボの世迷言",
+    "image": "/ogp-cards/56f865a0.png"
+  },
+  "https://scrapbox.io/kouno-sense/オブジェクト指向は禁止するべき": {
+    "title": "オブジェクト指向は禁止するべき - kouno-sense",
+    "host": "scrapbox.io",
+    "fetchedAt": "2026-09-28T00:40:01.287Z",
+    "description": "https://nowokay.hatenablog.com/entry/20140718/1405691217 オブジェクト指向は禁止するべき オブジェクト指向ができているかどうかがプログラムの良し悪しの基準とされがち しかし実際には複雑さを増すだけでソースコードを追いにくくする 良いプログラムの基準 最も重要なのは変数の数を減らすこと 再代入や状態変更がない変数を除き、状態を管理する変数が少な",
+    "siteName": "kouno-sense",
+    "image": "/ogp-cards/f13ec9e2.png"
+  },
+  "https://scrapbox.io/kouno-sense/暫定版Claude_in_ChromeのCosense記載ショートカット": {
+    "title": "暫定版Claude in ChromeのCosense記載ショートカット - kouno-sense",
+    "host": "scrapbox.io",
+    "fetchedAt": "2026-09-28T00:40:01.637Z",
+    "description": "from 2026-01-19 暫定版Claude in ChromeのCosense記載ショートカット あなたのタスクは開いているWebサイトを要約したCosenseページを作成することです。次の手順に従って完遂してください。 ## 概要手順 1. 要約文の作成 2. JavaScriptでの直接挿入 3. 内容確認と修正 ## 詳細手順 1. 要約文の作成（Cosense記法） 現在開いている",
+    "siteName": "kouno-sense",
+    "image": "/ogp-cards/0a4c58cd.png"
+  }
+}

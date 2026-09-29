@@ -2,9 +2,7 @@ import Parser from 'rss-parser';
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createWriteStream } from 'fs';
-import { pipeline } from 'stream/promises';
-import { createHash } from 'crypto';
+import { fetchOgData, downloadImage, urlHash } from './lib/ogp.js';
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const OUTPUT_DIR = path.join(__dirname, '../src/content/external');
@@ -39,10 +37,6 @@ function slugify(text) {
     .slice(0, 50);
 }
 
-function urlHash(url) {
-  return createHash('sha256').update(url).digest('hex').slice(0, 8);
-}
-
 function extractThumbnailFromRss(item) {
   // 1. media:thumbnail
   if (item.thumbnail) {
@@ -69,77 +63,6 @@ function extractThumbnailFromRss(item) {
   }
 
   return undefined;
-}
-
-// メタタグのcontent属性はHTMLエンティティ化されている（Qiitaのog:imageは
-// &amp;を含む署名付きURLのため、デコードしないと取得に失敗する）
-function decodeHtmlEntities(text) {
-  return text
-    .replace(/&lt;/g, '<')
-    .replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"')
-    .replace(/&#39;/g, "'")
-    .replace(/&amp;/g, '&');
-}
-
-async function fetchOgData(url) {
-  try {
-    const response = await fetch(url, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; MyPortalBot/1.0)',
-      },
-    });
-    if (!response.ok) return {};
-
-    const html = await response.text();
-
-    // og:image / twitter:image
-    const ogImageMatch = html.match(/<meta[^>]+property=["']og:image["'][^>]+content=["']([^"']+)["']/i)
-      || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:image["']/i);
-    const twitterImageMatch = html.match(/<meta[^>]+name=["']twitter:image["'][^>]+content=["']([^"']+)["']/i)
-      || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+name=["']twitter:image["']/i);
-
-    // og:description
-    const ogDescMatch = html.match(/<meta[^>]+property=["']og:description["'][^>]+content=["']([^"']+)["']/i)
-      || html.match(/<meta[^>]+content=["']([^"']+)["'][^>]+property=["']og:description["']/i);
-
-    const image = ogImageMatch?.[1] || twitterImageMatch?.[1];
-    const description = ogDescMatch?.[1];
-    return {
-      image: image ? decodeHtmlEntities(image) : undefined,
-      description: description ? decodeHtmlEntities(description) : undefined,
-    };
-  } catch (error) {
-    console.warn(`    Failed to fetch OGP from ${url}: ${error.message}`);
-    return {};
-  }
-}
-
-async function downloadImage(imageUrl, filename) {
-  try {
-    const response = await fetch(imageUrl, {
-      headers: {
-        'User-Agent': 'Mozilla/5.0 (compatible; MyPortalBot/1.0)',
-      },
-    });
-    if (!response.ok) return undefined;
-
-    const contentType = response.headers.get('content-type') || '';
-    let ext = '.jpg';
-    if (contentType.includes('png')) ext = '.png';
-    else if (contentType.includes('gif')) ext = '.gif';
-    else if (contentType.includes('webp')) ext = '.webp';
-
-    const finalFilename = `${filename}${ext}`;
-    const filePath = path.join(THUMBNAILS_DIR, finalFilename);
-
-    await pipeline(response.body, createWriteStream(filePath));
-
-    return `/thumbnails/${finalFilename}`;
-  } catch (error) {
-    console.warn(`    Failed to download image: ${error.message}`);
-    return undefined;
-  }
 }
 
 async function fetchFeed(feedConfig) {
@@ -239,7 +162,10 @@ async function main() {
     let localThumbnail;
     if (thumbnailUrl) {
       console.log(`    Downloading thumbnail...`);
-      localThumbnail = await downloadImage(thumbnailUrl, baseFilename);
+      localThumbnail = await downloadImage(thumbnailUrl, baseFilename, {
+        outDir: THUMBNAILS_DIR,
+        publicPrefix: '/thumbnails',
+      });
     }
 
     // JSONデータ作成

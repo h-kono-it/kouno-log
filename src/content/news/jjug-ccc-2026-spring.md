@@ -39,7 +39,7 @@ Java 5で導入されて以来、日々の開発に欠かせない存在とな�
 
 Javaエンジニア以外の方に向けて、JJUG CCC 2026 Springで楽しめるセッションをピックアップした記事も書きました。
 
-**[非Javaエンジニアに送るJJUG CCC 2026 Springの歩き方（非公式）（はてなブログ）](https://hk-it.hatenablog.com/entry/2026/05/17/150624)**
+https://hk-it.hatenablog.com/entry/2026/05/17/150624
 
 ---
 
