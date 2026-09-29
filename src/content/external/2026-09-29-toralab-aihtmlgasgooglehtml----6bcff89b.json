@@ -1,0 +1,8 @@
+{
+  "title": "AIにより誰でもHTMLで共有する時代に送るGAS×Googleドライブで構築！社内限定HTMLポータル - 虎の穴ラボ技術ブログ",
+  "url": "https://toranoana-lab.hatenablog.com/entry/2026/09/29/100000",
+  "pubDate": "2026-09-29T01:14:00.000Z",
+  "source": "toralab",
+  "description": "はじめに なぜこの方式なのか？（他構成との比較とトレードオフ） 1. Claude Artifacts や GitHub Pages ではダメだった理由 2. Index（目次）ページの自動管理 割り切ったトレードオフ（デメリットと対策） 複数ファイル間の相対パス参照（./images/photo.png 等）ができない ルーティング（カスタムURL）が自由にいじれない 大量ファイル時のスケーラビ",
+  "thumbnail": "/thumbnails/2026-09-29-toralab-aihtmlgasgooglehtml----6bcff89b.png"
+}
