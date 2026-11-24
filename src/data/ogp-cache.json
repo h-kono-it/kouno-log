@@ -44,5 +44,21 @@
     "description": "from 2026-01-19 暫定版Claude in ChromeのCosense記載ショートカット あなたのタスクは開いているWebサイトを要約したCosenseページを作成することです。次の手順に従って完遂してください。 ## 概要手順 1. 要約文の作成 2. JavaScriptでの直接挿入 3. 内容確認と修正 ## 詳細手順 1. 要約文の作成（Cosense記法） 現在開いている",
     "siteName": "kouno-sense",
     "image": "/ogp-cards/0a4c58cd.png"
+  },
+  "https://techbookfest.org/organization/rnVvRqmvCMGPKfZ6DgE0gM": {
+    "title": "世迷言ラボ | 技術書典",
+    "host": "techbookfest.org",
+    "fetchedAt": "2026-11-24T12:59:50.381Z",
+    "description": "Web開発に関する日々の悩みの解決のお手伝いを行います！ 「Java 10+a年振り返り （上巻）」「Java 10+a年振り返り （下巻）」「Webエンジニアのための法務確認ガイド 〜「これ、法務案件では？」とアラートを出せるようになる本〜」",
+    "siteName": "技術書典：技術書オンリーイベント",
+    "image": "/ogp-cards/53892da0.png"
+  },
+  "https://techbookfest.org/product/tu8eBnLttqtFQC6bab0JK6?productVariantID=6Parwnqyx7iYmg3NdA8EFg": {
+    "title": "Java 10+a年振り返り （下巻）：世迷言ラボ",
+    "host": "techbookfest.org",
+    "fetchedAt": "2026-11-24T12:52:23.773Z",
+    "description": "Java 8以降の変更で開発者に影響がありそうなものを中心にバージョンごとに紹介します。下巻はJava 18からJava 27まで、Virtual Threadsやパターンマッチングなど、長年温められてきた機能が次々と完成を迎えた時期を扱います。\n\n上巻で扱ったJava 17のあと、Javaは半年サイクルで10のバージョンを重ねました。その間にJava 21とJava 25という2つのLTSが登場",
+    "siteName": "技術書典：技術書オンリーイベント",
+    "image": "/ogp-cards/1bbacdf9.jpg"
   }
 }

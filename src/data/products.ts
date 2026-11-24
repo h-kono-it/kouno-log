@@ -21,6 +21,15 @@ export const CATEGORY_ORDER: ProductCategory[] = ['book', 'app', 'library', 'too
 
 export const products: Product[] = [
   {
+    name: 'Java 10+a年振り返り（下巻）',
+    url: 'https://techbookfest.org/product/tu8eBnLttqtFQC6bab0JK6',
+    description: 'Java 18から27までの主な新機能をバージョンごとにまとめた本。上巻（Java 8〜17）の続きで、RecordsとSealed ClassesがJava 21でパターンマッチングと合流していく様子や、Preview機能が正式化されるまでの過程、古いAPIを安全に畳んでいく作業を追う。',
+    tags: ['同人誌', '技術書'],
+    repo: null,
+    relatedMemo: '/news/techbookfest21-java18-27',
+    category: 'book',
+  },
+  {
     name: 'Webエンジニアのための法務確認ガイド',
     url: 'https://yomaigotolab.booth.pm/items/8344898',
     description: '「これ、法務案件では？」とアラートを出せるようになることを目指した同人誌。決済・ポイント・プライバシー・偽装請負・ライセンス表記など、Webサービス開発現場で踏みやすい法的リスクのポイントを解説する。',
