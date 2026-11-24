@@ -94,6 +94,10 @@ export async function generateOgImage(title: string): Promise<Uint8Array> {
           backgroundColor: '#fafaf9',
           position: 'relative',
           padding: '60px',
+          // padding が 1200x630 に加算されると、コンテナが 1320x750 に膨らんで画面からはみ出す。
+          // すると bottom 基準の左下アイコンと右下のサイト名が y=630（＝画面の真下）に置かれ、
+          // 描画結果からまるごと消える。border-box にして padding を内側に収める
+          boxSizing: 'border-box',
         },
         children: [
           // タイトル（中央）
